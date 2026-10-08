@@ -1,0 +1,131 @@
+slug,nome,muscoli,fonte_free_exercise_db
+panca_piana_bilanciere,Panca piana con bilanciere,chest 1; triceps 0.5; front_delts 0.5,Barbell_Bench_Press_-_Medium_Grip
+panca_inclinata_bilanciere,Panca inclinata con bilanciere,chest 1; front_delts 0.5; triceps 0.5,Barbell_Incline_Bench_Press_-_Medium_Grip
+panca_declinata_bilanciere,Panca declinata con bilanciere,chest 1; triceps 0.5,Decline_Barbell_Bench_Press
+panca_piana_manubri,Panca piana con manubri,chest 1; triceps 0.5; front_delts 0.5,Dumbbell_Bench_Press
+panca_inclinata_manubri,Panca inclinata con manubri,chest 1; front_delts 0.5; triceps 0.5,Incline_Dumbbell_Press
+panca_piana_multipower,Panca piana al multipower,chest 1; triceps 0.5; front_delts 0.5,Smith_Machine_Bench_Press
+panca_inclinata_multipower,Panca inclinata al multipower,chest 1; front_delts 0.5; triceps 0.5,Smith_Machine_Incline_Bench_Press
+chest_press,Chest press,chest 1; triceps 0.5; front_delts 0.5,Leverage_Chest_Press
+chest_press_inclinata,Chest press inclinata,chest 1; front_delts 0.5; triceps 0.5,Leverage_Incline_Chest_Press
+croci_manubri,Croci su panca piana con manubri,chest 1; front_delts 0.5,Dumbbell_Flyes
+croci_inclinata_manubri,Croci su panca inclinata con manubri,chest 1; front_delts 0.5,Incline_Dumbbell_Flyes
+pec_deck,Pectoral machine (pec deck),chest 1,Butterfly
+croci_cavi_alti,Croci ai cavi dall'alto,chest 1,Cable_Crossover
+croci_cavi_bassi,Croci ai cavi dal basso,chest 1; front_delts 0.5,Low_Cable_Crossover
+dip_petto,Dip alle parallele (busto inclinato),chest 1; triceps 1; front_delts 0.5,Dips_-_Chest_Version
+piegamenti,Piegamenti sulle braccia,chest 1; triceps 0.5; front_delts 0.5,Pushups
+trazioni_prone,Trazioni alla sbarra presa prona,lats 1; upper_back 0.5; biceps 0.5,Pullups
+trazioni_supine,Trazioni alla sbarra presa supina,lats 1; upper_back 0.5; biceps 0.5,Chin-Up
+trazioni_zavorrate,Trazioni zavorrate,lats 1; upper_back 0.5; biceps 0.5,Weighted_Pull_Ups
+lat_machine_larga,Lat machine presa larga,lats 1; upper_back 0.5; biceps 0.5,Wide-Grip_Lat_Pulldown
+lat_machine_stretta,Lat machine presa stretta supina,lats 1; upper_back 0.5; biceps 0.5,Close-Grip_Front_Lat_Pulldown
+lat_machine_triangolo,Lat machine con triangolo,lats 1; upper_back 0.5; biceps 0.5,V-Bar_Pulldown
+lat_machine_monolaterale,Lat machine monolaterale,lats 1; upper_back 0.5; biceps 0.5,One_Arm_Lat_Pulldown
+pulldown_braccia_tese,Pulldown a braccia tese ai cavi,lats 1,Straight-Arm_Pulldown
+pullover_manubrio,Pullover con manubrio,lats 1; chest 0.5,Straight-Arm_Dumbbell_Pullover
+rematore_bilanciere,Rematore con bilanciere,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5; lower_back 0.5,Bent_Over_Barbell_Row
+rematore_bilanciere_supino,Rematore con bilanciere presa supina,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5; lower_back 0.5,Reverse_Grip_Bent-Over_Rows
+rematore_manubrio,Rematore con manubrio a un braccio,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5,One-Arm_Dumbbell_Row
+rematore_panca_inclinata,Rematore con manubri su panca inclinata,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5,Dumbbell_Incline_Row
+t_bar_row,T-bar row,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5; lower_back 0.5,T-Bar_Row_with_Handle
+pulley_basso,Pulley basso,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5,Seated_Cable_Rows
+pulley_monolaterale,Pulley basso monolaterale,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5,Seated_One-arm_Cable_Pulley_Rows
+rematore_macchina,Rematore alla macchina,upper_back 1; lats 1; rear_delts 0.5; biceps 0.5,Leverage_Iso_Row
+high_row,High row alla macchina,lats 1; upper_back 1; biceps 0.5,Leverage_High_Row
+rematore_inverso,Rematore inverso a corpo libero,upper_back 1; lats 0.5; rear_delts 0.5; biceps 0.5,Inverted_Row
+scrollate_bilanciere,Scrollate con bilanciere,traps 1; forearms 0.5,Barbell_Shrug
+scrollate_manubri,Scrollate con manubri,traps 1; forearms 0.5,Dumbbell_Shrug
+lento_avanti_in_piedi,Lento avanti in piedi con bilanciere,front_delts 1; side_delts 0.5; triceps 0.5,Standing_Military_Press
+lento_avanti_seduto,Lento avanti seduto con bilanciere,front_delts 1; side_delts 0.5; triceps 0.5,Seated_Barbell_Military_Press
+lento_manubri,Lento con manubri seduto,front_delts 1; side_delts 0.5; triceps 0.5,Dumbbell_Shoulder_Press
+arnold_press,Arnold press,front_delts 1; side_delts 0.5; triceps 0.5,Arnold_Dumbbell_Press
+shoulder_press_macchina,Shoulder press alla macchina,front_delts 1; side_delts 0.5; triceps 0.5,Machine_Shoulder_Military_Press
+lento_multipower,Lento avanti al multipower,front_delts 1; side_delts 0.5; triceps 0.5,Smith_Machine_Overhead_Shoulder_Press
+alzate_laterali,Alzate laterali con manubri,side_delts 1,Side_Lateral_Raise
+alzate_laterali_cavo,Alzate laterali al cavo,side_delts 1,Standing_Low-Pulley_Deltoid_Raise
+alzate_laterali_macchina,Alzate laterali alla macchina,side_delts 1,
+alzate_laterali_panca,Alzate laterali su panca inclinata,side_delts 1,One-Arm_Incline_Lateral_Raise
+tirate_bilanciere,Tirate al mento con bilanciere,side_delts 1; traps 0.5; front_delts 0.5,Upright_Barbell_Row
+tirate_cavo,Tirate al mento al cavo,side_delts 1; traps 0.5; front_delts 0.5,Upright_Cable_Row
+alzate_frontali,Alzate frontali con manubri,front_delts 1,Front_Dumbbell_Raise
+alzate_frontali_cavo,Alzate frontali al cavo,front_delts 1,Front_Cable_Raise
+alzate_posteriori,Alzate posteriori a busto flesso,rear_delts 1; upper_back 0.5,Seated_Bent-Over_Rear_Delt_Raise
+reverse_pec_deck,Reverse pec deck,rear_delts 1; upper_back 0.5,Reverse_Machine_Flyes
+croci_inverse_cavi,Croci inverse ai cavi,rear_delts 1; upper_back 0.5,Cable_Rear_Delt_Fly
+face_pull,Face pull,rear_delts 1; upper_back 0.5; traps 0.5,Face_Pull
+rematore_posteriori_cavo,Rematore per deltoidi posteriori al cavo,rear_delts 1; upper_back 0.5,Cable_Rope_Rear-Delt_Rows
+curl_bilanciere,Curl con bilanciere,biceps 1; forearms 0.5,Barbell_Curl
+curl_ez,Curl con bilanciere EZ,biceps 1; forearms 0.5,EZ-Bar_Curl
+curl_manubri,Curl con manubri,biceps 1; forearms 0.5,Dumbbell_Bicep_Curl
+curl_alternato,Curl alternato con manubri,biceps 1; forearms 0.5,Dumbbell_Alternate_Bicep_Curl
+curl_panca_inclinata,Curl su panca inclinata,biceps 1,Incline_Dumbbell_Curl
+curl_martello,Curl a martello,biceps 1; forearms 0.5,Hammer_Curls
+curl_martello_corda,Curl a martello al cavo con corda,biceps 1; forearms 0.5,Cable_Hammer_Curls_-_Rope_Attachment
+curl_scott,Curl alla panca Scott,biceps 1,Preacher_Curl
+curl_scott_manubrio,Curl alla panca Scott con manubrio,biceps 1,One_Arm_Dumbbell_Preacher_Curl
+curl_macchina,Curl alla macchina,biceps 1,Machine_Preacher_Curls
+curl_cavo,Curl al cavo basso,biceps 1; forearms 0.5,Standing_Biceps_Cable_Curl
+curl_bayesian,Curl al cavo alle spalle (bayesian),biceps 1,
+curl_concentrato,Curl di concentrazione,biceps 1,Concentration_Curls
+spider_curl,Spider curl,biceps 1,Spider_Curl
+curl_inverso,Curl inverso con bilanciere,forearms 1; biceps 0.5,Reverse_Barbell_Curl
+pushdown_barra,Pushdown ai cavi con barra,triceps 1,Triceps_Pushdown
+pushdown_corda,Pushdown ai cavi con corda,triceps 1,Triceps_Pushdown_-_Rope_Attachment
+estensioni_sopra_testa_cavo,Estensioni sopra la testa al cavo,triceps 1,Triceps_Overhead_Extension_with_Rope
+french_press_ez,French press con bilanciere EZ,triceps 1,EZ-Bar_Skullcrusher
+french_press_manubri,French press con manubri,triceps 1,Lying_Dumbbell_Tricep_Extension
+estensioni_sopra_testa_manubrio,Estensioni sopra la testa con manubrio,triceps 1,Standing_Dumbbell_Triceps_Extension
+jm_press,JM press,triceps 1; chest 0.5,JM_Press
+panca_presa_stretta,Panca piana presa stretta,triceps 1; chest 0.5; front_delts 0.5,Close-Grip_Barbell_Bench_Press
+dip_tricipiti,Dip alle parallele (busto eretto),triceps 1; chest 0.5; front_delts 0.5,Dips_-_Triceps_Version
+dip_macchina,Dip alla macchina,triceps 1; chest 0.5,Dip_Machine
+kickback_manubrio,Kickback con manubrio,triceps 1,Tricep_Dumbbell_Kickback
+estensioni_tricipiti_macchina,Estensioni tricipiti alla macchina,triceps 1,Machine_Triceps_Extension
+curl_polsi,Curl dei polsi con bilanciere,forearms 1,Palms-Up_Barbell_Wrist_Curl_Over_A_Bench
+curl_polsi_inverso,Curl dei polsi inverso con bilanciere,forearms 1,Palms-Down_Wrist_Curl_Over_A_Bench
+squat_bilanciere,Squat con bilanciere,quads 1; glutes 1; adductors 0.5; lower_back 0.5,Barbell_Squat
+front_squat,Front squat,quads 1; glutes 0.5; upper_back 0.5,Front_Barbell_Squat
+squat_multipower,Squat al multipower,quads 1; glutes 0.5,Smith_Machine_Squat
+hack_squat,Hack squat alla macchina,quads 1; glutes 0.5,Hack_Squat
+pendulum_squat,Pendulum squat,quads 1; glutes 0.5,
+leg_press,Leg press,quads 1; glutes 0.5; adductors 0.5,Leg_Press
+goblet_squat,Goblet squat,quads 1; glutes 0.5,Goblet_Squat
+bulgarian_split_squat,Bulgarian split squat,quads 1; glutes 1; adductors 0.5,
+affondi_manubri,Affondi con manubri,quads 1; glutes 1; adductors 0.5,Dumbbell_Lunges
+affondi_camminati,Affondi camminati con bilanciere,quads 1; glutes 1; adductors 0.5,Barbell_Walking_Lunge
+step_up,Step-up con manubri,quads 1; glutes 1,Dumbbell_Step_Ups
+leg_extension,Leg extension,quads 1,Leg_Extensions
+sissy_squat,Sissy squat,quads 1,Weighted_Sissy_Squat
+stacco_da_terra,Stacco da terra,glutes 1; hamstrings 1; lower_back 1; quads 0.5; traps 0.5; forearms 0.5,Barbell_Deadlift
+stacco_sumo,Stacco sumo,glutes 1; adductors 1; hamstrings 0.5; quads 0.5; lower_back 0.5,Sumo_Deadlift
+stacco_trap_bar,Stacco con trap bar,quads 1; glutes 1; hamstrings 0.5; lower_back 0.5; traps 0.5,Trap_Bar_Deadlift
+stacco_rumeno,Stacco rumeno con bilanciere,hamstrings 1; glutes 1; lower_back 0.5,Romanian_Deadlift
+stacco_rumeno_manubri,Stacco rumeno con manubri,hamstrings 1; glutes 1; lower_back 0.5,Stiff-Legged_Dumbbell_Deadlift
+stacco_gambe_tese,Stacco a gambe tese,hamstrings 1; glutes 1; lower_back 0.5,Stiff-Legged_Barbell_Deadlift
+good_morning,Good morning,hamstrings 1; lower_back 1; glutes 0.5,Good_Morning
+leg_curl_sdraiato,Leg curl sdraiato,hamstrings 1,Lying_Leg_Curls
+leg_curl_seduto,Leg curl seduto,hamstrings 1,Seated_Leg_Curl
+leg_curl_in_piedi,Leg curl in piedi monolaterale,hamstrings 1,Standing_Leg_Curl
+nordic_curl,Nordic curl,hamstrings 1,Natural_Glute_Ham_Raise
+glute_ham_raise,Glute ham raise,hamstrings 1; glutes 0.5,Glute_Ham_Raise
+hip_thrust,Hip thrust con bilanciere,glutes 1; hamstrings 0.5,Barbell_Hip_Thrust
+ponte_glutei,Ponte glutei con bilanciere,glutes 1; hamstrings 0.5,Barbell_Glute_Bridge
+kickback_glutei_cavo,Kickback per glutei al cavo,glutes 1,One-Legged_Cable_Kickback
+iperestensioni,Iperestensioni a 45°,lower_back 1; glutes 0.5; hamstrings 0.5,Hyperextensions_Back_Extensions
+reverse_hyper,Reverse hyperextension,glutes 1; hamstrings 0.5; lower_back 0.5,Reverse_Hyperextension
+adductor_machine,Adductor machine,adductors 1,Thigh_Adductor
+adduzioni_cavo,Adduzioni al cavo,adductors 1,Cable_Hip_Adduction
+abductor_machine,Abductor machine,abductors 1; glutes 0.5,Thigh_Abductor
+calf_in_piedi,Calf raise in piedi alla macchina,calves 1,Standing_Calf_Raises
+calf_seduto,Calf raise seduto,calves 1,Seated_Calf_Raise
+calf_leg_press,Calf alla leg press,calves 1,Calf_Press_On_The_Leg_Press_Machine
+calf_multipower,Calf raise al multipower,calves 1,Smith_Machine_Calf_Raise
+donkey_calf,Donkey calf raise,calves 1,Donkey_Calf_Raises
+crunch,Crunch,abs 1,Crunches
+crunch_cavo,Crunch ai cavi in ginocchio,abs 1,Cable_Crunch
+crunch_macchina,Crunch alla macchina,abs 1,Ab_Crunch_Machine
+crunch_inverso,Crunch inverso,abs 1,Reverse_Crunch
+sollevamento_gambe_sbarra,Sollevamento gambe alla sbarra,abs 1,Hanging_Leg_Raise
+ab_wheel,Ab wheel,abs 1,Ab_Roller
+plank,Plank,abs 1,Plank
