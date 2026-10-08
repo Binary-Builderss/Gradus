@@ -1,0 +1,27 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
+  "typescript.tsdk": "web/node_modules/typescript/lib",
+  "deno.enablePaths": [
+    "supabase/functions"
+  ],
+  "files.exclude": {
+    "**/node_modules": true,
+    "ios/**/xcuserdata": true,
+    "**/DerivedData": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "ios/**": true
+  },
+  "[sql]": {
+    "editor.defaultFormatter": null
+  },
+  "[swift]": {
+    "editor.defaultFormatter": null
+  }
+}
