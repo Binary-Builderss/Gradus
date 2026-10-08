@@ -1,0 +1,38 @@
+# --- Node / web ---
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.tsbuildinfo
+.vite/
+playwright-report/
+test-results/
+npm-debug.log*
+
+# --- Ambiente e segreti ---
+.env
+.env.*
+!.env.example
+ios/**/Secrets.xcconfig
+
+# --- Supabase ---
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# --- Xcode / iOS ---
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+.swiftpm/
+.build/
+
+# --- Sistema / editor ---
+.DS_Store
+.idea/
+*.swp
+CLAUDE.local.md
