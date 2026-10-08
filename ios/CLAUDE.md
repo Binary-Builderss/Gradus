@@ -59,12 +59,12 @@ Data/Remote/    client Supabase
    (drop, rest-pause, myo, cluster) ogni serie ha una riga kg × reps per segmento.
 5. **Sforzo percepito**: facoltativo, una volta per serie (sull'ultimo segmento). Selettore sulla scala
    della prescrizione (BUF 0–5 o RPE 6–10, passo 0,5) o su quella preferita in Impostazioni.
-   Se BUF = RIR resta da decidere: non convertire tra scale finché la decisione non è nel doc.
+   BUF = RIR (RPE = 10 − BUF); lo sforzo si salva nella scala in cui è stato inserito.
 6. **Riferimento alla settimana precedente** nell'intestazione di ogni serie, come testo
    ("Sett. 3: 100 × 5 · BUF 1"; drop: "100 × 8 + 75 × 6"):
    - settimana 1 → nessun riferimento;
    - settimana N → stesso blocco, stessa sessione, settimana N−1 dello **stesso mesociclo**;
-   - seduta saltata → settimana più recente dello stesso mesociclo, con etichetta (da confermare);
+   - seduta saltata (nessun dato in N−1) → nessun riferimento;
    - settimane di scarico escluse; **mai** dati di un mesociclo precedente.
    Implementazione in `Domain/`, verificata con `/fixtures/previous_week_cases.json` (stessi casi
    della funzione SQL lato web).

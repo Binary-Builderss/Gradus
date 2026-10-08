@@ -14,9 +14,9 @@ Lo schema in `/supabase` è gestito da questa parte del progetto.
 - Operazioni con privilegi (invito atleta via email, esportazione PDF): Supabase Edge Functions in
   `/supabase/functions`, mai nel client.
 - UI: Tailwind + shadcn/ui. Drag and drop: dnd-kit.
-- Griglia dell'editor: **da decidere con un prototipo** tra AG Grid (selezione di intervalli e incolla
-  sono Enterprise, a pagamento), TanStack Table (headless, navigazione da tastiera da scrivere) e
-  Glide Data Grid. Non introdurre la libreria finché la scelta non è nel doc.
+- Griglia dell'editor: TanStack Table (headless, righe nel DOM per dnd-kit e Tailwind). Navigazione da
+  tastiera e copia/incolla (TSV via `navigator.clipboard`) in un hook nostro, con test. Niente AG Grid
+  (intervalli e incolla sono Enterprise) né Glide (canvas, incompatibile con dnd-kit).
 - Validazione: zod sui form e sui payload delle Edge Functions.
 - Lint: oxlint (`.oxlintrc.json`). Formattazione: Prettier (`.prettierrc.json`, plugin Tailwind).
 - Test: Vitest + Testing Library (jsdom), Playwright (e2e, da aggiungere), pgTAP (RLS e funzioni SQL).

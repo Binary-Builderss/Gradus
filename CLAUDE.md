@@ -68,7 +68,10 @@ Esecuzione: `workouts → set_logs → set_segments`.
   Funzione SQL e implementazione Swift passano gli stessi casi. Chi cambia una regola aggiorna la
   fixture e entrambe le implementazioni nello stesso commit.
 - Regole del riferimento alla settimana precedente: solo dentro il mesociclo in corso; settimana 1 →
-  nessun riferimento; settimane di scarico escluse; mai dati di un mesociclo precedente.
+  nessun riferimento; seduta saltata in N−1 (nessun dato registrato) → nessun riferimento; settimane di
+  scarico escluse; mai dati di un mesociclo precedente.
+- Sforzo: BUF = ripetizioni di riserva (RIR), quindi RPE = 10 − BUF. Lo sforzo si salva comunque con la
+  sua scala (`effort_value` + `effort_scale`).
 
 ## Sicurezza
 
@@ -78,11 +81,7 @@ Esecuzione: `workouts → set_logs → set_segments`.
 
 ## Decisioni aperte (non anticiparle nel codice)
 
-- BUF = ripetizioni di riserva? Finché non è deciso, nessuna conversione BUF↔RPE: lo sforzo si salva con
-  la sua scala (`effort_value` + `effort_scale`).
-- Seduta saltata in N−1: mostrare la settimana più recente dello stesso mesociclo o niente.
-- Libreria della griglia dell'editor web.
-- Le altre sono nel doc, sezione "Decisioni aperte".
+- Sono nel doc, sezione "Decisioni aperte".
 
 ## Fuori perimetro
 
