@@ -1,0 +1,22 @@
+# Deploy del sito coach (web/). Le variabili VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY si impostano
+# nella dashboard di Netlify: solo URL e chiave anon/publishable, mai la service_role.
+[build]
+  base = "web"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA: ogni percorso (/login, /nuova-password, ...) lo risolve il router nel browser.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
