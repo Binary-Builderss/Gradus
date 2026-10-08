@@ -36,3 +36,9 @@ build/
 .idea/
 *.swp
 CLAUDE.local.md
+
+# AI tooling (skill, MCP)
+.mcp.json
+.agents/
+skills-lock.json
+web/.claude/
