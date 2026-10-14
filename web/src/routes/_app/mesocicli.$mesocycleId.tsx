@@ -80,17 +80,22 @@ function MesocyclePage() {
       {data ? (
         <>
           <div className="grid gap-3">
-            <Input
-              key={data.name}
-              aria-label={athleteMessages.name}
-              defaultValue={data.name}
-              onBlur={(e) => {
-                const name = e.target.value.trim()
-                if (name && name !== data.name) rename.mutate({ name })
-                else e.target.value = data.name
-              }}
-              className="h-auto border-transparent bg-transparent px-1 py-0.5 text-xl font-semibold tracking-tight shadow-none hover:border-input focus-visible:border-ring md:text-xl"
-            />
+            <div className="flex flex-wrap items-center gap-3">
+              <Input
+                key={data.name}
+                aria-label={athleteMessages.name}
+                defaultValue={data.name}
+                onBlur={(e) => {
+                  const name = e.target.value.trim()
+                  if (name && name !== data.name) rename.mutate({ name })
+                  else e.target.value = data.name
+                }}
+                className="h-auto w-auto min-w-0 flex-1 border-transparent bg-transparent px-1 py-0.5 text-xl font-semibold tracking-tight shadow-none hover:border-input focus-visible:border-ring md:text-xl"
+              />
+              <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
+                {athleteMessages.status[data.status]}
+              </span>
+            </div>
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
               {athleteMessages.weeks}
               <Input
@@ -124,7 +129,7 @@ function MesocyclePage() {
                       className={cn(
                         'h-7 min-w-9 rounded-md border px-2 font-mono text-xs transition-colors',
                         on
-                          ? 'border-primary bg-primary text-primary-foreground'
+                          ? 'border-warning-foreground/40 bg-warning text-warning-foreground'
                           : 'text-muted-foreground hover:bg-muted',
                       )}
                     >

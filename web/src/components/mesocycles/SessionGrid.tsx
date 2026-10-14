@@ -14,6 +14,7 @@ import {
   pasteOps,
   type Range,
   rangeToTsv,
+  weekSetTotals,
 } from '@/lib/gridModel'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
@@ -41,6 +42,7 @@ export function SessionGrid({
   const [anchor, setAnchor] = useState<Pos>({ r: 0, c: 0 })
   const [expanded, setExpanded] = useState<string | null>(null)
   const [note, setNote] = useState('')
+  const [hasFocus, setHasFocus] = useState(false)
   const extending = useRef(false)
 
   const keys = [
@@ -56,6 +58,9 @@ export function SessionGrid({
   const range: Range = normalizeRange(anchor, active)
   const multi = range.r1 !== range.r2 || range.c1 !== range.c2
   const weekNumbers = Array.from({ length: totalWeeks }, (_, i) => i + 1)
+  const totals = weekSetTotals(rows, totalWeeks)
+  const activeRow = hasFocus ? rows[active.r] : undefined
+  const activeWeek = activeRow ? active.c + 1 : null
 
   const columns = useMemo(
     () => [
@@ -125,9 +130,30 @@ export function SessionGrid({
 
   return (
     <div className="grid gap-2">
+      <div
+        className="flex min-h-9 flex-wrap items-center gap-x-3 gap-y-1 rounded-md border bg-card px-3 py-1.5 text-sm"
+        aria-live="polite"
+      >
+        {activeRow?.block && activeWeek ? (
+          <>
+            <span className="text-muted-foreground">
+              {m.grid.activeCell(activeRow.exerciseName, m.block.roles[activeRow.block.role], activeWeek)}
+            </span>
+            <span className="min-w-24 rounded border border-primary px-2 py-0.5 font-mono text-xs">
+              {formatCell(activeRow.cells.get(activeWeek)) || '\u00a0'}
+            </span>
+          </>
+        ) : (
+          <span className="text-muted-foreground">{m.grid.pickCell}</span>
+        )}
+      </div>
       <div className="overflow-x-auto rounded-md border bg-card">
         <table
           ref={tableRef}
+          onFocus={() => setHasFocus(true)}
+          onBlur={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget)) setHasFocus(false)
+          }}
           onKeyDown={onKeyDown}
           onCopy={onCopy}
           onPaste={onPaste}
@@ -152,7 +178,8 @@ export function SessionGrid({
                       scope="col"
                       className={cn(
                         'min-w-28 border-r px-2 py-1 text-center font-mono text-xs font-medium text-muted-foreground last:border-r-0',
-                        deloadWeeks.includes(week) && 'bg-accent text-accent-foreground',
+                        deloadWeeks.includes(week) && 'bg-warning text-warning-foreground',
+                        week === activeWeek && 'bg-accent text-accent-foreground',
                       )}
                     >
                       <span className="inline-flex items-center gap-1">
@@ -178,6 +205,13 @@ export function SessionGrid({
                             <ArrowLineRightIcon />
                           </Button>
                         )}
+                      </span>
+                      <span className="block font-sans text-[11px] font-normal">
+                        {lockedWeeks.has(week)
+                          ? m.grid.weekState.locked
+                          : deloadWeeks.includes(week)
+                            ? m.grid.weekState.deload
+                            : '\u00a0'}
                       </span>
                     </th>
                   )
@@ -206,16 +240,22 @@ export function SessionGrid({
                   >
                     <th
                       scope="row"
-                      className="sticky left-0 z-[1] border-r bg-card px-3 py-1 text-left font-normal"
+                      className={cn(
+                        'sticky left-0 z-[1] border-r bg-card px-3 py-1 text-left font-normal',
+                        r === active.r && hasFocus && 'bg-accent',
+                      )}
                     >
                       <div className="flex items-center gap-2">
                         <div className="min-w-0 flex-1">
                           {firstOfSlot && <p className="truncate font-medium">{row.exerciseName}</p>}
                           {row.block ? (
-                            <p className="truncate text-xs text-muted-foreground">
-                              {m.block.roles[row.block.role]}
-                              {row.block.technique !== 'none' &&
-                                `, ${m.block.techniques[row.block.technique]}`}
+                            <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <span className="rounded border bg-background px-1.5 py-px">
+                                {m.block.roles[row.block.role]}
+                              </span>
+                              {row.block.technique !== 'none' && (
+                                <span className="truncate">{m.block.techniques[row.block.technique]}</span>
+                              )}
                             </p>
                           ) : (
                             <Button
@@ -267,7 +307,9 @@ export function SessionGrid({
                         key={week}
                         className={cn(
                           'border-r p-0 last:border-r-0',
-                          deloadWeeks.includes(week) && 'bg-accent/25',
+                          deloadWeeks.includes(week) && 'bg-warning/60',
+                          lockedWeeks.has(week) && 'bg-hatch',
+                          week === activeWeek && 'bg-accent/40',
                         )}
                       >
                         {row.blockId ? (
@@ -313,6 +355,24 @@ export function SessionGrid({
               )
             })}
           </tbody>
+          <tfoot>
+            <tr className="border-t bg-muted/50">
+              <th
+                scope="row"
+                className="sticky left-0 z-[1] border-r bg-muted px-3 py-1.5 text-left text-xs font-medium text-muted-foreground"
+              >
+                {m.grid.totals}
+              </th>
+              {weekNumbers.map((week) => (
+                <td
+                  key={week}
+                  className="border-r px-2 py-1.5 text-center font-mono text-xs tabular-nums last:border-r-0"
+                >
+                  {totals[week - 1] || ''}
+                </td>
+              ))}
+            </tr>
+          </tfoot>
         </table>
       </div>
       <p className="text-xs text-muted-foreground" aria-live="polite">
@@ -390,7 +450,7 @@ function GridCell({
       className={cn(
         'h-8 w-full min-w-28 bg-transparent px-2 text-center font-mono text-xs tabular-nums outline-none focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset',
         selected && 'bg-accent/40',
-        locked && 'cursor-not-allowed bg-muted/40 text-muted-foreground',
+        locked && 'cursor-not-allowed text-muted-foreground',
         invalid && 'bg-destructive/10 ring-2 ring-destructive ring-inset',
       )}
     />

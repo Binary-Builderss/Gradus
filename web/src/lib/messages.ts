@@ -153,6 +153,11 @@ export const messages = {
         syntax:
           'Formato cella: 3x8-10 BUF 2, 4x6 RPE 8, 5x5 80%1RM, 3x8 60kg, 2x8 85%ref (back-off). Vuoto = nessuna prescrizione.',
         exercise: 'Esercizio',
+        weekState: { locked: 'Eseguita', deload: 'Scarico' },
+        totals: 'Serie totali della seduta',
+        pickCell: 'Seleziona una cella per modificarla.',
+        activeCell: (exercise: string, role: string, week: number) =>
+          `${exercise} › ${role} › Settimana ${week}`,
         cell: (exercise: string, week: number) => `${exercise}, settimana ${week}`,
         invalid: 'Formato non valido',
         locked: 'Settimana già eseguita: non modificabile',

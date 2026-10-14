@@ -8,6 +8,7 @@ import {
   pasteOps,
   rangeToTsv,
   type WeekData,
+  weekSetTotals,
 } from './gridModel'
 
 const cell = (sets: number, reps = 8): CellValue => ({
@@ -89,4 +90,11 @@ describe('rangeToTsv e pasteOps', () => {
     expect(pasteOps(rows, { r: 0, c: 0 }, '', 4, new Set()).ops).toEqual([
       { blockId: 'b1', week: 1, value: null },
     ]))
+})
+
+describe('weekSetTotals', () => {
+  it("somma le serie di tutti i blocchi per settimana, 0 dove non c'è prescrizione", () => {
+    const rows = buildGridRows('s1', groups, slots, blocks, weeks)
+    expect(weekSetTotals(rows, 3)).toEqual([8, 4, 0])
+  })
 })

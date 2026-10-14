@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_app')({
 
 // TanStack Router marca il link attivo con data-status="active".
 const navLink =
-  'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:text-foreground [&[data-status=active]_svg]:text-primary'
+  'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground data-[status=active]:bg-accent data-[status=active]:text-accent-foreground [&[data-status=active]_svg]:text-primary'
 
 function AppLayout() {
   const { user } = Route.useRouteContext()

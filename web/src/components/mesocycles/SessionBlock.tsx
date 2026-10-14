@@ -131,7 +131,10 @@ export function SessionBlock({
             onClose={() => setAdding(false)}
           />
         ) : (
-          <Button variant="outline" className="justify-self-start" onClick={() => setAdding(true)}>
+          <Button
+            className="h-9 w-full bg-foreground text-background hover:bg-foreground/85"
+            onClick={() => setAdding(true)}
+          >
             <PlusIcon data-icon="inline-start" />
             {m.addExercise}
           </Button>
