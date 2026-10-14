@@ -4,6 +4,10 @@
   base = "web"
   command = "npm run build"
   publish = "dist"
+  # Salta il build se non cambia nulla in web/ (né in questo file): migrazioni, documentazione e
+  # codice di supabase/ non consumano crediti. Exit 0 = salta, exit 1 = costruisci; senza commit di
+  # riferimento (primo build) git diff fallisce e il build parte. Il comando gira dentro `base`.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
