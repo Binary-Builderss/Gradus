@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { daysSince, initials, summarizeWorkouts } from './athletes'
+import { daysSince, initials, summarizeWorkouts } from './athleteStats'
 
 const now = new Date(2026, 9, 14, 18, 0)
 
