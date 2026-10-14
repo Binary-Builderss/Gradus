@@ -655,7 +655,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
     }
     Enums: {
       block_role: 'warmup' | 'top' | 'backoff' | 'working'
