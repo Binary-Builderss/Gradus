@@ -5,10 +5,12 @@ import { GroupCard } from '@/components/mesocycles/GroupCard'
 import { SortableItem, SortableList } from '@/components/mesocycles/Sortable'
 import { useEditorMutation } from '@/components/mesocycles/useEditorMutation'
 import { Button } from '@/components/ui/button'
+import { SessionGrid } from '@/components/mesocycles/SessionGrid'
 import { Input } from '@/components/ui/input'
 import { messages } from '@/lib/messages'
 import { nextPosition } from '@/lib/mesocycleSchema'
 import { deleteSession, renameSession } from '@/lib/mesocycles'
+import { buildGridRows, type BlockData, type WeekData } from '@/lib/gridModel'
 import { positionChanges } from '@/lib/slotRules'
 import { addExerciseGroup, type GroupRow, reorder, type SlotRow } from '@/lib/slots'
 import type { ReactNode } from 'react'
@@ -21,6 +23,11 @@ export function SessionBlock({
   session,
   groups,
   slots,
+  blocks,
+  weeks,
+  totalWeeks,
+  deloadWeeks,
+  lockedWeeks,
   handle,
 }: {
   coachId: string
@@ -28,6 +35,11 @@ export function SessionBlock({
   session: { id: string; position: number; name: string }
   groups: GroupRow[]
   slots: SlotRow[]
+  blocks: BlockData[]
+  weeks: WeekData[]
+  totalWeeks: number
+  deloadWeeks: readonly number[]
+  lockedWeeks: ReadonlySet<number>
   handle: ReactNode
 }) {
   const [adding, setAdding] = useState(false)
@@ -49,6 +61,8 @@ export function SessionBlock({
     (ordered: string[]) => reorder('slot_groups', mesocycleId, positionChanges(ordered, groups)),
     groupKeys,
   )
+
+  const gridRows = buildGridRows(session.id, groups, slots, blocks, weeks)
 
   return (
     <div className="grid gap-4 rounded-xl border bg-card p-3 sm:p-4">
@@ -92,6 +106,19 @@ export function SessionBlock({
           ))}
         </ul>
       </SortableList>
+
+      {gridRows.length > 0 && (
+        <div className="grid gap-2">
+          <h3 className="font-display text-xl font-semibold uppercase">{m.grid.title}</h3>
+          <SessionGrid
+            mesocycleId={mesocycleId}
+            rows={gridRows}
+            totalWeeks={totalWeeks}
+            deloadWeeks={deloadWeeks}
+            lockedWeeks={lockedWeeks}
+          />
+        </div>
+      )}
 
       {adding ? (
         <ExercisePicker

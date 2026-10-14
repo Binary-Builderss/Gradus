@@ -1,5 +1,6 @@
 import { ArrowLeftIcon, PlusIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
+import { useMemo } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { SaveStatus } from '@/components/mesocycles/SaveStatus'
 import { SessionBlock } from '@/components/mesocycles/SessionBlock'
@@ -12,6 +13,7 @@ import { addSession, mesocycleQuery, sessionsQuery, updateMesocycle, updateWeeks
 import { messages } from '@/lib/messages'
 import { positionChanges } from '@/lib/slotRules'
 import { groupsQuery, reorder, slotsQuery } from '@/lib/slots'
+import { blocksQuery, lockedWeeksQuery, weeksQuery } from '@/lib/blocks'
 import { cn } from '@/lib/utils'
 
 const m = messages.app.mesocycle
@@ -28,6 +30,10 @@ function MesocyclePage() {
   const sessions = useQuery(sessionsQuery(mesocycleId))
   const groups = useQuery(groupsQuery(mesocycleId))
   const slots = useQuery(slotsQuery(mesocycleId))
+  const blocks = useQuery(blocksQuery(mesocycleId))
+  const weekRows = useQuery(weeksQuery(mesocycleId))
+  const locked = useQuery(lockedWeeksQuery(mesocycleId))
+  const lockedWeeks = useMemo(() => new Set(locked.data ?? []), [locked.data])
 
   const mesoKeys = [['mesocycle', mesocycleId], ['mesocycles']]
   const sessionKeys = [['sessions', mesocycleId]]
@@ -158,6 +164,11 @@ function MesocyclePage() {
                           session={x}
                           groups={(groups.data ?? []).filter((g) => g.session_id === x.id)}
                           slots={slots.data ?? []}
+                          blocks={blocks.data ?? []}
+                          weeks={weekRows.data ?? []}
+                          totalWeeks={data.weeks}
+                          deloadWeeks={data.deload_weeks}
+                          lockedWeeks={lockedWeeks}
                           handle={handle}
                         />
                       )}

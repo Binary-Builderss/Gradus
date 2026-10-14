@@ -151,6 +151,48 @@ export const messages = {
       restBetween: 'Recupero tra esercizi',
       restAfterRound: 'Recupero a fine giro',
       seconds: 's',
+      grid: {
+        title: 'Programmazione',
+        syntax:
+          'Formato cella: 3x8-10 BUF 2, 4x6 RPE 8, 5x5 80%1RM, 3x8 60kg, 2x8 85%ref (back-off). Vuoto = nessuna prescrizione.',
+        exercise: 'Esercizio',
+        cell: (exercise: string, week: number) => `${exercise}, settimana ${week}`,
+        invalid: 'Formato non valido',
+        locked: 'Settimana già eseguita: non modificabile',
+        copyForward: (week: number) => `Copia la settimana ${week} sulle successive`,
+        addBlock: 'Aggiungi blocco',
+        details: 'Dettagli del blocco',
+        pasteReport: (invalid: number, skipped: number) =>
+          [
+            invalid > 0 && `${invalid} celle non valide`,
+            skipped > 0 && `${skipped} celle saltate (settimane bloccate o fuori griglia)`,
+          ]
+            .filter(Boolean)
+            .join(', '),
+      },
+      block: {
+        role: 'Ruolo',
+        roles: { warmup: 'Riscaldamento', top: 'Top set', backoff: 'Back-off', working: 'Lavoro' },
+        technique: 'Tecnica',
+        techniques: {
+          none: 'Nessuna',
+          drop: 'Drop set',
+          rest_pause: 'Rest-pause',
+          myo: 'Myo-reps',
+          cluster: 'Cluster',
+        },
+        tut: 'Tempo sotto tensione (s)',
+        eccentric: 'Eccentrica',
+        bottomPause: 'Pausa in basso',
+        concentric: 'Concentrica',
+        topPause: 'Pausa in alto',
+        rest: 'Recupero (s)',
+        prep: 'Preparazione (s)',
+        refBlock: 'Collegato a',
+        refNone: 'Nessuno',
+        refHint: 'La percentuale si scrive nella cella: 85%ref.',
+        remove: 'Elimina blocco',
+      },
       picker: {
         search: 'Cerca esercizio',
         close: 'Chiudi',
