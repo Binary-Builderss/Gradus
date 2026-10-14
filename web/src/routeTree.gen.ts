@@ -14,6 +14,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
 import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppAtletiAthleteIdRouteImport } from './routes/_app/atleti.$athleteId'
+import { Route as AppMesocicliMesocycleIdRouteImport } from './routes/_app/mesocicli.$mesocycleId'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -39,18 +41,32 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAtletiAthleteIdRoute = AppAtletiAthleteIdRouteImport.update({
+  id: '/atleti/$athleteId',
+  path: '/atleti/$athleteId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMesocicliMesocycleIdRoute = AppMesocicliMesocycleIdRouteImport.update({
+  id: '/mesocicli/$mesocycleId',
+  path: '/mesocicli/$mesocycleId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
+  '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/': typeof AppIndexRoute
+  '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
+  '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +75,26 @@ export interface FileRoutesById {
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
+  '/_app/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/nuova-password' | '/recupero-password'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/nuova-password'
+    | '/recupero-password'
+    | '/atleti/$athleteId'
+    | '/mesocicli/$mesocycleId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/nuova-password' | '/recupero-password' | '/'
+  to:
+    | '/login'
+    | '/nuova-password'
+    | '/recupero-password'
+    | '/'
+    | '/atleti/$athleteId'
+    | '/mesocicli/$mesocycleId'
   id:
     | '__root__'
     | '/_app'
@@ -72,6 +102,8 @@ export interface FileRouteTypes {
     | '/nuova-password'
     | '/recupero-password'
     | '/_app/'
+    | '/_app/atleti/$athleteId'
+    | '/_app/mesocicli/$mesocycleId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,15 +150,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/atleti/$athleteId': {
+      id: '/_app/atleti/$athleteId'
+      path: '/atleti/$athleteId'
+      fullPath: '/atleti/$athleteId'
+      preLoaderRoute: typeof AppAtletiAthleteIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/mesocicli/$mesocycleId': {
+      id: '/_app/mesocicli/$mesocycleId'
+      path: '/mesocicli/$mesocycleId'
+      fullPath: '/mesocicli/$mesocycleId'
+      preLoaderRoute: typeof AppMesocicliMesocycleIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppAtletiAthleteIdRoute: typeof AppAtletiAthleteIdRoute
+  AppMesocicliMesocycleIdRoute: typeof AppMesocicliMesocycleIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppAtletiAthleteIdRoute: AppAtletiAthleteIdRoute,
+  AppMesocicliMesocycleIdRoute: AppMesocicliMesocycleIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
