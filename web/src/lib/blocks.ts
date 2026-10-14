@@ -1,4 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
+import type { Json } from './database.types'
 import type { CellOp, BlockData, BlockRole, Technique, WeekData } from './gridModel'
 import { supabase } from './supabase'
 
@@ -156,3 +157,13 @@ export async function writeCells(mesocycleId: string, ops: readonly CellOp[]) {
 
 export const ROLES: readonly BlockRole[] = ['warmup', 'top', 'backoff', 'working']
 export const TECHNIQUES: readonly Technique[] = ['none', 'drop', 'rest_pause', 'myo', 'cluster']
+
+/** Applica una regola di progressione al blocco (funzione SQL); ritorna le settimane scritte. */
+export async function applyProgression(blockId: string, rule: Record<string, unknown>): Promise<number> {
+  const { data, error } = await supabase.rpc('generate_progression', {
+    p_block_id: blockId,
+    p_rule: rule as Json,
+  })
+  if (error) throw error
+  return data
+}

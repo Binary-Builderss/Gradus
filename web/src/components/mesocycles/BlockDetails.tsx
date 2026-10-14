@@ -1,5 +1,6 @@
 import { TrashIcon } from '@phosphor-icons/react'
 import { useEditorMutation } from '@/components/mesocycles/useEditorMutation'
+import { ProgressionForm } from '@/components/mesocycles/ProgressionForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { type BlockPatch, deleteBlock, ROLES, TECHNIQUES, updateBlock } from '@/lib/blocks'
@@ -112,6 +113,8 @@ export function BlockDetails({
           onCommit={(v) => patch.mutate({ prep_s: v })}
         />
       </fieldset>
+
+      <ProgressionForm mesocycleId={mesocycleId} blockId={block.id} />
     </div>
   )
 }
