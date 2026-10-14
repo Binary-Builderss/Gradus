@@ -33,11 +33,11 @@ function ExercisesPage() {
   const close = () => setEditing(null)
 
   return (
-    <section className="space-y-8">
+    <section className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <h1 className="font-display text-5xl font-bold uppercase">{m.title}</h1>
+        <h1 className="text-xl font-semibold tracking-tight">{m.title}</h1>
         {!editing && (
-          <Button size="lg" onClick={() => setEditing({ mode: 'new' })}>
+          <Button onClick={() => setEditing({ mode: 'new' })}>
             <PlusIcon data-icon="inline-start" />
             {m.newExercise}
           </Button>
@@ -63,7 +63,7 @@ function ExercisesPage() {
           placeholder={m.search}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-11 max-w-sm flex-1 text-base"
+          className="max-w-sm flex-1"
         />
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -77,7 +77,7 @@ function ExercisesPage() {
       </div>
 
       {library.isPending ? (
-        <div aria-hidden className="h-40 animate-pulse rounded-xl border bg-muted/50" />
+        <div aria-hidden className="h-32 animate-pulse rounded-lg border bg-muted/40" />
       ) : library.isError ? (
         <p role="alert" className="text-destructive">
           {m.loadError}
@@ -85,7 +85,7 @@ function ExercisesPage() {
       ) : list.length === 0 ? (
         <p className="text-muted-foreground">{m.empty}</p>
       ) : (
-        <ul className="grid gap-3">
+        <ul className="divide-y overflow-hidden rounded-lg border bg-card">
           {list.map((e) =>
             editing?.mode === 'edit' && editing.id === e.id ? (
               <li key={e.id}>
@@ -120,10 +120,10 @@ function ExerciseItem({
 }) {
   const own = e.owner_id !== null
   return (
-    <li className="grid gap-3 rounded-xl border bg-card p-4 sm:px-6">
+    <li className="grid gap-2 px-4 py-3">
       <div className="flex flex-wrap items-center gap-3">
         <p className="min-w-0 flex-1 font-medium">{e.name}</p>
-        <span className="rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">
+        <span className="rounded-md border px-2 py-0.5 text-xs font-medium text-muted-foreground">
           {own ? m.mine : m.catalog}
         </span>
         {e.video_url && (
@@ -157,7 +157,7 @@ function ExerciseItem({
       </div>
       <ul className="flex flex-wrap gap-2">
         {e.muscles.map((x) => (
-          <li key={x.muscle} className="rounded-md bg-muted px-2.5 py-1 text-xs">
+          <li key={x.muscle} className="rounded bg-muted px-2 py-0.5 text-xs">
             {m.muscleNames[x.muscle]}{' '}
             <span className="font-medium tabular-nums">{String(x.weight).replace('.', ',')}</span>
           </li>

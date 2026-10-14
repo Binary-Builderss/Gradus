@@ -32,7 +32,7 @@ export function NewMesocycleForm({ athleteId, onCancel }: { athleteId: string; o
   }
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-4 rounded-xl border bg-card p-4 sm:p-6">
+    <form noValidate onSubmit={submit} className="grid gap-4 rounded-lg border bg-card p-4">
       <div className="grid gap-4 sm:grid-cols-[1fr_11rem_7rem]">
         <Field id="meso-name" name="name" label={m.name} error={errors.name} autoFocus />
         <Field id="meso-start" name="start_date" type="date" label={m.startDate} error={errors.start_date} />
@@ -51,10 +51,10 @@ export function NewMesocycleForm({ athleteId, onCancel }: { athleteId: string; o
         </p>
       )}
       <div className="flex gap-2">
-        <Button type="submit" size="lg" disabled={create.isPending}>
+        <Button type="submit" disabled={create.isPending}>
           {create.isPending ? m.creating : m.create}
         </Button>
-        <Button type="button" variant="ghost" size="lg" onClick={onCancel}>
+        <Button type="button" variant="ghost" onClick={onCancel}>
           {m.cancel}
         </Button>
       </div>
@@ -75,7 +75,7 @@ function Field({
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="h-11 text-base"
+        className="h-9 text-sm"
         {...input}
       />
       {error && (

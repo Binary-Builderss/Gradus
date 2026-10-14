@@ -125,7 +125,7 @@ export function SessionGrid({
 
   return (
     <div className="grid gap-2">
-      <div className="overflow-x-auto rounded-lg border">
+      <div className="overflow-x-auto rounded-md border bg-card">
         <table
           ref={tableRef}
           onKeyDown={onKeyDown}
@@ -135,14 +135,14 @@ export function SessionGrid({
         >
           <thead>
             {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id} className="border-b bg-muted/40">
+              <tr key={hg.id} className="border-b bg-muted/50">
                 {hg.headers.map((h, i) => {
                   const week = i
                   return i === 0 ? (
                     <th
                       key={h.id}
                       scope="col"
-                      className="sticky left-0 z-[1] min-w-52 bg-muted px-3 py-2 text-left font-medium"
+                      className="sticky left-0 z-[1] min-w-48 border-r bg-muted px-3 py-1.5 text-left text-xs font-medium text-muted-foreground"
                     >
                       {flexRender(h.column.columnDef.header, h.getContext())}
                     </th>
@@ -151,7 +151,7 @@ export function SessionGrid({
                       key={h.id}
                       scope="col"
                       className={cn(
-                        'min-w-32 px-2 py-1 text-center font-display text-lg font-semibold',
+                        'min-w-28 border-r px-2 py-1 text-center font-mono text-xs font-medium text-muted-foreground last:border-r-0',
                         deloadWeeks.includes(week) && 'bg-accent text-accent-foreground',
                       )}
                     >
@@ -198,8 +198,16 @@ export function SessionGrid({
                 }))
               return (
                 <Fragment key={row.key}>
-                  <tr className={cn('border-b last:border-b-0', firstOfSlot && r > 0 && 'border-t-2')}>
-                    <th scope="row" className="sticky left-0 z-[1] bg-card px-3 py-1.5 text-left font-normal">
+                  <tr
+                    className={cn(
+                      'border-b last:border-b-0',
+                      firstOfSlot && r > 0 && 'border-t border-t-foreground/20',
+                    )}
+                  >
+                    <th
+                      scope="row"
+                      className="sticky left-0 z-[1] border-r bg-card px-3 py-1 text-left font-normal"
+                    >
                       <div className="flex items-center gap-2">
                         <div className="min-w-0 flex-1">
                           {firstOfSlot && <p className="truncate font-medium">{row.exerciseName}</p>}
@@ -255,7 +263,13 @@ export function SessionGrid({
                       </div>
                     </th>
                     {weekNumbers.map((week) => (
-                      <td key={week} className="p-0">
+                      <td
+                        key={week}
+                        className={cn(
+                          'border-r p-0 last:border-r-0',
+                          deloadWeeks.includes(week) && 'bg-accent/25',
+                        )}
+                      >
                         {row.blockId ? (
                           <GridCell
                             r={r}
@@ -374,9 +388,9 @@ function GridCell({
         }
       }}
       className={cn(
-        'h-10 w-full min-w-32 bg-transparent px-2 text-center tabular-nums outline-none focus:bg-accent/60 focus:ring-2 focus:ring-ring focus:ring-inset',
+        'h-8 w-full min-w-28 bg-transparent px-2 text-center font-mono text-xs tabular-nums outline-none focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset',
         selected && 'bg-accent/40',
-        locked && 'cursor-not-allowed text-muted-foreground',
+        locked && 'cursor-not-allowed bg-muted/40 text-muted-foreground',
         invalid && 'bg-destructive/10 ring-2 ring-destructive ring-inset',
       )}
     />

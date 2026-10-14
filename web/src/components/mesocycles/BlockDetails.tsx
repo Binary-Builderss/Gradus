@@ -9,7 +9,7 @@ import { messages } from '@/lib/messages'
 
 const m = messages.app.mesocycle.block
 
-const selectClass = 'h-9 rounded-lg border bg-background px-2 text-sm dark:bg-input/30'
+const selectClass = 'h-9 rounded-md border bg-background px-2 text-sm dark:bg-input/30'
 
 export function BlockDetails({
   mesocycleId,

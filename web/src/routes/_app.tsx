@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_app')({
 
 // TanStack Router marca il link attivo con data-status="active".
 const navLink =
-  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:text-foreground [&[data-status=active]_svg]:text-primary'
+  'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:text-foreground [&[data-status=active]_svg]:text-primary'
 
 function AppLayout() {
   const { user } = Route.useRouteContext()
@@ -27,38 +27,42 @@ function AppLayout() {
   const signOut = () => void supabase.auth.signOut()
 
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[15rem_1fr]">
+    <div className="min-h-dvh lg:grid lg:grid-cols-[13.5rem_1fr]">
       <aside className="sticky top-0 hidden h-dvh flex-col border-r bg-sidebar lg:flex">
-        <Wordmark className="px-6 py-6" />
-        <nav className="grid gap-1 px-3">
+        <Wordmark className="px-5 py-4" />
+        <nav className="grid gap-0.5 px-2.5">
           <Link to="/" activeOptions={{ exact: true }} className={navLink}>
-            <UsersThreeIcon size={20} weight="duotone" />
+            <UsersThreeIcon size={18} />
             {m.nav.athletes}
           </Link>
           <Link to="/esercizi" className={navLink}>
-            <BarbellIcon size={20} weight="duotone" />
+            <BarbellIcon size={18} />
             {m.nav.exercises}
           </Link>
         </nav>
-        <div className="mt-auto grid gap-1 border-t p-3">
-          <p className="truncate px-3 py-1 text-sm text-muted-foreground" title={user.email}>
+        <div className="mt-auto grid gap-0.5 border-t p-2.5">
+          <p className="truncate px-2.5 py-1 text-xs text-muted-foreground" title={user.email}>
             {user.email}
           </p>
-          <Button variant="ghost" className="justify-start gap-3 px-3" onClick={signOut}>
-            <SignOutIcon size={20} />
+          <Button
+            variant="ghost"
+            className="justify-start gap-2.5 px-2.5 text-muted-foreground"
+            onClick={signOut}
+          >
+            <SignOutIcon size={18} />
             {m.signOut}
           </Button>
         </div>
       </aside>
 
       <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/85 px-4 py-3 backdrop-blur lg:hidden">
-        <Wordmark className="text-xl" />
+        <Wordmark />
         <Button variant="ghost" size="icon" aria-label={m.signOut} onClick={signOut}>
-          <SignOutIcon size={20} />
+          <SignOutIcon size={18} />
         </Button>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8 lg:py-12">
+      <main className="w-full min-w-0 px-4 py-6 sm:px-8 lg:py-8">
         <Outlet />
       </main>
     </div>

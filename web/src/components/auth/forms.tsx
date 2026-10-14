@@ -69,14 +69,14 @@ function TextField({
           autoFocus={autoFocus}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={isPassword ? 'h-11 pr-11 text-base' : 'h-11 text-base'}
+          className={isPassword ? 'h-9 pr-9 text-sm' : 'h-9 text-sm'}
         />
         {isPassword && (
           <button
             type="button"
             onClick={() => setVisible((v) => !v)}
             aria-label={visible ? m.hidePassword : m.showPassword}
-            className="absolute inset-y-0 right-0 grid w-11 place-items-center rounded-r-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
+            className="absolute inset-y-0 right-0 grid w-9 place-items-center rounded-r-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
           >
             {visible ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
           </button>
@@ -113,12 +113,7 @@ function SubmitButton({
   pendingLabel: string
 }) {
   return (
-    <Button
-      type="submit"
-      size="lg"
-      disabled={pending}
-      className="h-11 w-full font-display text-base font-semibold tracking-wider uppercase"
-    >
+    <Button type="submit" disabled={pending} className="h-9 w-full">
       {pending ? pendingLabel : label}
       {!pending && <ArrowRightIcon weight="bold" />}
     </Button>
@@ -128,7 +123,7 @@ function SubmitButton({
 export function LoginForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof credentialsSchema>> }) {
   const { errors, formError, pending, submit } = useAuthForm(credentialsSchema, onSubmit)
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5">
+    <form noValidate onSubmit={submit} className="grid gap-4">
       <TextField
         name="email"
         type="email"
@@ -153,7 +148,7 @@ export function LoginForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof creden
 export function RecoveryForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof emailSchema>> }) {
   const { errors, formError, pending, submit } = useAuthForm(emailSchema, onSubmit)
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5">
+    <form noValidate onSubmit={submit} className="grid gap-4">
       <TextField
         name="email"
         type="email"
@@ -171,7 +166,7 @@ export function RecoveryForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof ema
 export function NewPasswordForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof newPasswordSchema>> }) {
   const { errors, formError, pending, submit } = useAuthForm(newPasswordSchema, onSubmit)
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5">
+    <form noValidate onSubmit={submit} className="grid gap-4">
       <TextField
         name="password"
         type="password"

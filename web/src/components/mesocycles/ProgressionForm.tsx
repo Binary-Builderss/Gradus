@@ -45,7 +45,7 @@ export function ProgressionForm({ mesocycleId, blockId }: { mesocycleId: string;
           <select
             name="method"
             defaultValue=""
-            className="h-9 rounded-lg border bg-background px-2 text-sm dark:bg-input/30"
+            className="h-8 rounded-md border bg-background px-2 text-sm dark:bg-input/30"
           >
             <option value="">{m.noMethod}</option>
             {METHODS.map((x) => (

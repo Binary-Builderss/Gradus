@@ -65,10 +65,10 @@ export function SessionBlock({
   const gridRows = buildGridRows(session.id, groups, slots, blocks, weeks)
 
   return (
-    <div className="grid gap-4 rounded-xl border bg-card p-3 sm:p-4">
-      <div className="flex items-center gap-3">
+    <div className="rounded-lg border bg-card">
+      <div className="flex items-center gap-2 border-b px-3 py-2">
         {handle}
-        <span className="w-6 text-center font-display text-2xl font-semibold text-muted-foreground">
+        <span className="w-5 text-center font-mono text-xs text-muted-foreground">
           {session.position + 1}
         </span>
         <Input
@@ -80,61 +80,63 @@ export function SessionBlock({
             if (name && name !== session.name) rename.mutate(name)
             else e.target.value = session.name
           }}
-          className="h-10 flex-1 text-base"
+          className="h-8 flex-1 border-transparent bg-transparent px-1.5 text-sm font-medium shadow-none hover:border-input focus-visible:border-ring"
         />
         <Button variant="ghost" size="icon" aria-label={m.removeSession} onClick={() => remove.mutate()}>
           <TrashIcon />
         </Button>
       </div>
 
-      {groups.length === 0 && !adding && <p className="text-sm text-muted-foreground">{m.noExercises}</p>}
+      <div className="grid gap-4 p-3">
+        {groups.length === 0 && !adding && <p className="text-sm text-muted-foreground">{m.noExercises}</p>}
 
-      <SortableList ids={groups.map((g) => g.id)} onReorder={(ordered) => moveGroups.mutate(ordered)}>
-        <ul className="grid gap-3">
-          {groups.map((g) => (
-            <SortableItem key={g.id} id={g.id}>
-              {(groupHandle) => (
-                <GroupCard
-                  coachId={coachId}
-                  mesocycleId={mesocycleId}
-                  group={g}
-                  slots={slots.filter((s) => s.group_id === g.id)}
-                  handle={groupHandle}
-                />
-              )}
-            </SortableItem>
-          ))}
-        </ul>
-      </SortableList>
+        <SortableList ids={groups.map((g) => g.id)} onReorder={(ordered) => moveGroups.mutate(ordered)}>
+          <ul className="grid gap-3">
+            {groups.map((g) => (
+              <SortableItem key={g.id} id={g.id}>
+                {(groupHandle) => (
+                  <GroupCard
+                    coachId={coachId}
+                    mesocycleId={mesocycleId}
+                    group={g}
+                    slots={slots.filter((s) => s.group_id === g.id)}
+                    handle={groupHandle}
+                  />
+                )}
+              </SortableItem>
+            ))}
+          </ul>
+        </SortableList>
 
-      {gridRows.length > 0 && (
-        <div className="grid gap-2">
-          <h3 className="font-display text-xl font-semibold uppercase">{m.grid.title}</h3>
-          <SessionGrid
-            mesocycleId={mesocycleId}
-            rows={gridRows}
-            totalWeeks={totalWeeks}
-            deloadWeeks={deloadWeeks}
-            lockedWeeks={lockedWeeks}
+        {gridRows.length > 0 && (
+          <div className="grid gap-2">
+            <h3 className="text-sm font-semibold">{m.grid.title}</h3>
+            <SessionGrid
+              mesocycleId={mesocycleId}
+              rows={gridRows}
+              totalWeeks={totalWeeks}
+              deloadWeeks={deloadWeeks}
+              lockedWeeks={lockedWeeks}
+            />
+          </div>
+        )}
+
+        {adding ? (
+          <ExercisePicker
+            coachId={coachId}
+            onPick={(id) => {
+              addGroup.mutate(id)
+              setAdding(false)
+            }}
+            onClose={() => setAdding(false)}
           />
-        </div>
-      )}
-
-      {adding ? (
-        <ExercisePicker
-          coachId={coachId}
-          onPick={(id) => {
-            addGroup.mutate(id)
-            setAdding(false)
-          }}
-          onClose={() => setAdding(false)}
-        />
-      ) : (
-        <Button variant="outline" size="lg" className="justify-self-start" onClick={() => setAdding(true)}>
-          <PlusIcon data-icon="inline-start" />
-          {m.addExercise}
-        </Button>
-      )}
+        ) : (
+          <Button variant="outline" className="justify-self-start" onClick={() => setAdding(true)}>
+            <PlusIcon data-icon="inline-start" />
+            {m.addExercise}
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

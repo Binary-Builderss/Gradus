@@ -34,14 +34,14 @@ function AthletePage() {
 
   const name = athlete.data?.athlete?.full_name?.trim() || athlete.data?.athlete?.email || ''
   return (
-    <section className="space-y-8">
+    <section className="space-y-5">
       <BackLink />
-      <h1 className="min-h-14 font-display text-5xl font-bold uppercase">{name}</h1>
+      <h1 className="min-h-7 text-xl font-semibold tracking-tight">{name}</h1>
 
       <div className="flex items-center justify-between gap-4">
-        <h2 className="font-display text-2xl font-semibold uppercase">{m.mesocycles}</h2>
+        <h2 className="text-sm font-semibold">{m.mesocycles}</h2>
         {!creating && (
-          <Button size="lg" onClick={() => setCreating(true)}>
+          <Button onClick={() => setCreating(true)}>
             <PlusIcon data-icon="inline-start" />
             {m.newMesocycle}
           </Button>
@@ -51,33 +51,33 @@ function AthletePage() {
       {creating && <NewMesocycleForm athleteId={athleteId} onCancel={() => setCreating(false)} />}
 
       {mesocycles.isPending ? (
-        <div aria-hidden className="h-20 animate-pulse rounded-xl border bg-muted/50" />
+        <div aria-hidden className="h-14 animate-pulse rounded-lg border bg-muted/40" />
       ) : mesocycles.data?.length === 0 && !creating ? (
         <p className="text-muted-foreground">{m.noMesocycles}</p>
       ) : (
-        <ul className="grid gap-3">
+        <ul className="divide-y overflow-hidden rounded-lg border bg-card">
           {mesocycles.data?.map((x) => (
             <li key={x.id}>
               <Link
                 to="/mesocicli/$mesocycleId"
                 params={{ mesocycleId: x.id }}
-                className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-muted/50 sm:px-6"
+                className="flex items-center gap-4 px-4 py-2.5 transition-colors hover:bg-muted/50"
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">{x.name}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {dateFormat.format(new Date(x.start_date))} · {m.weeksCount(x.weeks)}
                   </p>
                 </div>
                 <span
                   className={cn(
-                    'rounded-full border px-3 py-1 text-xs font-medium',
+                    'rounded-md border px-2 py-0.5 text-xs font-medium text-muted-foreground',
                     x.status === 'active' && 'border-primary/40 text-primary',
                   )}
                 >
                   {m.status[x.status]}
                 </span>
-                <CaretRightIcon size={18} className="text-muted-foreground" />
+                <CaretRightIcon size={16} className="text-muted-foreground" />
               </Link>
             </li>
           ))}

@@ -60,7 +60,7 @@ export function GroupCard({
 
   const chained = group.kind !== 'single'
   return (
-    <div className="grid gap-3 rounded-lg border bg-background p-3">
+    <div className="grid gap-2 rounded-md border bg-background p-2">
       <div className="flex items-center gap-2">
         {handle}
         <select
@@ -68,7 +68,7 @@ export function GroupCard({
           value={group.kind}
           disabled={slots.length < 2}
           onChange={(e) => changeKind.mutate(e.target.value as GroupKind)}
-          className="h-9 rounded-lg border bg-background px-2 text-sm disabled:opacity-60 dark:bg-input/30"
+          className="h-8 rounded-md border bg-background px-2 text-sm disabled:opacity-60 dark:bg-input/30"
         >
           {GROUP_KINDS.map((k) => (
             <option key={k} value={k} disabled={k === 'single'}>
@@ -97,7 +97,7 @@ export function GroupCard({
           {slots.map((s) => (
             <SortableItem key={s.id} id={s.id}>
               {(slotHandle) => (
-                <div className="flex items-center gap-2 rounded-md bg-muted/50 py-1 pr-1 pl-1">
+                <div className="flex items-center gap-2 rounded bg-muted/60 py-0.5 pr-1 pl-1">
                   {slotHandle}
                   <span className="flex-1 truncate text-sm font-medium">{s.exercise_name}</span>
                   <Button
@@ -158,7 +158,7 @@ function RestField({
             onCommit(seconds)
           else e.target.value = String(value)
         }}
-        className="h-9 w-16 text-sm"
+        className="h-8 w-16 text-sm"
       />
       {m.seconds}
     </label>

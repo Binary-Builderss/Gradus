@@ -2,9 +2,6 @@
 export const messages = {
   brand: {
     name: 'Gradus',
-    claimStart: 'Un passo alla',
-    claimEnd: 'volta.',
-    body: 'Programma i mesocicli dei tuoi atleti e segui ogni serie che registrano.',
   },
   auth: {
     email: 'Email',

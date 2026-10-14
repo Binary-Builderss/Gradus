@@ -47,7 +47,7 @@ export function InviteAthlete() {
 
   if (!open) {
     return (
-      <Button size="lg" onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)}>
         <UserPlusIcon data-icon="inline-start" />
         {m.open}
       </Button>
@@ -59,7 +59,7 @@ export function InviteAthlete() {
     <form
       noValidate
       onSubmit={submit}
-      className="grid w-full gap-3 rounded-xl border bg-card p-4 sm:max-w-md"
+      className="grid w-full gap-3 rounded-lg border bg-card p-4 sm:max-w-md"
     >
       <div className="flex items-center justify-between">
         <Label htmlFor="invite-email">{m.label}</Label>
@@ -75,7 +75,7 @@ export function InviteAthlete() {
         autoFocus
         aria-invalid={error ? true : undefined}
         aria-describedby="invite-feedback"
-        className="h-11 text-base"
+        className="h-9 text-sm"
       />
       <p id="invite-feedback" role={error ? 'alert' : 'status'} className="min-h-5 text-sm">
         {error ? (
@@ -84,7 +84,7 @@ export function InviteAthlete() {
           <span className="text-primary">{done}</span>
         )}
       </p>
-      <Button type="submit" size="lg" disabled={invite.isPending}>
+      <Button type="submit" disabled={invite.isPending}>
         {invite.isPending ? m.sending : m.send}
         {!invite.isPending && <PaperPlaneTiltIcon data-icon="inline-end" />}
       </Button>

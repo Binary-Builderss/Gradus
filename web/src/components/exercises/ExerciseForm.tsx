@@ -69,15 +69,9 @@ export function ExerciseForm({
   const free = MUSCLES.filter((x) => !rows.some((r) => r.muscle === x))
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5 rounded-xl border bg-card p-4 sm:p-6">
+    <form noValidate onSubmit={submit} className="grid gap-5 rounded-lg border bg-card p-4">
       <Field id="ex-name" label={m.name} error={errors.name}>
-        <Input
-          id="ex-name"
-          name="name"
-          autoFocus
-          defaultValue={source?.name ?? ''}
-          className="h-11 text-base"
-        />
+        <Input id="ex-name" name="name" autoFocus defaultValue={source?.name ?? ''} className="h-9 text-sm" />
       </Field>
       <Field id="ex-video" label={m.video} error={errors.video_url}>
         <Input
@@ -86,7 +80,7 @@ export function ExerciseForm({
           type="url"
           inputMode="url"
           defaultValue={source?.video_url ?? ''}
-          className="h-11 text-base"
+          className="h-9 text-sm"
         />
       </Field>
       <Field id="ex-notes" label={m.notes}>
@@ -95,7 +89,7 @@ export function ExerciseForm({
           name="notes"
           rows={3}
           defaultValue={source?.notes ?? ''}
-          className="w-full rounded-lg border bg-background px-3 py-2 text-base dark:bg-input/30"
+          className="w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm dark:bg-input/30"
         />
       </Field>
 
@@ -109,7 +103,7 @@ export function ExerciseForm({
                 aria-label={m.muscles}
                 value={r.muscle}
                 onChange={(e) => setRow(i, { muscle: e.target.value as Muscle })}
-                className="h-10 flex-1 rounded-lg border bg-background px-2 text-sm dark:bg-input/30"
+                className="h-9 flex-1 rounded-lg border bg-background px-2 text-sm dark:bg-input/30"
               >
                 {[r.muscle, ...free].map((x) => (
                   <option key={x} value={x}>
@@ -126,7 +120,7 @@ export function ExerciseForm({
                 step={0.05}
                 value={r.weight}
                 onChange={(e) => setRow(i, { weight: e.target.value })}
-                className="h-10 w-24 text-base"
+                className="h-9 w-24 text-sm"
               />
               <Button
                 type="button"
@@ -164,10 +158,10 @@ export function ExerciseForm({
         </p>
       )}
       <div className="flex gap-2">
-        <Button type="submit" size="lg" disabled={save.isPending}>
+        <Button type="submit" disabled={save.isPending}>
           {save.isPending ? m.saving : m.save}
         </Button>
-        <Button type="button" variant="ghost" size="lg" onClick={onDone}>
+        <Button type="button" variant="ghost" onClick={onDone}>
           {m.cancel}
         </Button>
       </div>
