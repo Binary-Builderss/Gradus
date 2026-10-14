@@ -1,26 +1,22 @@
 import { cn } from '@/lib/utils'
 import { messages } from '@/lib/messages'
 
-export function Wordmark({ className }: { className?: string }) {
+/** Tre gradini crescenti: la progressione settimana dopo settimana. L'ultimo è l'accento. */
+function Mark({ className }: { className?: string }) {
   return (
-    <span className={cn('font-display text-2xl font-bold tracking-wide uppercase', className)}>
-      {messages.brand.name}
+    <span aria-hidden className={cn('flex h-4 items-end gap-0.5', className)}>
+      <span className="h-1.5 w-1 rounded-[1px] bg-foreground/25" />
+      <span className="h-2.5 w-1 rounded-[1px] bg-foreground/25" />
+      <span className="h-4 w-1 rounded-[1px] bg-primary" />
     </span>
   )
 }
 
-/** Gradini crescenti: la progressione settimana dopo settimana. L'ultimo è l'accento. */
-export function Steps({ className }: { className?: string }) {
-  const heights = [22, 34, 46, 58, 72, 100]
+export function Wordmark({ className }: { className?: string }) {
   return (
-    <div aria-hidden className={cn('flex h-24 items-end gap-2', className)}>
-      {heights.map((h, i) => (
-        <span
-          key={h}
-          style={{ height: `${h}%` }}
-          className={cn('w-5 rounded-sm', i === heights.length - 1 ? 'bg-primary' : 'bg-foreground/10')}
-        />
-      ))}
-    </div>
+    <span className={cn('flex items-center gap-2 text-base font-semibold tracking-tight', className)}>
+      <Mark />
+      {messages.brand.name}
+    </span>
   )
 }

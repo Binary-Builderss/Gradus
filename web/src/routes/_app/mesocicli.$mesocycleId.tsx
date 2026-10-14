@@ -60,7 +60,7 @@ function MesocyclePage() {
   const list = sessions.data ?? []
 
   return (
-    <section className="space-y-8">
+    <section className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         {data ? (
           <Link
@@ -79,7 +79,7 @@ function MesocyclePage() {
 
       {data ? (
         <>
-          <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+          <div className="grid gap-3">
             <Input
               key={data.name}
               aria-label={athleteMessages.name}
@@ -89,9 +89,9 @@ function MesocyclePage() {
                 if (name && name !== data.name) rename.mutate({ name })
                 else e.target.value = data.name
               }}
-              className="h-auto border-transparent bg-transparent px-0 font-display text-4xl font-bold uppercase shadow-none focus-visible:border-input sm:text-5xl"
+              className="h-auto border-transparent bg-transparent px-1 py-0.5 text-xl font-semibold tracking-tight shadow-none hover:border-input focus-visible:border-ring md:text-xl"
             />
-            <label className="flex items-center gap-3 text-sm text-muted-foreground">
+            <label className="flex items-center gap-2 text-xs text-muted-foreground">
               {athleteMessages.weeks}
               <Input
                 key={data.weeks}
@@ -105,14 +105,14 @@ function MesocyclePage() {
                     setWeeks.mutate({ weeks, deload: data.deload_weeks })
                   else e.target.value = String(data.weeks)
                 }}
-                className="h-10 w-20 text-base"
+                className="h-8 w-16 text-sm"
               />
             </label>
           </div>
 
-          <div className="space-y-3">
-            <h2 className="font-display text-2xl font-semibold uppercase">{m.deload}</h2>
-            <ul className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border bg-card px-3 py-2">
+            <h2 className="text-xs font-medium text-muted-foreground">{m.deload}</h2>
+            <ul className="flex flex-wrap gap-1">
               {Array.from({ length: data.weeks }, (_, i) => i + 1).map((week) => {
                 const on = data.deload_weeks.includes(week)
                 return (
@@ -122,7 +122,7 @@ function MesocyclePage() {
                       aria-pressed={on}
                       onClick={() => setDeload.mutate(toggleDeload(data.deload_weeks, week, data.weeks))}
                       className={cn(
-                        'h-10 min-w-12 rounded-lg border px-3 font-display text-lg font-semibold transition-colors',
+                        'h-7 min-w-9 rounded-md border px-2 font-mono text-xs transition-colors',
                         on
                           ? 'border-primary bg-primary text-primary-foreground'
                           : 'text-muted-foreground hover:bg-muted',
@@ -134,14 +134,13 @@ function MesocyclePage() {
                 )
               })}
             </ul>
-            <p className="text-sm text-muted-foreground">{m.deloadHint}</p>
+            <p className="text-xs text-muted-foreground">{m.deloadHint}</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="font-display text-2xl font-semibold uppercase">{m.sessions}</h2>
+              <h2 className="text-sm font-semibold">{m.sessions}</h2>
               <Button
-                size="lg"
                 onClick={() =>
                   add.mutate({ position: nextPosition(list), name: m.defaultSessionName(list.length + 1) })
                 }
@@ -154,7 +153,7 @@ function MesocyclePage() {
               <p className="text-muted-foreground">{m.noSessions}</p>
             ) : (
               <SortableList ids={list.map((x) => x.id)} onReorder={(ordered) => moveSessions.mutate(ordered)}>
-                <ul className="grid gap-4">
+                <ul className="grid gap-3">
                   {list.map((x) => (
                     <SortableItem key={x.id} id={x.id}>
                       {(handle) => (
@@ -180,7 +179,7 @@ function MesocyclePage() {
           </div>
         </>
       ) : (
-        <div aria-hidden className="h-40 animate-pulse rounded-xl border bg-muted/50" />
+        <div aria-hidden className="h-40 animate-pulse rounded-lg border bg-muted/40" />
       )}
     </section>
   )

@@ -37,7 +37,7 @@ export function ExercisePicker({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Escape' && onClose()}
-            className="h-10 pl-10 text-base"
+            className="h-9 pl-10 text-sm"
           />
         </div>
         <Button type="button" variant="ghost" size="icon" aria-label={m.close} onClick={onClose}>

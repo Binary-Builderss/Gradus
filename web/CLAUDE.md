@@ -50,11 +50,15 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 
 ## Interfaccia
 
-- Linguaggio **sport premium** (riferimenti: Whoop, Apple Fitness). Prima di ogni lavoro di UI carica la
-  skill `design-taste-frontend` (tasteskill).
-- Colori solo dai token in `src/index.css`: base quasi nera con riflesso verde, **un solo accento** verde
-  (`primary`). Il tema segue il sistema (chiaro / scuro): ogni schermata va controllata in entrambi.
-- Tipografia: `font-display` (Barlow Condensed, maiuscolo) per titoli e numeri, Geist per il resto.
+- Linguaggio **strumento di lavoro, denso e chiaro** (riferimenti: Linear, Notion): il coach usa la griglia
+  per ore. Prima di ogni lavoro di UI carica la skill `design-taste-frontend` (tasteskill).
+- Colori solo dai token in `src/index.css`: grigi neutri e **un solo accento** blu cobalto (`primary`),
+  usato per azioni e stato attivo. Il tema segue il sistema (chiaro / scuro): ogni schermata va controllata
+  in entrambi.
+- Tipografia: Geist per il testo (base 14 px), Geist Mono per numeri e celle della griglia. Titoli in
+  semibold, mai maiuscoli.
+- Forma: raggio 6 px ovunque, controlli da 32 px, liste e tabelle con righe divise invece di card
+  annidate.
 - Icone: solo Phosphor (`@phosphor-icons/react`). Componenti shadcn/ui in `src/components/ui`, mai lasciati
   allo stato di default.
 - Ogni stringa visibile sta in `src/lib/messages.ts`.

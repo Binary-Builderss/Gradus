@@ -25,7 +25,7 @@ function NewPasswordPage() {
     return (
       <AuthLayout>
         <AuthHeading title={m.expiredTitle} subtitle={m.expired} />
-        <Link to="/recupero-password" className={buttonVariants({ size: 'lg', className: 'h-11 w-full' })}>
+        <Link to="/recupero-password" className={buttonVariants({ className: 'h-9 w-full' })}>
           {m.requestNew}
         </Link>
       </AuthLayout>
