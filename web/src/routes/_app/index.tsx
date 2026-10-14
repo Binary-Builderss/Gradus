@@ -1,6 +1,7 @@
 import { UsersThreeIcon, WarningCircleIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { InviteAthlete } from '@/components/athletes/InviteAthlete'
 import { Steps } from '@/components/brand'
 import { Button } from '@/components/ui/button'
 import { type AthleteRow, athletesQuery } from '@/lib/athletes'
@@ -26,7 +27,10 @@ function AthletesPage() {
 
   return (
     <section className="space-y-8">
-      <h1 className="font-display text-5xl font-bold uppercase">{m.title}</h1>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <h1 className="font-display text-5xl font-bold uppercase">{m.title}</h1>
+        <InviteAthlete />
+      </div>
       {isPending ? (
         <ListSkeleton />
       ) : isError ? (
