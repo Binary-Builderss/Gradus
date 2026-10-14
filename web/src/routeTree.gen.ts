@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
 import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppEserciziRouteImport } from './routes/_app/esercizi'
 import { Route as AppAtletiAthleteIdRouteImport } from './routes/_app/atleti.$athleteId'
 import { Route as AppMesocicliMesocycleIdRouteImport } from './routes/_app/mesocicli.$mesocycleId'
 
@@ -41,6 +42,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppEserciziRoute = AppEserciziRouteImport.update({
+  id: '/esercizi',
+  path: '/esercizi',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAtletiAthleteIdRoute = AppAtletiAthleteIdRouteImport.update({
   id: '/atleti/$athleteId',
   path: '/atleti/$athleteId',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/esercizi': typeof AppEserciziRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
@@ -64,6 +71,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/esercizi': typeof AppEserciziRoute
   '/': typeof AppIndexRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -74,6 +82,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/_app/esercizi': typeof AppEserciziRoute
   '/_app/': typeof AppIndexRoute
   '/_app/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/_app/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/nuova-password'
     | '/recupero-password'
+    | '/esercizi'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
   fileRoutesByTo: FileRoutesByTo
@@ -92,6 +102,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/nuova-password'
     | '/recupero-password'
+    | '/esercizi'
     | '/'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/nuova-password'
     | '/recupero-password'
+    | '/_app/esercizi'
     | '/_app/'
     | '/_app/atleti/$athleteId'
     | '/_app/mesocicli/$mesocycleId'
@@ -150,6 +162,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/esercizi': {
+      id: '/_app/esercizi'
+      path: '/esercizi'
+      fullPath: '/esercizi'
+      preLoaderRoute: typeof AppEserciziRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/atleti/$athleteId': {
       id: '/_app/atleti/$athleteId'
       path: '/atleti/$athleteId'
@@ -168,12 +187,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppEserciziRoute: typeof AppEserciziRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAtletiAthleteIdRoute: typeof AppAtletiAthleteIdRoute
   AppMesocicliMesocycleIdRoute: typeof AppMesocicliMesocycleIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppEserciziRoute: AppEserciziRoute,
   AppIndexRoute: AppIndexRoute,
   AppAtletiAthleteIdRoute: AppAtletiAthleteIdRoute,
   AppMesocicliMesocycleIdRoute: AppMesocicliMesocycleIdRoute,

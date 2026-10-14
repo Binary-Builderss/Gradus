@@ -1,4 +1,4 @@
-import { SignOutIcon, UsersThreeIcon } from '@phosphor-icons/react'
+import { BarbellIcon, SignOutIcon, UsersThreeIcon } from '@phosphor-icons/react'
 import { createFileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
 import { Wordmark } from '@/components/brand'
 import { Button } from '@/components/ui/button'
@@ -34,6 +34,10 @@ function AppLayout() {
           <Link to="/" activeOptions={{ exact: true }} className={navLink}>
             <UsersThreeIcon size={20} weight="duotone" />
             {m.nav.athletes}
+          </Link>
+          <Link to="/esercizi" className={navLink}>
+            <BarbellIcon size={20} weight="duotone" />
+            {m.nav.exercises}
           </Link>
         </nav>
         <div className="mt-auto grid gap-1 border-t p-3">
