@@ -9,50 +9,133 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
+import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NuovaPasswordRoute = NuovaPasswordRouteImport.update({
+  id: '/nuova-password',
+  path: '/nuova-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperoPasswordRoute = RecuperoPasswordRouteImport.update({
+  id: '/recupero-password',
+  path: '/recupero-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/login': typeof LoginRoute
+  '/nuova-password': typeof NuovaPasswordRoute
+  '/recupero-password': typeof RecuperoPasswordRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/nuova-password': typeof NuovaPasswordRoute
+  '/recupero-password': typeof RecuperoPasswordRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/nuova-password': typeof NuovaPasswordRoute
+  '/recupero-password': typeof RecuperoPasswordRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/login' | '/nuova-password' | '/recupero-password'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/login' | '/nuova-password' | '/recupero-password' | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/login'
+    | '/nuova-password'
+    | '/recupero-password'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  NuovaPasswordRoute: typeof NuovaPasswordRoute
+  RecuperoPasswordRoute: typeof RecuperoPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nuova-password': {
+      id: '/nuova-password'
+      path: '/nuova-password'
+      fullPath: '/nuova-password'
+      preLoaderRoute: typeof NuovaPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recupero-password': {
+      id: '/recupero-password'
+      path: '/recupero-password'
+      fullPath: '/recupero-password'
+      preLoaderRoute: typeof RecuperoPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
+  NuovaPasswordRoute: NuovaPasswordRoute,
+  RecuperoPasswordRoute: RecuperoPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

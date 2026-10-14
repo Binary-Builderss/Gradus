@@ -48,6 +48,17 @@ Dopo una migrazione: rigenera i tipi e indica nel commit quali modelli Swift van
 
 Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scarico a metà, superset.
 
+## Interfaccia
+
+- Linguaggio **sport premium** (riferimenti: Whoop, Apple Fitness). Prima di ogni lavoro di UI carica la
+  skill `design-taste-frontend` (tasteskill).
+- Colori solo dai token in `src/index.css`: base quasi nera con riflesso verde, **un solo accento** verde
+  (`primary`). Il tema segue il sistema (chiaro / scuro): ogni schermata va controllata in entrambi.
+- Tipografia: `font-display` (Barlow Condensed, maiuscolo) per titoli e numeri, Geist per il resto.
+- Icone: solo Phosphor (`@phosphor-icons/react`). Componenti shadcn/ui in `src/components/ui`, mai lasciati
+  allo stato di default.
+- Ogni stringa visibile sta in `src/lib/messages.ts`.
+
 ## Regole specifiche del web
 
 - Un mesociclo `active` con serie registrate si modifica solo nelle settimane senza dati (proposta da
