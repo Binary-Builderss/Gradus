@@ -1,6 +1,6 @@
 import { UsersThreeIcon, WarningCircleIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { InviteAthlete } from '@/components/athletes/InviteAthlete'
 import { Steps } from '@/components/brand'
 import { Button } from '@/components/ui/button'
@@ -51,7 +51,7 @@ function AthletesPage() {
 function AthleteItem({ athlete: a }: { athlete: AthleteRow }) {
   const pending = a.status === 'pending'
   return (
-    <li className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 rounded-xl border bg-card p-4 sm:grid-cols-[auto_1fr_auto_auto] sm:gap-x-8 sm:px-6">
+    <li className="relative grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 rounded-xl border bg-card p-4 transition-colors focus-within:bg-muted/50 hover:bg-muted/50 sm:grid-cols-[auto_1fr_auto_auto] sm:gap-x-8 sm:px-6">
       <span
         aria-hidden
         className="grid size-12 place-items-center rounded-full bg-accent font-display text-lg font-semibold text-accent-foreground"
@@ -60,7 +60,13 @@ function AthleteItem({ athlete: a }: { athlete: AthleteRow }) {
       </span>
       <div className="min-w-0">
         <p className="truncate text-base font-medium">
-          {a.name}
+          <Link
+            to="/atleti/$athleteId"
+            params={{ athleteId: a.id }}
+            className="after:absolute after:inset-0 focus-visible:outline-none"
+          >
+            {a.name}
+          </Link>
           {a.isSelf && <span className="ml-2 text-sm font-normal text-muted-foreground">{m.self}</span>}
         </p>
         <p className="truncate text-sm text-muted-foreground">{pending ? m.pending : a.email}</p>
