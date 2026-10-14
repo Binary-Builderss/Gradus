@@ -1,4 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
+import { addBlock } from './blocks'
 import { type GroupKind, kindAfterSlotCount } from './slotRules'
 import { supabase } from './supabase'
 
@@ -78,13 +79,23 @@ export async function addExerciseGroup(args: {
     .select('id')
     .single()
   if (error) throw error
-  const { error: slotError } = await supabase
-    .from('slots')
-    .insert({ mesocycle_id: args.mesocycleId, group_id: group.id, position: 0, exercise_id: args.exerciseId })
-  if (slotError) {
-    // Niente gruppo vuoto in caso di errore sullo slot.
+  try {
+    const { data: slot, error: slotError } = await supabase
+      .from('slots')
+      .insert({
+        mesocycle_id: args.mesocycleId,
+        group_id: group.id,
+        position: 0,
+        exercise_id: args.exerciseId,
+      })
+      .select('id')
+      .single()
+    if (slotError) throw slotError
+    await addBlock({ mesocycleId: args.mesocycleId, slotId: slot.id, position: 0 })
+  } catch (e) {
+    // Niente gruppo vuoto se lo slot o il blocco non sono stati creati.
     await supabase.from('slot_groups').update({ deleted_at: new Date().toISOString() }).eq('id', group.id)
-    throw slotError
+    throw e
   }
 }
 
@@ -96,13 +107,18 @@ export async function addSlotToGroup(args: {
   count: number
   exerciseId: string
 }) {
-  const { error } = await supabase.from('slots').insert({
-    mesocycle_id: args.mesocycleId,
-    group_id: args.group.id,
-    position: args.position,
-    exercise_id: args.exerciseId,
-  })
+  const { data: slot, error } = await supabase
+    .from('slots')
+    .insert({
+      mesocycle_id: args.mesocycleId,
+      group_id: args.group.id,
+      position: args.position,
+      exercise_id: args.exerciseId,
+    })
+    .select('id')
+    .single()
   if (error) throw error
+  await addBlock({ mesocycleId: args.mesocycleId, slotId: slot.id, position: 0 })
   await setGroupKind(args.mesocycleId, args.group.id, kindAfterSlotCount(args.group.kind, args.count + 1))
 }
 
