@@ -7,22 +7,38 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { emailSchema } from '@/lib/auth'
 import { inviteResultMessage } from '@/lib/inviteMessages'
+import { followSelf } from '@/lib/athletes'
 import { inviteAthlete } from '@/lib/invites'
 import { messages } from '@/lib/messages'
 
 const m = messages.app.athletes.invite
 
 /** `limit`: tetto di atleti già raggiunto (null = si può invitare). */
-export function InviteAthlete({ limit }: { limit: number | null }) {
+export function InviteAthlete({
+  limit,
+  userId,
+  userEmail,
+}: {
+  limit: number | null
+  userId: string
+  /** L'email di chi invita: se la scrive, vuole seguirsi da solo, non invitarsi. */
+  userEmail: string | undefined
+}) {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [fieldError, setFieldError] = useState<string | null>(null)
   const [done, setDone] = useState<string | null>(null)
 
   const invite = useMutation({
-    mutationFn: inviteAthlete,
+    mutationFn: async (args: { email: string; name?: string }) => {
+      if (userEmail && args.email.trim().toLowerCase() === userEmail.trim().toLowerCase()) {
+        await followSelf(userId)
+        return 'self' as const
+      }
+      return inviteAthlete(args)
+    },
     onSuccess: async (result) => {
-      setDone(inviteResultMessage(result))
+      setDone(result === 'self' ? messages.app.athletes.followSelfDone : inviteResultMessage(result))
       await queryClient.invalidateQueries({ queryKey: ['athletes'] })
       await queryClient.invalidateQueries({ queryKey: ['plan-usage'] })
     },

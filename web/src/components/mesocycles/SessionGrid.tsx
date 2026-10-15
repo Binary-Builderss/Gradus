@@ -219,6 +219,7 @@ export function SessionGrid({
                         <Button
                           variant="ghost"
                           size="icon-xs"
+                          data-tour={week === 1 ? 'week-copy' : undefined}
                           aria-label={m.grid.copyForward(week)}
                           title={m.grid.copyForward(week)}
                           onClick={() => {
@@ -302,6 +303,7 @@ export function SessionGrid({
                                   )}
                                 </p>
                                 <select
+                                  data-tour={r === 0 ? 'measure' : undefined}
                                   aria-label={`${m.grid.measure}: ${row.exerciseName}`}
                                   title={rowLocked ? m.grid.locked : m.grid.measure}
                                   value={measure}
@@ -350,6 +352,7 @@ export function SessionGrid({
                               <Button
                                 variant="ghost"
                                 size="icon-xs"
+                                data-tour={r === 0 ? 'row-options' : undefined}
                                 aria-label={m.grid.details}
                                 aria-expanded={open}
                                 title={m.grid.details}

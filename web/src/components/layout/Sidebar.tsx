@@ -138,6 +138,7 @@ export function Sidebar({
         aria-label={collapsed ? m.nav.expand : m.nav.collapse}
         aria-expanded={!collapsed}
         aria-controls="sidebar-nav"
+        data-tour="nav-collapse"
         onClick={onToggle}
         className="text-muted-foreground"
       >

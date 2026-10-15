@@ -74,6 +74,14 @@ export const messages = {
         dismiss: 'Non ora',
       },
       steps: {
+        collapse: {
+          title: 'Più spazio quando serve',
+          body: 'Con la freccia in alto comprimi il menu a una barra di icone: il marchio resta e passando sopra un’icona vedi il nome. La scelta si ricorda.',
+        },
+        followSelf: {
+          title: 'Segui anche te stesso',
+          body: 'Se vuoi allenarti con Gradus, aggiungiti all’elenco: scrivi un programma per te e lo esegui dall’app con lo stesso account, senza una seconda email. Non occupa un posto del tuo piano.',
+        },
         navAthletes: {
           title: 'Atleti',
           body: 'Da qui si parte: l’elenco delle persone che alleni. Cliccando un nome apri i suoi programmi.',
@@ -113,6 +121,46 @@ export const messages = {
         pdf: {
           title: 'PDF della scheda',
           body: 'Scarica la programmazione in PDF, una pagina per seduta, da stampare o mandare a chi non usa l’app. Con il piano Pro ha il tuo logo e i tuoi colori.',
+        },
+        sessionHeader: {
+          title: 'Nome e ordine della seduta',
+          body: 'Rinomina la seduta, spostala prima o dopo con le frecce o eliminala. Le schede in alto servono a passare da una seduta all’altra.',
+        },
+        measure: {
+          title: 'Come misuri lo sforzo',
+          body: 'Sotto il nome di ogni esercizio scegli se lo sforzo è in ripetizioni in riserva, RPE, kg, % del massimale o % del top set. Cambiarlo aggiorna tutte le settimane della riga.',
+        },
+        weekCopy: {
+          title: 'Copia sulle settimane dopo',
+          body: 'La freccia accanto a ogni settimana copia i suoi valori su quelle successive: scrivi la prima e riempi il resto in un clic.',
+        },
+        rowOptions: {
+          title: 'Opzioni di queste serie',
+          body: 'La freccia in giù apre il tipo di serie, la tecnica (drop set, rest-pause…), i tempi e i recuperi, e la compilazione automatica delle settimane (per esempio lo sforzo che cresce ogni settimana).',
+        },
+        orderSuperset: {
+          title: 'Ordine e superset',
+          body: 'Qui trascini gli esercizi per cambiarne l’ordine e li abbini in superset o circuiti, con i recuperi tra un esercizio e l’altro.',
+        },
+        plans: {
+          title: 'Il tuo piano',
+          body: 'Vedi quanti atleti hai sul tuo piano e cosa offrono gli altri livelli. Da qui passi a un piano superiore quando ti servono più atleti o Personalizza.',
+        },
+        subscription: {
+          title: 'Smettere di pagare',
+          body: 'Se hai un abbonamento, qui vedi quando si rinnova e lo disdici quando vuoi: resti nel piano fino alla fine del periodo pagato e non perdi nessun dato.',
+        },
+        exerciseList: {
+          title: 'La tua libreria',
+          body: 'Cerca per nome, filtra solo i tuoi e usa “Duplica come mio” per partire da un esercizio del catalogo e cambiarlo. Ogni esercizio ha i muscoli con un peso: servono al volume per muscolo.',
+        },
+        security: {
+          title: 'Password',
+          body: 'Per cambiarla ti scriviamo un’email con un link: aprilo e scegli la nuova password.',
+        },
+        danger: {
+          title: 'Disattiva o elimina',
+          body: 'Puoi mettere l’account in pausa (si riattiva quando vuoi) o eliminarlo per sempre. Se hai un abbonamento che si rinnova, disdicilo prima.',
         },
         settings: {
           title: 'Durata e scarico',
@@ -660,6 +708,12 @@ export const messages = {
       emptyBody:
         "Qui comparirà ogni atleta che segui, con l'ultima seduta registrata e le sedute degli ultimi 7 giorni.",
       self: 'Tu',
+      followSelf: 'Segui anche te stesso',
+      followSelfHint:
+        'Ti aggiunge all’elenco come atleta: scrivi un programma per te e lo esegui dall’app con lo stesso account, senza una seconda email. Non occupa un posto del tuo piano.',
+      followSelfWorking: 'Un momento',
+      followSelfError: 'Non sono riuscito ad aggiungerti. Riprova tra poco.',
+      followSelfDone: 'Ora ti segui anche tu: ti trovi nell’elenco come «Tu».',
       pending: 'Invito in attesa',
       lastWorkout: 'Ultima seduta',
       never: 'Nessuna seduta',
@@ -684,7 +738,7 @@ export const messages = {
         already: 'Questo atleta è già collegato o ha già un invito in attesa.',
         errors: {
           invalidEmail: "Inserisci un'email valida.",
-          selfInvite: 'Non puoi invitare te stesso: il tuo collegamento esiste già.',
+          selfInvite: 'Non serve invitarti: usa «Segui anche te stesso» nell’elenco degli atleti.',
           inviteFailed: "Non sono riuscito a inviare l'email di invito. Riprova tra poco.",
           rateLimit: 'Troppe email inviate. Aspetta qualche minuto e riprova.',
           limitReached: (limit: number | null) =>

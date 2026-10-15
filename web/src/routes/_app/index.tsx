@@ -1,11 +1,11 @@
-import { UsersThreeIcon, WarningCircleIcon } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
+import { UserCircleIcon, UsersThreeIcon, WarningCircleIcon } from '@phosphor-icons/react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { InviteAthlete } from '@/components/athletes/InviteAthlete'
 import { TourBanner } from '@/components/tour/TourBanner'
 import { useGuidedTour } from '@/components/tour/useGuidedTour'
 import { Button } from '@/components/ui/button'
-import { type AthleteRow, athletesQuery } from '@/lib/athletes'
+import { type AthleteRow, athletesQuery, followSelf } from '@/lib/athletes'
 import { initials, lastWorkoutLabel } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
 import { atLimit, planUsageQuery } from '@/lib/plans'
@@ -22,13 +22,37 @@ function AthletesPage() {
   const { data, isPending, isError, refetch } = useQuery(athletesQuery(user.id))
   const startTour = useGuidedTour(user.id)
   const usage = useQuery(planUsageQuery(user.id))
+  const queryClient = useQueryClient()
+  const follow = useMutation({
+    mutationFn: () => followSelf(user.id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['athletes'] }),
+  })
+  const canFollowSelf = !isPending && !isError && !data.some((a) => a.isSelf)
 
   return (
     <section className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 className="text-xl font-semibold tracking-tight">{m.title}</h1>
-        <InviteAthlete limit={usage.data && atLimit(usage.data) ? usage.data.athleteLimit : null} />
+        <InviteAthlete
+          userId={user.id}
+          userEmail={user.email}
+          limit={usage.data && atLimit(usage.data) ? usage.data.athleteLimit : null}
+        />
       </div>
+      {canFollowSelf && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2" data-tour="follow-self">
+          <Button variant="outline" onClick={() => follow.mutate()} disabled={follow.isPending}>
+            <UserCircleIcon data-icon="inline-start" />
+            {follow.isPending ? m.followSelfWorking : m.followSelf}
+          </Button>
+          <p className="max-w-prose text-sm text-muted-foreground">{m.followSelfHint}</p>
+          {follow.isError && (
+            <p role="alert" className="text-sm text-destructive">
+              {m.followSelfError}
+            </p>
+          )}
+        </div>
+      )}
       <TourBanner onStart={() => void startTour()} />
       {isPending ? (
         <ListSkeleton />
