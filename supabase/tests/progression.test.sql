@@ -87,6 +87,28 @@ select is(
     where block_id = '50000000-0000-0000-0000-000000000001' and week = 1 and deleted_at is null),
   4, 'una riga eliminata logicamente viene riscritta');
 
+-- anteprima: stesso calcolo, senza scrivere. Mesociclo a 6 settimane, scarico alla 4, settimana 2 eseguita
+select tests.login('00000000-0000-0000-0000-0000000000c1');
+select results_eq(
+  $$ select week, action, sets, reps_min::int, reps_max::int, method::text, intensity_value::int
+     from public.preview_progression('50000000-0000-0000-0000-000000000001',
+       '{"sets": {"start": 3, "step": 1, "max": 5}, "reps_min": {"start": 8}, "reps_max": {"start": 10},
+         "method": "BUF", "intensity": {"start": 3, "step": -1, "min": 0}}') order by week $$,
+  $$ values
+    (1, 'write', 3, 8, 10, 'BUF', 3),
+    (2, 'locked', 4, 8, 10, 'BUF', 2),
+    (3, 'write', 5, 8, 10, 'BUF', 1),
+    (4, 'deload', null::int, null::int, null::int, null::text, null::int),
+    (5, 'write', 5, 8, 10, 'BUF', 0),
+    (6, 'write', 5, 8, 10, 'BUF', 0) $$,
+  'anteprima: scritte, eseguita (intatta ma conta come passo), scarico (saltato) e valori con max e min');
+select is(
+  (select count(*)::int from public.block_weeks where block_id = '50000000-0000-0000-0000-000000000001' and week = 3 and sets = 5 and deleted_at is null),
+  1, 'l''anteprima non scrive: la settimana 3 è ancora quella di prima della prova');
+select throws_ok(
+  $$ select * from public.preview_progression('50000000-0000-0000-0000-000000000001', '{"sets": {"start": 3}, "reps_min": {"start": 10}, "reps_max": {"start": 8}}') $$,
+  '23514', null, 'anteprima: ripetizioni minime oltre le massime');
+
 -- regole non valide
 select throws_ok($$ select public.generate_progression('50000000-0000-0000-0000-000000000001', '{}') $$,
   '22023', null, 'senza sets');

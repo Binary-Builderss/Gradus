@@ -1,68 +1,163 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState, type FormEvent } from 'react'
+import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { applyProgression } from '@/lib/blocks'
+import { applyProgression, previewProgression, type ProgressionWeek } from '@/lib/blocks'
 import { fieldErrors } from '@/lib/auth'
+import { describeCell } from '@/lib/cellFields'
 import { messages } from '@/lib/messages'
-import { buildRule, progressionSchema } from '@/lib/progressionRule'
+import {
+  buildRule,
+  EMPTY_PROGRESSION,
+  PROGRESSION_EXAMPLES,
+  progressionSchema,
+  type ProgressionInput,
+} from '@/lib/progressionRule'
+import { cn } from '@/lib/utils'
 
 const m = messages.app.mesocycle.progression
 const METHODS = ['BUF', 'RPE', 'RM', 'PCT_1RM', 'LOAD'] as const
+const PREVIEW_DELAY_MS = 350
 
 export function ProgressionForm({ mesocycleId, blockId }: { mesocycleId: string; blockId: string }) {
   const queryClient = useQueryClient()
+  const [values, setValues] = useState<ProgressionInput>(EMPTY_PROGRESSION)
   const [errors, setErrors] = useState<Record<string, string | undefined>>({})
+
+  const parsed = progressionSchema.safeParse(values)
+  const rule = parsed.success ? buildRule(parsed.data) : null
+  const ruleKey = rule ? JSON.stringify(rule) : null
+  // L'anteprima parte quando si smette di scrivere, non a ogni tasto.
+  const [settledKey, setSettledKey] = useState<string | null>(null)
+  useEffect(() => {
+    const timer = setTimeout(() => setSettledKey(ruleKey), PREVIEW_DELAY_MS)
+    return () => clearTimeout(timer)
+  }, [ruleKey])
+
+  const preview = useQuery({
+    queryKey: ['progression-preview', blockId, settledKey],
+    queryFn: () => previewProgression(blockId, JSON.parse(settledKey!) as Record<string, unknown>),
+    enabled: settledKey !== null,
+    retry: false,
+  })
+
   const apply = useMutation({
     mutationKey: ['editor'],
-    mutationFn: (rule: Record<string, unknown>) => applyProgression(blockId, rule),
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['block-weeks', mesocycleId] }),
+    mutationFn: (r: Record<string, unknown>) => applyProgression(blockId, r),
+    onSettled: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['block-weeks', mesocycleId] }),
+        queryClient.invalidateQueries({ queryKey: ['progression-preview', blockId] }),
+      ]),
   })
+
+  const set = (name: keyof ProgressionInput) => (value: string) => {
+    setValues((v) => ({ ...v, [name]: value }))
+    apply.reset()
+  }
+  function load(example: ProgressionInput) {
+    setValues(example)
+    setErrors({})
+    apply.reset()
+  }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     apply.reset()
-    const parsed = progressionSchema.safeParse(Object.fromEntries(new FormData(event.currentTarget)))
     if (!parsed.success) return setErrors(fieldErrors(parsed.error))
     setErrors({})
     apply.mutate(buildRule(parsed.data))
   }
 
+  const writable = preview.data?.filter((w) => w.action === 'write').length
+
   return (
-    <form noValidate onSubmit={submit} className="grid gap-3">
-      <p className="text-xs text-muted-foreground">{m.hint}</p>
-      <div className="flex flex-wrap items-start gap-3">
-        <Num name="setsStart" label={m.setsStart} error={errors.setsStart} />
-        <Num name="setsStep" label={m.setsStep} error={errors.setsStep} />
-        <Num name="setsMax" label={m.setsMax} error={errors.setsMax} />
-        <Num name="repsMin" label={m.repsMin} error={errors.repsMin} />
-        <Num name="repsMax" label={m.repsMax} error={errors.repsMax} />
-      </div>
-      <div className="flex flex-wrap items-start gap-3">
-        <label className="grid gap-1.5 text-xs text-muted-foreground">
-          {m.method}
-          <select
-            name="method"
-            defaultValue=""
-            className="h-8 rounded-md border bg-background px-2 text-sm dark:bg-input/30"
+    <form noValidate onSubmit={submit} className="grid gap-4">
+      <p className="text-sm text-muted-foreground">{m.hint}</p>
+
+      <div className="flex flex-wrap items-center gap-2" role="group" aria-label={m.examples}>
+        <span className="text-xs text-muted-foreground">{m.examples}</span>
+        {(Object.keys(PROGRESSION_EXAMPLES) as (keyof typeof PROGRESSION_EXAMPLES)[]).map((key) => (
+          <Button
+            key={key}
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => load(PROGRESSION_EXAMPLES[key])}
           >
-            <option value="">{m.noMethod}</option>
-            {METHODS.map((x) => (
-              <option key={x} value={x}>
-                {m.methods[x]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <Num name="intStart" label={m.intStart} error={errors.intStart} />
-        <Num name="intStep" label={m.intStep} error={errors.intStep} />
-        <Num name="intMin" label={m.intMin} error={errors.intMin} />
-        <Num name="fromWeek" label={m.fromWeek} error={errors.fromWeek} />
-        <Num name="toWeek" label={m.toWeek} error={errors.toWeek} />
+            {m.exampleNames[key]}
+          </Button>
+        ))}
       </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Group title={m.setsGroup} hint={m.setsHint}>
+          <Num
+            label={m.setsStart}
+            value={values.setsStart}
+            onChange={set('setsStart')}
+            error={errors.setsStart}
+          />
+          <Num
+            label={m.setsStep}
+            value={values.setsStep}
+            onChange={set('setsStep')}
+            error={errors.setsStep}
+          />
+          <Num label={m.setsMax} value={values.setsMax} onChange={set('setsMax')} error={errors.setsMax} />
+        </Group>
+        <Group title={m.repsGroup} hint={m.repsHint}>
+          <Num label={m.repsMin} value={values.repsMin} onChange={set('repsMin')} error={errors.repsMin} />
+          <Num label={m.repsMax} value={values.repsMax} onChange={set('repsMax')} error={errors.repsMax} />
+        </Group>
+        <Group title={m.effortGroup} hint={m.effortHint}>
+          <label className="grid gap-1.5 text-xs text-muted-foreground">
+            {m.method}
+            <select
+              value={values.method}
+              onChange={(e) => set('method')(e.target.value)}
+              className="h-9 rounded-md border bg-background px-2 text-sm text-foreground dark:bg-input/30"
+            >
+              <option value="">{m.noMethod}</option>
+              {METHODS.map((x) => (
+                <option key={x} value={x}>
+                  {m.methods[x]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Num
+            label={m.intStart}
+            value={values.intStart}
+            onChange={set('intStart')}
+            error={errors.intStart}
+          />
+          <Num label={m.intStep} value={values.intStep} onChange={set('intStep')} error={errors.intStep} />
+          <Num label={m.intMin} value={values.intMin} onChange={set('intMin')} error={errors.intMin} />
+        </Group>
+        <Group title={m.weeksGroup} hint={m.weeksHint}>
+          <Num
+            label={m.fromWeek}
+            value={values.fromWeek}
+            onChange={set('fromWeek')}
+            error={errors.fromWeek}
+          />
+          <Num label={m.toWeek} value={values.toWeek} onChange={set('toWeek')} error={errors.toWeek} />
+        </Group>
+      </div>
+
+      <section aria-label={m.preview.title} className="grid gap-2 rounded-md border p-3">
+        <h4 className="text-sm font-medium">{m.preview.title}</h4>
+        <Preview query={preview} idle={ruleKey === null} />
+      </section>
+
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={apply.isPending}>
-          {apply.isPending ? m.applying : m.apply}
+          {apply.isPending
+            ? m.applying
+            : writable !== undefined && ruleKey === settledKey
+              ? m.applyTo(writable)
+              : m.apply}
         </Button>
         <p role="status" className="text-sm">
           {apply.isError ? (
@@ -76,19 +171,67 @@ export function ProgressionForm({ mesocycleId, blockId }: { mesocycleId: string;
   )
 }
 
-function Num({ name, label, error }: { name: string; label: string; error?: string }) {
+function Preview({ query, idle }: { query: UseQueryResult<ProgressionWeek[]>; idle: boolean }) {
+  if (idle) return <p className="text-sm text-muted-foreground">{m.preview.empty}</p>
+  if (query.isError) return <p className="text-sm text-destructive">{m.preview.error}</p>
+  if (!query.data) return <p className="text-sm text-muted-foreground">{m.preview.loading}</p>
   return (
-    <label className="grid w-36 gap-1.5 text-xs text-muted-foreground">
+    <ul className="divide-y text-sm">
+      {query.data.map((w) => (
+        <li key={w.week} className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5">
+          <span className="w-28 shrink-0 font-medium">{m.preview.week(w.week)}</span>
+          <span
+            className={cn(
+              'min-w-0',
+              w.action !== 'write' && 'text-muted-foreground',
+              w.action === 'deload' && 'text-warning-foreground',
+            )}
+          >
+            {w.action === 'deload'
+              ? m.preview.deload
+              : w.action === 'locked'
+                ? m.preview.locked
+                : describeCell(w.cell, w.cell.method ?? 'BUF')}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function Group({ title, hint, children }: { title: string; hint: string; children: ReactNode }) {
+  return (
+    <fieldset className="grid content-start gap-2 rounded-md border p-3">
+      <legend className="px-1 text-sm font-medium">{title}</legend>
+      <p className="text-xs text-muted-foreground">{hint}</p>
+      <div className="flex flex-wrap items-start gap-3">{children}</div>
+    </fieldset>
+  )
+}
+
+function Num({
+  label,
+  value,
+  onChange,
+  error,
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+  error?: string
+}) {
+  return (
+    <label className="grid w-32 gap-1.5 text-xs text-muted-foreground">
       {label}
       <Input
-        name={name}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         inputMode="decimal"
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${name}-error` : undefined}
-        className="h-9 text-sm"
+        className="h-9 text-sm text-foreground"
       />
       {error && (
-        <span id={`${name}-error`} role="alert" className="text-destructive">
+        <span role="alert" className="text-destructive">
           {error}
         </span>
       )}
