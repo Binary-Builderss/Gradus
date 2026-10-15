@@ -88,11 +88,11 @@ export const messages = {
         },
         invite: {
           title: 'Invita un atleta',
-          body: 'Scrivi la sua email: riceve un invito per collegarsi a te. Finché non accetta, resta “invito in attesa”.',
+          body: 'Scrivi la sua email: riceve un invito per collegarsi a te. Finché non accetta, resta “invito in attesa” e occupa un posto del piano: sotto il pulsante vedi quanti ne hai usati, e un invito sbagliato lo annulli dall’elenco.',
         },
         athleteList: {
           title: 'Elenco atleti',
-          body: 'Per ogni atleta vedi quando ha fatto l’ultima seduta e quante ne ha fatte negli ultimi 7 giorni.',
+          body: 'Per ogni atleta vedi quando ha fatto l’ultima seduta e quante ne ha fatte negli ultimi 7 giorni. Dalla sua scheda, con i tre puntini, puoi chiudere il collegamento: libera il posto e non cancella nulla.',
         },
         noAthlete: {
           title: 'Ancora nessun atleta collegato',
@@ -899,6 +899,26 @@ export const messages = {
       followSelfError: 'Non sono riuscito ad aggiungerti. Riprova tra poco.',
       followSelfDone: 'Ora ti segui anche tu: ti trovi nell’elenco come «Tu».',
       pending: 'Invito in attesa',
+      seats: (used: number, limit: number | null) =>
+        limit === null ? (used === 1 ? '1 atleta' : `${used} atleti`) : `${used} di ${limit} atleti`,
+      seatsMore: 'Più posti',
+      cancelInvite: 'Annulla invito',
+      cancelInviteFor: (name: string) => `Annulla l’invito a ${name}`,
+      cancelInviteError: 'Non sono riuscito ad annullare l’invito. Riprova.',
+      closeLink: {
+        menu: 'Chiudi il collegamento',
+        more: 'Altre azioni',
+        title: (name: string) => `Chiudere il collegamento con ${name}?`,
+        body: [
+          'Non vedrai più i suoi programmi e le sue sedute, e non potrai modificarli.',
+          'Si libera un posto del tuo piano.',
+          'Non cancella nulla: se lo inviti di nuovo e accetta, ritrovi tutto.',
+        ],
+        confirm: 'Chiudi il collegamento',
+        working: 'Chiusura in corso',
+        cancel: 'Annulla',
+        error: 'Non sono riuscito a chiudere il collegamento. Riprova.',
+      },
       lastWorkout: 'Ultima seduta',
       never: 'Nessuna seduta',
       today: 'Oggi',

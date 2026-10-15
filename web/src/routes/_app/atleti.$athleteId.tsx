@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { athleteQuery, mesocyclesQuery } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
+import { CloseLink } from '@/components/athletes/CloseLink'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.athleteDetail
 
@@ -23,6 +25,8 @@ function AthletePage() {
   const [creating, setCreating] = useState(false)
   const athlete = useQuery(athleteQuery(user.id, athleteId))
   const mesocycles = useQuery(mesocyclesQuery(athleteId))
+  const name = athlete.data?.athlete?.full_name?.trim() || athlete.data?.athlete?.email || ''
+  usePageTitle(name || undefined)
 
   if (athlete.isSuccess && !athlete.data) {
     return (
@@ -34,11 +38,15 @@ function AthletePage() {
   }
 
   const activeMesocycle = mesocycles.data?.find((x) => x.status === 'active')
-  const name = athlete.data?.athlete?.full_name?.trim() || athlete.data?.athlete?.email || ''
   return (
     <section className="space-y-5">
       <BackLink />
-      <h1 className="min-h-7 text-xl font-semibold tracking-tight">{name}</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="min-h-7 min-w-0 truncate text-xl font-semibold tracking-tight">{name}</h1>
+        {athlete.data && athleteId !== user.id && (
+          <CloseLink coachId={user.id} athleteId={athleteId} name={name} />
+        )}
+      </div>
 
       {activeMesocycle && (
         <AthleteOverview coachId={user.id} athleteId={athleteId} mesocycle={activeMesocycle} />

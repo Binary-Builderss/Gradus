@@ -6,6 +6,7 @@ import { RecoveryForm } from '@/components/auth/forms'
 import { mapAuthError } from '@/lib/auth'
 import { messages } from '@/lib/messages'
 import { supabase } from '@/lib/supabase'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.auth
 
@@ -14,6 +15,7 @@ export const Route = createFileRoute('/recupero-password')({
 })
 
 function RecoveryPage() {
+  usePageTitle(m.recovery.title)
   const [sent, setSent] = useState(false)
   return (
     <AuthLayout>

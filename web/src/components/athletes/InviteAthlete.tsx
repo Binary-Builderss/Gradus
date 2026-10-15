@@ -18,11 +18,14 @@ export function InviteAthlete({
   limit,
   userId,
   userEmail,
+  seats,
 }: {
   limit: number | null
   userId: string
   /** L'email di chi invita: se la scrive, vuole seguirsi da solo, non invitarsi. */
   userEmail: string | undefined
+  /** Posti usati e tetto del piano, per dire quanti ne restano (`near`: sono quasi finiti). */
+  seats?: { used: number; limit: number | null; near: boolean }
 }) {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
@@ -84,10 +87,25 @@ export function InviteAthlete({
 
   if (!open) {
     return (
-      <Button onClick={() => setOpen(true)} data-tour="invite">
-        <UserPlusIcon data-icon="inline-start" />
-        {m.open}
-      </Button>
+      <div className="grid gap-1.5 sm:justify-items-end">
+        <Button onClick={() => setOpen(true)} data-tour="invite">
+          <UserPlusIcon data-icon="inline-start" />
+          {m.open}
+        </Button>
+        {seats && (
+          <p className="text-xs text-muted-foreground">
+            {messages.app.athletes.seats(seats.used, seats.limit)}
+            {seats.near && (
+              <>
+                {' · '}
+                <Link to="/piani" className="text-primary underline-offset-4 hover:underline">
+                  {messages.app.athletes.seatsMore}
+                </Link>
+              </>
+            )}
+          </p>
+        )}
+      </div>
     )
   }
 

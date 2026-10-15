@@ -5,11 +5,12 @@ import { InviteAthlete } from '@/components/athletes/InviteAthlete'
 import { TourBanner } from '@/components/tour/TourBanner'
 import { useGuidedTour } from '@/components/tour/useGuidedTour'
 import { Button } from '@/components/ui/button'
-import { type AthleteRow, athletesQuery, followSelf } from '@/lib/athletes'
+import { type AthleteRow, athletesQuery, endLink, followSelf } from '@/lib/athletes'
 import { initials, lastWorkoutLabel } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
-import { atLimit, planUsageQuery } from '@/lib/plans'
+import { atLimit, nearLimit, planUsageQuery } from '@/lib/plans'
 import { cn } from '@/lib/utils'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.athletes
 
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/_app/')({
 })
 
 function AthletesPage() {
+  usePageTitle(m.title)
   const { user } = Route.useRouteContext()
   const { data, isPending, isError, refetch } = useQuery(athletesQuery(user.id))
   const startTour = useGuidedTour(user.id)
@@ -37,6 +39,11 @@ function AthletesPage() {
           userId={user.id}
           userEmail={user.email}
           limit={usage.data && atLimit(usage.data) ? usage.data.athleteLimit : null}
+          seats={
+            usage.data
+              ? { used: usage.data.athletes, limit: usage.data.athleteLimit, near: nearLimit(usage.data) }
+              : undefined
+          }
         />
       </div>
       {canFollowSelf && (
@@ -69,7 +76,7 @@ function AthletesPage() {
           </div>
           <ul className="divide-y">
             {data.map((a) => (
-              <AthleteItem key={a.id} athlete={a} />
+              <AthleteItem key={a.id} athlete={a} coachId={user.id} />
             ))}
           </ul>
         </div>
@@ -78,8 +85,16 @@ function AthletesPage() {
   )
 }
 
-function AthleteItem({ athlete: a }: { athlete: AthleteRow }) {
+function AthleteItem({ athlete: a, coachId }: { athlete: AthleteRow; coachId: string }) {
   const pending = a.status === 'pending'
+  const queryClient = useQueryClient()
+  const cancel = useMutation({
+    mutationFn: () => endLink(coachId, a.id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['athletes'] })
+      await queryClient.invalidateQueries({ queryKey: ['plan-usage'] })
+    },
+  })
   return (
     <li className="relative grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1 px-4 py-3 transition-colors focus-within:bg-muted/50 hover:bg-muted/50 sm:grid-cols-[1fr_9rem_9rem] sm:gap-x-4 sm:py-2.5">
       <div className="col-span-2 flex min-w-0 items-center gap-3 sm:col-span-1">
@@ -101,7 +116,24 @@ function AthleteItem({ athlete: a }: { athlete: AthleteRow }) {
             {a.isSelf && <span className="ml-2 text-xs font-normal text-muted-foreground">{m.self}</span>}
           </p>
           <p className="truncate text-xs text-muted-foreground">{pending ? m.pending : a.email}</p>
+          {cancel.isError && (
+            <p role="alert" className="text-xs text-destructive">
+              {m.cancelInviteError}
+            </p>
+          )}
         </div>
+        {pending && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="relative z-10 ml-auto"
+            aria-label={m.cancelInviteFor(a.name)}
+            disabled={cancel.isPending}
+            onClick={() => cancel.mutate()}
+          >
+            {m.cancelInvite}
+          </Button>
+        )}
       </div>
       <Cell label={m.lastWorkout} value={pending ? '-' : lastWorkoutLabel(a.lastWorkoutAt)} />
       <Cell

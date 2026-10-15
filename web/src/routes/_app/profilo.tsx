@@ -5,6 +5,7 @@ import { PasswordReset } from '@/components/brand/PasswordReset'
 import { ProfileForm } from '@/components/brand/ProfileForm'
 import { messages } from '@/lib/messages'
 import { profileQuery } from '@/lib/profile'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.account
 
@@ -13,6 +14,7 @@ export const Route = createFileRoute('/_app/profilo')({
 })
 
 function ProfilePage() {
+  usePageTitle(m.profile.title)
   const { user } = Route.useRouteContext()
   const profile = useQuery(profileQuery(user.id))
 

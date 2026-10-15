@@ -113,6 +113,11 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   vede nell'app) o si elimina dal menu; un mesociclo attivo si **conclude** o, se l'atleta non ha registrato nulla, si
   riporta in bozza. Ogni passaggio chiede conferma e spiega le conseguenze; i rifiuti del database (mesociclo vuoto,
   atleta con un altro mesociclo attivo, sedute già registrate) arrivano con un messaggio chiaro.
+- **Posti e collegamenti**: sotto «Invita atleta» si legge «12 di 20 atleti» (da `plan_usage`, con «Più posti» quando
+  restano pochi). Un invito in attesa occupa un posto e si annulla dall'elenco («Annulla invito»); un atleta collegato si
+  chiude dalla sua scheda (menu «…», con conferma): il collegamento passa a `ended`, si libera il posto, non si cancella
+  nulla e invitandolo di nuovo, se accetta, si ritrova tutto (`endLink` in `lib/athletes.ts`; il trigger
+  `check_link_change` lo consente già).
 - **Piani** (`/piani`): Gratuito, Mid, Pro e Unlimited a confronto, con i posti usati (`plan_usage`) e i tetti letti
   da `plan_limits` (i numeri stanno solo nel database). L'acquisto di ogni piano è un link https in
   `VITE_CHECKOUT_URL_MID` / `_PRO` / `_UNLIMITED` (facoltative): finché manca il pulsante resta «Presto

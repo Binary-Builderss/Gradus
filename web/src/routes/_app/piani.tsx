@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Plans } from '@/components/plans/Plans'
 import { messages } from '@/lib/messages'
 import { planLimitsQuery, planUsageQuery } from '@/lib/plans'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.plans
 
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/_app/piani')({
 })
 
 function PlansPage() {
+  usePageTitle(m.title)
   const { user } = Route.useRouteContext()
   const usage = useQuery(planUsageQuery(user.id))
   const limits = useQuery(planLimitsQuery())

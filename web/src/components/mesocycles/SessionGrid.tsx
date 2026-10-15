@@ -176,7 +176,7 @@ export function SessionGrid({
             <span className="text-muted-foreground">{m.grid.pickCell}</span>
           )}
         </div>
-        <div className="overflow-x-auto rounded-md border bg-card">
+        <div className="@container overflow-x-auto rounded-md border bg-card">
           <table
             ref={tableRef}
             onFocus={() => setHasFocus(true)}
@@ -417,12 +417,15 @@ export function SessionGrid({
                     {open && row.block && (
                       <tr className="border-b bg-muted/30">
                         <td colSpan={totalCols + 1} className="p-0">
-                          <BlockDetails
-                            coachId={coachId}
-                            mesocycleId={mesocycleId}
-                            block={row.block}
-                            siblings={siblings}
-                          />
+                          {/* Largo come la parte visibile della griglia e fermo a sinistra: le opzioni non scorrono con le settimane. */}
+                          <div className="sticky left-0 w-[100cqw]">
+                            <BlockDetails
+                              coachId={coachId}
+                              mesocycleId={mesocycleId}
+                              block={row.block}
+                              siblings={siblings}
+                            />
+                          </div>
                         </td>
                       </tr>
                     )}
