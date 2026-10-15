@@ -129,11 +129,13 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply bg-background font-sans text-sm text-foreground antialiased;
+    /* Tutte le misure sono in rem: la radice a 17 px ingrandisce testo, campi e spaziature. */
+    font-size: 106.25%;
+    @apply bg-background font-sans text-foreground antialiased;
     color-scheme: light dark;
   }
   body {
-    @apply min-h-dvh;
+    @apply min-h-dvh text-sm;
   }
 }
 

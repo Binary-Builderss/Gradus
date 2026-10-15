@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { kindAfterSlotCount, matchesSearch, positionChanges } from './slotRules'
+import { kindAfterSlotCount, matchesSearch, muscleGroupOf, positionChanges } from './slotRules'
 
 describe('kindAfterSlotCount', () => {
   it('un esercizio solo: sempre single', () => {
@@ -44,4 +44,17 @@ describe('matchesSearch', () => {
     expect(matchesSearch('Pec dèck', 'deck')).toBe(true)
     expect(matchesSearch('Squat', 'stacco')).toBe(false)
   })
+})
+
+describe('muscleGroupOf', () => {
+  it('usa il muscolo con il peso maggiore', () => {
+    expect(
+      muscleGroupOf([
+        { muscle: 'triceps', weight: 0.5 },
+        { muscle: 'chest', weight: 1 },
+      ]),
+    ).toBe('chest')
+    expect(muscleGroupOf([{ muscle: 'abductors', weight: 1 }])).toBe('legs')
+  })
+  it('senza muscoli non ha gruppo', () => expect(muscleGroupOf([])).toBeNull())
 })

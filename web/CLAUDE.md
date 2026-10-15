@@ -62,9 +62,9 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   («3 serie da 8-10 ripetizioni, 2 ripetizioni in riserva»).
 - Ogni settimana ha tre campi visibili (serie, ripetizioni, sforzo): niente sigle da imparare né sintassi da
   digitare. Il menu sotto il nome dell'esercizio sceglie come si misura lo sforzo.
-- Tipografia: Geist per il testo (base 14 px), Geist Mono per numeri e celle della griglia. Titoli in
+- Tipografia: Geist per il testo (radice 17 px, quindi testo base ≈ 15 px e controlli ≈ 34 px; mai testo sotto i 12 px; non mettere `text-sm` o `text-xs` su `html`, cambierebbe il valore di tutti i rem), Geist Mono per numeri e celle della griglia. Titoli in
   semibold, mai maiuscoli.
-- Forma: raggio 6 px ovunque, controlli da 32 px, liste e tabelle con righe divise invece di card
+- Forma: raggio 6 px ovunque, controlli da 2 rem, liste e tabelle con righe divise invece di card
   annidate.
 - Icone: solo Phosphor (`@phosphor-icons/react`). Componenti shadcn/ui in `src/components/ui`, mai lasciati
   allo stato di default.

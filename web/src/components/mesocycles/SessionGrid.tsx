@@ -230,7 +230,7 @@ export function SessionGrid({
                         </Button>
                       )}
                     </span>
-                    <span className="block font-sans text-[11px] font-normal">
+                    <span className="block font-sans text-xs font-normal">
                       {lockedWeeks.has(week)
                         ? m.grid.weekState.locked
                         : deloadWeeks.includes(week)
@@ -247,7 +247,7 @@ export function SessionGrid({
                       key={`${week}-${field}`}
                       scope="col"
                       className={cn(
-                        'px-1 pb-1 text-center text-[11px] font-normal text-muted-foreground',
+                        'px-1 pb-1 text-center text-xs font-normal text-muted-foreground',
                         f === FIELDS.length - 1 && 'border-r',
                         week === activeWeek && 'bg-accent/60',
                       )}
@@ -521,7 +521,7 @@ function FieldInput({
         }
       }}
       className={cn(
-        'h-8 bg-transparent px-1 text-center font-mono text-xs tabular-nums outline-none placeholder:text-transparent focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset focus:placeholder:text-muted-foreground/60',
+        'h-9 bg-transparent px-1 text-center font-mono text-sm tabular-nums outline-none placeholder:text-transparent focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset focus:placeholder:text-muted-foreground/60',
         width,
         selected && 'bg-accent/40',
         locked && 'cursor-not-allowed text-muted-foreground',
