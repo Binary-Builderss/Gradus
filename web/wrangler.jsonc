@@ -1,0 +1,11 @@
+{
+  // Configurazione del Worker con asset statici su Cloudflare (nome = quello del progetto).
+  // not_found_handling: ogni indirizzo che non è un file (/piani, /profilo, /nuova-password…) riceve index.html con
+  // stato 200 e il router dell'app legge l'indirizzo. Senza, Workers risponde 404 vuoto.
+  "name": "gradus-trainer",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+  },
+}
