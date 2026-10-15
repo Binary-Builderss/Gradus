@@ -1,0 +1,6 @@
+# Intestazioni di sicurezza per Cloudflare Pages (stesse di netlify.toml). Il ritorno a index.html per le
+# pagine dell'app (/login, /nuova-password, ...) lo fa Pages da solo, finché non esiste un 404.html.
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
