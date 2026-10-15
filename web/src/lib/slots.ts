@@ -57,12 +57,15 @@ export const exercisesQuery = (coachId: string) =>
     queryFn: async () => {
       const { data, error } = await supabase
         .from('exercises')
-        .select('id, name')
+        .select('id, name, owner_id, exercise_muscles(muscle, weight)')
         .is('deleted_at', null)
         .or(`owner_id.is.null,owner_id.eq.${coachId}`)
         .order('name')
       if (error) throw error
-      return data
+      return data.map(({ exercise_muscles, ...e }) => ({
+        ...e,
+        muscles: [...exercise_muscles].sort((a, b) => b.weight - a.weight),
+      }))
     },
   })
 

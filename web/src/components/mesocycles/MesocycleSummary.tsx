@@ -67,7 +67,7 @@ export function MesocycleSummary({
     >
       {messages.app.mesocycle.weekShort(week)}
       {deloadWeeks.includes(week) && (
-        <span className="block font-sans text-[11px] font-normal">
+        <span className="block font-sans text-xs font-normal">
           {messages.app.mesocycle.grid.weekState.deload}
         </span>
       )}
@@ -203,7 +203,7 @@ export function MesocycleSummary({
                             ) : (
                               <span className="text-muted-foreground">–</span>
                             )}
-                            <span className="block text-[11px] font-normal text-muted-foreground">
+                            <span className="block text-xs font-normal text-muted-foreground">
                               {m.setsOf(w.setsDone, w.setsPrescribed)}
                             </span>
                           </>
@@ -217,7 +217,7 @@ export function MesocycleSummary({
                         <>
                           <span className="font-medium">{formatVolume(e.bestE1rm)} kg</span>
                           {e.e1rmChange !== null && (
-                            <span className="block text-[11px] text-muted-foreground">
+                            <span className="block text-xs text-muted-foreground">
                               {formatChange(e.e1rmChange)} kg
                             </span>
                           )}
@@ -286,7 +286,7 @@ export function MesocycleSummary({
                           <span className="text-muted-foreground">–</span>
                         )}
                         {w.executed > 0 && (
-                          <span className="block text-[11px] font-normal text-muted-foreground">
+                          <span className="block text-xs font-normal text-muted-foreground">
                             {m.executedSets(formatVolume(w.executed))}
                           </span>
                         )}
