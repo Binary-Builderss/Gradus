@@ -47,6 +47,16 @@ select throws_ok(
   '42501', null, 'solo la Edge Function (service_role) può preparare la cancellazione');
 select set_config('role', 'postgres', true);
 
+-- abbonamento che si rinnova: la cancellazione si ferma finché non si disdice
+update public.coach_plans set plan = 'pro', billing_ref = 'sub_123', cancel_at_period_end = false
+ where coach_id = '00000000-0000-0000-0000-0000000000c1';
+select throws_ok(
+  $$select public.prepare_account_deletion('00000000-0000-0000-0000-0000000000c1')$$,
+  'P0001', 'subscription_active', 'con un abbonamento che si rinnova non si prepara la cancellazione');
+select is((select count(*)::int from public.exercises where owner_id = '00000000-0000-0000-0000-0000000000c1'), 2, 'e non è stato toccato nulla');
+-- disdetto (resta attivo fino a fine periodo) oppure piano assegnato a mano: si può cancellare
+update public.coach_plans set cancel_at_period_end = true where coach_id = '00000000-0000-0000-0000-0000000000c1';
+
 -- cancellazione del coach
 select public.prepare_account_deletion('00000000-0000-0000-0000-0000000000c1');
 delete from auth.users where id = '00000000-0000-0000-0000-0000000000c1';

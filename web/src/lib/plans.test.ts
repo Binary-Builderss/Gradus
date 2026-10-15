@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('./supabase', () => ({ supabase: {} }))
 
-import { atLimit, checkoutUrl, nearLimit } from './plans'
+import { atLimit, billingPortalUrl, checkoutUrl, nearLimit } from './plans'
 
 describe('checkoutUrl', () => {
   it('un https valido passa', () =>
@@ -33,5 +33,14 @@ describe('tetto di atleti', () => {
   it('senza tetto non avvisa e non blocca mai', () => {
     expect(nearLimit({ athleteLimit: null, athletes: 500 })).toBe(false)
     expect(atLimit({ athleteLimit: null, athletes: 500 })).toBe(false)
+  })
+})
+
+describe('billingPortalUrl', () => {
+  it('solo https; assente o altro = nessun portale', () => {
+    expect(billingPortalUrl('https://billing.example.com/p/abc')).toBe('https://billing.example.com/p/abc')
+    expect(billingPortalUrl(undefined)).toBeNull()
+    expect(billingPortalUrl('http://billing.example.com')).toBeNull()
+    expect(billingPortalUrl('javascript:alert(1)')).toBeNull()
   })
 })

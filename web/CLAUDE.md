@@ -103,6 +103,11 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   disponibile». Nessun incasso nel codice. Sotto la Guida compare «Passa a Pro» a chi è free o mid e «Più
   atleti» al Pro con i posti quasi finiti (`upgradeHint` in `lib/plans.ts`); a tetto raggiunto l'invito di
   nuovi atleti è spento con il rimando ai piani (il blocco vero è il trigger del database).
+- **Smettere di pagare** è sempre possibile e a portata di clic: «Il tuo abbonamento» in `/piani` mostra quando si
+  rinnova (o fino a quando resta attivo se disdetto) e cosa succede disdicendo; il pulsante porta al portale del
+  servizio di pagamento (`VITE_BILLING_PORTAL_URL`, https) o, finché manca, dice «Disdetta presto disponibile».
+  Disdire non cancella dati: si torna Gratuito a fine periodo e si tengono gli atleti. L'eliminazione dell'account
+  non ferma un abbonamento che si rinnova: la funzione la rifiuta (409 `subscription_active`) finché non si disdice.
 - **Profilo, account**: Disattiva (reversibile: al posto dell'app si vede solo la schermata per riattivare o
   uscire) ed Elimina (definitivo, con le conseguenze elencate e l'email da scrivere a mano; Edge Function
   `delete-account`).

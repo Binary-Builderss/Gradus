@@ -96,6 +96,11 @@ Esecuzione: `workouts → set_logs → set_segments`.
   service_role) ritira gli esercizi del coach usati in qualche programma (senza proprietario e con `deleted_at`)
   e cancella le sedute registrate dalla persona; poi si elimina l'utente di Auth e il resto va in cascata. I
   mesocicli scritti da un coach restano agli atleti; quelli di un atleta se ne vanno con lui.
+- **Abbonamento**: `coach_plans.cancel_at_period_end` + `pro_until` (fine del periodo pagato: il piano resta fino
+  a quella data e poi `effective_plan` lo riporta a free da solo) e `billing_ref` (abbonamento presso il servizio di
+  pagamento; null = piano assegnato a mano, senza addebiti). Li scrive solo il webhook del servizio di pagamento
+  (service_role). `prepare_account_deletion` rifiuta (`subscription_active`) un account con `billing_ref` che si
+  rinnova ancora: prima si disdice. Disdire non cancella nessun dato.
 - Le funzioni a pagamento oggi: PDF con marchio, Personalizza e colori dell'app atleta. Il sito del coach resta
   Gradus, uguale per tutti.
 

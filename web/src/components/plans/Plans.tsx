@@ -1,9 +1,10 @@
 import { CheckIcon } from '@phosphor-icons/react'
-import { checkoutUrl, PLANS, type Plan, type PlanUsage } from '@/lib/plans'
+import { billingPortalUrl, checkoutUrl, PLANS, type Plan, type PlanUsage } from '@/lib/plans'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
 
 const m = messages.app.plans
+const dateFormat = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
 
 function Usage({ usage }: { usage: PlanUsage }) {
   const { athletes, athleteLimit } = usage
@@ -26,6 +27,56 @@ function Usage({ usage }: { usage: PlanUsage }) {
         </div>
       )}
     </div>
+  )
+}
+
+/** Stato dell'abbonamento e il modo di smettere di pagare: sempre a portata di clic, per chi ha un piano a pagamento. */
+function Subscription({ usage, freeLimit }: { usage: PlanUsage; freeLimit: number | null }) {
+  const sub = m.subscription
+  const portal = billingPortalUrl()
+  const until = usage.renewsUntil ? dateFormat.format(new Date(usage.renewsUntil)) : null
+  return (
+    <section
+      aria-labelledby="subscription-title"
+      className="grid max-w-xl gap-3 rounded-lg border bg-card p-5"
+    >
+      <div className="grid gap-1">
+        <h2 id="subscription-title" className="text-base font-semibold">
+          {sub.title}
+        </h2>
+        <p className="font-medium">
+          {usage.cancelAtPeriodEnd && until
+            ? sub.ends(until)
+            : usage.hasSubscription && until
+              ? sub.renews(until)
+              : sub.manual}
+        </p>
+      </div>
+      {usage.hasSubscription && (
+        <>
+          {!usage.cancelAtPeriodEnd && <p className="text-muted-foreground">{sub.whatHappens(freeLimit)}</p>}
+          {portal ? (
+            <a
+              href={portal}
+              className="inline-flex h-9 w-fit items-center justify-center rounded-lg border bg-background px-4 text-sm font-medium transition-colors outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              {sub.manage}
+            </a>
+          ) : (
+            <div className="grid gap-1.5">
+              <button
+                type="button"
+                disabled
+                className="inline-flex h-9 w-fit cursor-not-allowed items-center justify-center rounded-lg border bg-background px-4 text-sm font-medium opacity-60"
+              >
+                {sub.manageSoon}
+              </button>
+              <p className="text-xs text-muted-foreground">{sub.manageSoonHint}</p>
+            </div>
+          )}
+        </>
+      )}
+    </section>
   )
 }
 
@@ -58,6 +109,7 @@ export function Plans({ usage, limits }: { usage: PlanUsage; limits: Record<Plan
   const someSoon = PLANS.some((plan, index) => index > currentIndex && checkoutUrl(plan) === null)
   return (
     <div className="grid gap-6">
+      {usage.plan !== 'free' && <Subscription usage={usage} freeLimit={limits.free} />}
       <Usage usage={usage} />
       <div className="grid max-w-6xl gap-4 md:grid-cols-2 xl:grid-cols-4">
         {PLANS.map((plan, index) => {
