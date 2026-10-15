@@ -1,5 +1,5 @@
 // Invito di un atleta da parte del coach. Gira con la service_role (iniettata da Supabase): il browser non la vede mai.
-// Body: { email }. Risposta: { result: 'invited' | 'linked' | 'reopened' | 'already' }.
+// Body: { email, name? }. Il nome entra nel profilo solo se l'atleta è nuovo; poi lo cambia lui. Risposta: { result: 'invited' | 'linked' | 'reopened' | 'already' }.
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { z } from 'npm:zod@4'
 
@@ -8,7 +8,15 @@ const cors = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const body = z.object({ email: z.email().transform((e) => e.trim().toLowerCase()) })
+const body = z.object({
+  email: z.email().transform((e) => e.trim().toLowerCase()),
+  name: z
+    .string()
+    .trim()
+    .max(80)
+    .optional()
+    .transform((n) => n || undefined),
+})
 
 const reply = (status: number, payload: Record<string, unknown>) =>
   new Response(JSON.stringify(payload), { status, headers: { ...cors, 'Content-Type': 'application/json' } })
@@ -30,7 +38,7 @@ Deno.serve(async (req) => {
 
   const parsed = body.safeParse(await req.json().catch(() => null))
   if (!parsed.success) return reply(400, { error: 'invalid_email' })
-  const { email } = parsed.data
+  const { email, name } = parsed.data
 
   const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 
@@ -48,6 +56,8 @@ Deno.serve(async (req) => {
     const siteUrl = Deno.env.get('SITE_URL')
     const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
       redirectTo: siteUrl ? `${siteUrl}/nuova-password` : undefined,
+      // Il trigger su auth.users lo copia in profiles.full_name.
+      data: name ? { full_name: name } : undefined,
     })
     if (error || !data.user) return reply(error?.status === 429 ? 429 : 502, { error: 'invite_failed' })
     athleteId = data.user.id

@@ -2,11 +2,12 @@ import { FilePdfIcon } from '@phosphor-icons/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { resolveColors, STANDARD_COLORS } from '@/lib/brand'
-import { brandingQuery, coachNameQuery, proPlanQuery } from '@/lib/branding'
+import { brandingQuery, proPlanQuery } from '@/lib/branding'
 import type { BlockData, WeekData } from '@/lib/gridModel'
 import { athleteQuery } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
 import { buildPdfModel, pdfFileName } from '@/lib/pdfModel'
+import { displayName, profileQuery } from '@/lib/profile'
 import type { GroupRow, SlotRow } from '@/lib/slots'
 
 const m = messages.app.pdf
@@ -28,16 +29,16 @@ export function DownloadPdfButton({ coachId, program }: { coachId: string; progr
     mutationFn: async () => {
       const { mesocycle } = program
       // Dati freschi al momento del clic: il piano e il marchio possono essere cambiati da poco.
-      const [pro, branding, coachName, athlete] = await Promise.all([
+      const [pro, branding, coachProfile, athlete] = await Promise.all([
         queryClient.fetchQuery({ ...proPlanQuery(coachId), staleTime: 0 }),
         queryClient.fetchQuery({ ...brandingQuery(coachId), staleTime: 0 }),
-        queryClient.fetchQuery(coachNameQuery(coachId)),
+        queryClient.fetchQuery(profileQuery(coachId)),
         queryClient.fetchQuery(athleteQuery(coachId, mesocycle.athlete_id)),
       ])
       const athleteName = athlete?.athlete?.full_name?.trim() || athlete?.athlete?.email || ''
       const branded = pro && branding !== null
       const model = buildPdfModel({
-        brandName: branded ? branding.brandName?.trim() || coachName : 'Gradus',
+        brandName: branded ? branding.brandName?.trim() || displayName(coachProfile) : 'Gradus',
         athleteName,
         ...program,
         formatDate: (iso) => dateFormat.format(new Date(iso)),

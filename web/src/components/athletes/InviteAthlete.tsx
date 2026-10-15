@@ -42,7 +42,8 @@ export function InviteAthlete() {
     }
     setFieldError(null)
     setDone(null)
-    invite.mutate(parsed.data.email, { onSuccess: () => form.reset() })
+    const name = String(new FormData(form).get('name') ?? '').trim()
+    invite.mutate({ email: parsed.data.email, name: name || undefined }, { onSuccess: () => form.reset() })
   }
 
   if (!open) {
@@ -77,6 +78,11 @@ export function InviteAthlete() {
         aria-describedby="invite-feedback"
         className="h-9 text-sm"
       />
+      <div className="grid gap-2">
+        <Label htmlFor="invite-name">{m.nameLabel}</Label>
+        <Input id="invite-name" name="name" autoComplete="off" maxLength={80} className="h-9 text-sm" />
+        <p className="text-xs text-muted-foreground">{m.nameHint}</p>
+      </div>
       <p id="invite-feedback" role={error ? 'alert' : 'status'} className="min-h-5 text-sm">
         {error ? (
           <span className="text-destructive">{error}</span>

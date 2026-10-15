@@ -23,6 +23,7 @@ describe('buildTourPlan', () => {
       '/esercizi',
       '/impostazioni',
       '/impostazioni',
+      '/impostazioni',
     ])
   })
 
@@ -39,6 +40,7 @@ describe('buildTourPlan', () => {
       '/',
       '/',
       '/esercizi',
+      '/impostazioni',
       '/impostazioni',
       '/impostazioni',
     ])

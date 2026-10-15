@@ -97,7 +97,7 @@ Data/Remote/    client Supabase
   non completata, note del coach, lista gruppi con riepilogo compatto e stato; storico mesocicli.
 - **Check** (fase 2): check giornaliero mattina/sera, feedback per muscolo a fine seduta, questionari.
 - **Progressi** (fase 3): misure, pliche, circonferenze, foto (Storage privato), grafico carichi.
-- **Profilo**: coach collegato, impostazioni (scala sforzo, suoni timer), stato sincronizzazione, logout.
+- **Profilo**: nome e cognome (modificabile: è il nome con cui il coach vede l'atleta; se l'invito non l'aveva, in elenco compare l'email, quindi chiederlo al primo accesso), coach collegato, impostazioni (scala sforzo, suoni timer), stato sincronizzazione, logout.
 
 ## Test obbligatori
 

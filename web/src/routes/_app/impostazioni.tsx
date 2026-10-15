@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { BrandForm } from '@/components/brand/BrandForm'
+import { ProfileForm } from '@/components/brand/ProfileForm'
 import { brandingQuery, proPlanQuery } from '@/lib/branding'
 import { messages } from '@/lib/messages'
+import { displayName, profileQuery } from '@/lib/profile'
 
 const m = messages.app.settings
 
@@ -14,6 +16,7 @@ function SettingsPage() {
   const { user } = Route.useRouteContext()
   const branding = useQuery(brandingQuery(user.id))
   const pro = useQuery(proPlanQuery(user.id))
+  const profile = useQuery(profileQuery(user.id))
   const ready = branding.isSuccess && pro.isSuccess
 
   return (
@@ -27,6 +30,19 @@ function SettingsPage() {
         )}
       </div>
       <div className="grid gap-1">
+        <h2 className="text-sm font-semibold">{m.profile.title}</h2>
+        <p className="max-w-prose text-muted-foreground">{m.profile.intro}</p>
+      </div>
+      {profile.isSuccess ? (
+        <ProfileForm userId={user.id} profile={profile.data} />
+      ) : profile.isError ? (
+        <p role="alert" className="text-destructive">
+          {m.loadError}
+        </p>
+      ) : (
+        <div aria-hidden className="h-40 max-w-md animate-pulse rounded-lg border bg-muted/40" />
+      )}
+      <div className="grid gap-1 border-t pt-6">
         <h2 className="text-sm font-semibold">{m.brand.title}</h2>
         <p className="max-w-prose text-muted-foreground">{m.brand.intro}</p>
       </div>
@@ -35,7 +51,12 @@ function SettingsPage() {
           {m.loadError}
         </p>
       ) : ready ? (
-        <BrandForm coachId={user.id} fallbackName={user.email ?? ''} initial={branding.data} pro={pro.data} />
+        <BrandForm
+          coachId={user.id}
+          fallbackName={displayName(profile.data, user.email)}
+          initial={branding.data}
+          pro={pro.data}
+        />
       ) : (
         <div aria-hidden className="h-64 animate-pulse rounded-lg border bg-muted/40" />
       )}

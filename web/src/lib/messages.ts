@@ -132,6 +132,10 @@ export const messages = {
           title: 'Libreria esercizi',
           body: 'Gli esercizi che scegli nelle sedute vengono da qui. Il catalogo è comune; aggiungi i tuoi con “Nuovo esercizio”.',
         },
+        profile: {
+          title: 'Il tuo profilo',
+          body: 'Metti il tuo nome: lo vedono i tuoi atleti e compare nel PDF. Senza nome, al suo posto si vede l’email.',
+        },
         brand: {
           title: 'Il tuo marchio',
           body: 'Qui scegli logo e colori che compaiono nel PDF della scheda e, più avanti, nell’app dei tuoi atleti. Parti dai colori di Gradus e cambiali come vuoi. È una funzione del piano Pro.',
@@ -175,6 +179,19 @@ export const messages = {
       title: 'Impostazioni',
       loadError: 'Non riesco a caricare le impostazioni.',
       plan: { free: 'Piano gratuito', pro: 'Piano Pro' },
+      profile: {
+        title: 'Profilo',
+        intro:
+          'Il nome con cui ti vedono i tuoi atleti e con cui firmi il PDF se non hai un nome del marchio.',
+        name: 'Nome e cognome',
+        namePlaceholder: 'Come ti chiamano i tuoi atleti',
+        email: 'Email',
+        emailHint: 'È quella con cui accedi: non si cambia da qui.',
+        save: 'Salva',
+        saving: 'Salvataggio',
+        saved: 'Salvato',
+        saveError: 'Non riesco a salvare. Riprova.',
+      },
       brand: {
         title: 'Il tuo marchio',
         intro:
@@ -546,6 +563,8 @@ export const messages = {
         open: 'Invita atleta',
         close: 'Chiudi',
         label: "Email dell'atleta",
+        nameLabel: 'Nome e cognome (facoltativo)',
+        nameHint: 'Così lo riconosci in elenco anche prima che accetti. Poi può cambiarlo lui.',
         send: 'Invia invito',
         sending: 'Invio in corso',
         invited: "Invito inviato: l'atleta riceve un'email per scegliere la password.",

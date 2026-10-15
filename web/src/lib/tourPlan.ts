@@ -68,6 +68,7 @@ export function buildTourPlan(args: {
   const settings: TourRoute = { to: '/impostazioni' }
   plan.push(
     step(library, t.exercises, 'exercise-new'),
+    step(settings, t.profile, 'profile-form'),
     step(settings, t.brand, 'brand-form'),
     step(settings, t.finish),
   )

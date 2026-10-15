@@ -5,9 +5,9 @@ import { supabase } from './supabase'
 
 const m = messages.app.athletes.invite
 
-export async function inviteAthlete(email: string): Promise<InviteResult> {
+export async function inviteAthlete(args: { email: string; name?: string }): Promise<InviteResult> {
   const { data, error } = await supabase.functions.invoke<{ result: InviteResult }>('invite-athlete', {
-    body: { email },
+    body: args,
   })
   if (error) {
     if (error instanceof FunctionsHttpError) {
