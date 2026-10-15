@@ -30,16 +30,8 @@ const muscleWeight = z.object({
   weight: z.number(e.weightRange).gt(0, e.weightRange).max(1, e.weightRange),
 })
 
-/** Video solo http(s): il link viene mostrato all'atleta, niente schemi come `javascript:`. */
-const videoUrl = z
-  .string()
-  .trim()
-  .refine((v) => v === '' || /^https?:\/\/\S+$/i.test(v), e.videoInvalid)
-  .transform((v) => (v === '' ? null : v))
-
 export const exerciseSchema = z.object({
   name: z.string().trim().min(1, e.nameRequired).max(120, e.nameTooLong),
-  video_url: videoUrl,
   notes: z
     .string()
     .trim()

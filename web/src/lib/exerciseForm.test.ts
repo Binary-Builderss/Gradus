@@ -1,21 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { diffMuscles, exerciseSchema } from './exerciseForm'
 
-const ok = { name: ' Curl ai cavi ', video_url: '', notes: '  ', muscles: [{ muscle: 'biceps', weight: 1 }] }
+const ok = { name: ' Curl ai cavi ', notes: '  ', muscles: [{ muscle: 'biceps', weight: 1 }] }
 
 describe('exerciseSchema', () => {
   it('normalizza nome, video e note vuoti', () =>
     expect(exerciseSchema.parse(ok)).toEqual({
       name: 'Curl ai cavi',
-      video_url: null,
       notes: null,
       muscles: [{ muscle: 'biceps', weight: 1 }],
     }))
-  it('accetta solo video http(s)', () => {
-    expect(exerciseSchema.safeParse({ ...ok, video_url: 'https://youtu.be/abc' }).success).toBe(true)
-    expect(exerciseSchema.safeParse({ ...ok, video_url: 'javascript:alert(1)' }).success).toBe(false)
-    expect(exerciseSchema.safeParse({ ...ok, video_url: 'youtube.com/x' }).success).toBe(false)
-  })
   it('nome obbligatorio', () => expect(exerciseSchema.safeParse({ ...ok, name: ' ' }).success).toBe(false))
   it('almeno un muscolo, senza doppioni, peso in (0, 1]', () => {
     expect(exerciseSchema.safeParse({ ...ok, muscles: [] }).success).toBe(false)

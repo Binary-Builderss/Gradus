@@ -1,8 +1,9 @@
-import { CopyIcon, PencilSimpleIcon, PlayCircleIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
+import { CopyIcon, PencilSimpleIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ExerciseForm } from '@/components/exercises/ExerciseForm'
+import { ExerciseVideos } from '@/components/exercises/ExerciseVideos'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { deleteExercise, type LibraryExercise, libraryQuery } from '@/lib/library'
@@ -98,6 +99,7 @@ function ExercisesPage() {
                 onEdit={() => setEditing({ mode: 'edit', id: e.id })}
                 onCopy={() => setEditing({ mode: 'copy', source: e })}
                 onRemove={() => remove.mutate(e.id)}
+                coachId={user.id}
               />
             ),
           )}
@@ -112,7 +114,9 @@ function ExerciseItem({
   onEdit,
   onCopy,
   onRemove,
+  coachId,
 }: {
+  coachId: string
   exercise: LibraryExercise
   onEdit: () => void
   onCopy: () => void
@@ -126,13 +130,6 @@ function ExerciseItem({
         <span className="rounded-md border px-2 py-0.5 text-xs font-medium text-muted-foreground">
           {own ? m.mine : m.catalog}
         </span>
-        {e.video_url && (
-          <Button variant="ghost" size="icon" aria-label={m.watchVideo} asChild>
-            <a href={e.video_url} target="_blank" rel="noopener noreferrer">
-              <PlayCircleIcon />
-            </a>
-          </Button>
-        )}
         {own ? (
           <>
             <Button variant="ghost" size="icon" aria-label={m.edit} title={m.edit} onClick={onEdit}>
@@ -164,6 +161,7 @@ function ExerciseItem({
         ))}
       </ul>
       {e.notes && <p className="text-sm text-muted-foreground">{e.notes}</p>}
+      <ExerciseVideos coachId={coachId} exerciseId={e.id} videos={e.videos} />
     </li>
   )
 }
