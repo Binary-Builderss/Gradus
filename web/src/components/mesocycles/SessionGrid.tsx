@@ -4,6 +4,7 @@ import { Fragment, useMemo, useRef, useState, type ClipboardEvent, type Keyboard
 import { BlockDetails } from '@/components/mesocycles/BlockDetails'
 import { useEditorMutation } from '@/components/mesocycles/useEditorMutation'
 import { Button } from '@/components/ui/button'
+import { Collapsible } from '@/components/ui/collapsible'
 import { addBlock, writeCells } from '@/lib/blocks'
 import { formatCell, parseCell } from '@/lib/cellSyntax'
 import {
@@ -375,9 +376,24 @@ export function SessionGrid({
           </tfoot>
         </table>
       </div>
-      <p className="text-xs text-muted-foreground" aria-live="polite">
-        {note || m.grid.syntax}
+      <p className="text-xs text-muted-foreground empty:hidden" aria-live="polite">
+        {note}
       </p>
+      <Collapsible title={m.grid.syntaxTitle} className="text-muted-foreground">
+        <p className="text-xs">{m.grid.syntaxIntro}</p>
+        <dl className="grid gap-1.5 text-xs">
+          {m.grid.syntaxExamples.map((x) => (
+            <div key={x.code} className="flex flex-wrap items-baseline gap-x-3">
+              <dt>
+                <code className="rounded border bg-muted px-1.5 py-0.5 font-mono text-foreground">
+                  {x.code}
+                </code>
+              </dt>
+              <dd>{x.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </Collapsible>
     </div>
   )
 }
@@ -433,6 +449,7 @@ function GridCell({
       }
       readOnly={locked}
       value={draft}
+      placeholder={messages.app.mesocycle.grid.cellPlaceholder}
       onChange={(e) => setDraft(e.target.value)}
       onFocus={onFocus}
       onMouseDown={(e) => {
@@ -448,7 +465,7 @@ function GridCell({
         }
       }}
       className={cn(
-        'h-8 w-full min-w-28 bg-transparent px-2 text-center font-mono text-xs tabular-nums outline-none focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset',
+        'h-8 w-full min-w-28 bg-transparent px-2 text-center font-mono text-xs tabular-nums outline-none placeholder:text-transparent focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset focus:placeholder:text-muted-foreground/60',
         selected && 'bg-accent/40',
         locked && 'cursor-not-allowed text-muted-foreground',
         invalid && 'bg-destructive/10 ring-2 ring-destructive ring-inset',

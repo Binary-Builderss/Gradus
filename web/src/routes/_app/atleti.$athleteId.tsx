@@ -53,7 +53,10 @@ function AthletePage() {
       {mesocycles.isPending ? (
         <div aria-hidden className="h-14 animate-pulse rounded-lg border bg-muted/40" />
       ) : mesocycles.data?.length === 0 && !creating ? (
-        <p className="text-muted-foreground">{m.noMesocycles}</p>
+        <div className="space-y-1 rounded-lg border border-dashed p-5">
+          <h2 className="text-sm font-semibold">{m.noMesocycles}</h2>
+          <p className="max-w-prose text-muted-foreground">{m.noMesocyclesHint}</p>
+        </div>
       ) : (
         <ul className="divide-y overflow-hidden rounded-lg border bg-card">
           {mesocycles.data?.map((x) => (

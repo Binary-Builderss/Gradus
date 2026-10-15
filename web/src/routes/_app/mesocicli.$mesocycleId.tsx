@@ -1,10 +1,11 @@
-import { ArrowLeftIcon, PlusIcon } from '@phosphor-icons/react'
+import { ArrowLeftIcon, CalendarBlankIcon, PlusIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { Tabs } from 'radix-ui'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { SaveStatus } from '@/components/mesocycles/SaveStatus'
 import { SessionBlock } from '@/components/mesocycles/SessionBlock'
-import { SortableItem, SortableList } from '@/components/mesocycles/Sortable'
+import { MesocycleSettings } from '@/components/mesocycles/MesocycleSettings'
 import { useEditorMutation } from '@/components/mesocycles/useEditorMutation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +15,6 @@ import { messages } from '@/lib/messages'
 import { positionChanges } from '@/lib/slotRules'
 import { groupsQuery, reorder, slotsQuery } from '@/lib/slots'
 import { blocksQuery, lockedWeeksQuery, weeksQuery } from '@/lib/blocks'
-import { cn } from '@/lib/utils'
 
 const m = messages.app.mesocycle
 const athleteMessages = messages.app.athleteDetail
@@ -33,6 +33,7 @@ function MesocyclePage() {
   const blocks = useQuery(blocksQuery(mesocycleId))
   const weekRows = useQuery(weeksQuery(mesocycleId))
   const locked = useQuery(lockedWeeksQuery(mesocycleId))
+  const [selected, setSelected] = useState<string | null>(null)
   const lockedWeeks = useMemo(() => new Set(locked.data ?? []), [locked.data])
 
   const mesoKeys = [['mesocycle', mesocycleId], ['mesocycles']]
@@ -58,6 +59,22 @@ function MesocyclePage() {
   if (meso.isSuccess && !meso.data) return <p>{m.notFound}</p>
   const data = meso.data
   const list = sessions.data ?? []
+  const current = list.find((x) => x.id === selected) ?? list[0]
+
+  function moveSession(id: string, direction: -1 | 1) {
+    const ids = list.map((x) => x.id)
+    const from = ids.indexOf(id)
+    const to = from + direction
+    if (from < 0 || to < 0 || to >= ids.length) return
+    ;[ids[from], ids[to]] = [ids[to]!, ids[from]!]
+    moveSessions.mutate(ids)
+  }
+  function addNewSession() {
+    add.mutate(
+      { position: nextPosition(list), name: m.defaultSessionName(list.length + 1) },
+      { onSuccess: (id) => setSelected(id) },
+    )
+  }
 
   return (
     <section className="space-y-5">
@@ -79,7 +96,7 @@ function MesocyclePage() {
 
       {data ? (
         <>
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             <div className="flex flex-wrap items-center gap-3">
               <Input
                 key={data.name}
@@ -96,92 +113,67 @@ function MesocyclePage() {
                 {athleteMessages.status[data.status]}
               </span>
             </div>
-            <label className="flex items-center gap-2 text-xs text-muted-foreground">
-              {athleteMessages.weeks}
-              <Input
-                key={data.weeks}
-                type="number"
-                min={1}
-                max={52}
-                defaultValue={data.weeks}
-                onBlur={(e) => {
-                  const weeks = Number(e.target.value)
-                  if (Number.isInteger(weeks) && weeks >= 1 && weeks <= 52 && weeks !== data.weeks)
-                    setWeeks.mutate({ weeks, deload: data.deload_weeks })
-                  else e.target.value = String(data.weeks)
-                }}
-                className="h-8 w-16 text-sm"
-              />
-            </label>
+            <MesocycleSettings
+              weeks={data.weeks}
+              deloadWeeks={data.deload_weeks}
+              onWeeks={(weeks) => setWeeks.mutate({ weeks, deload: data.deload_weeks })}
+              onToggleDeload={(week) => setDeload.mutate(toggleDeload(data.deload_weeks, week, data.weeks))}
+            />
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border bg-card px-3 py-2">
-            <h2 className="text-xs font-medium text-muted-foreground">{m.deload}</h2>
-            <ul className="flex flex-wrap gap-1">
-              {Array.from({ length: data.weeks }, (_, i) => i + 1).map((week) => {
-                const on = data.deload_weeks.includes(week)
-                return (
-                  <li key={week}>
-                    <button
-                      type="button"
-                      aria-pressed={on}
-                      onClick={() => setDeload.mutate(toggleDeload(data.deload_weeks, week, data.weeks))}
-                      className={cn(
-                        'h-7 min-w-9 rounded-md border px-2 font-mono text-xs transition-colors',
-                        on
-                          ? 'border-warning-foreground/40 bg-warning text-warning-foreground'
-                          : 'text-muted-foreground hover:bg-muted',
-                      )}
-                    >
-                      {m.weekShort(week)}
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
-            <p className="text-xs text-muted-foreground">{m.deloadHint}</p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-sm font-semibold">{m.sessions}</h2>
-              <Button
-                onClick={() =>
-                  add.mutate({ position: nextPosition(list), name: m.defaultSessionName(list.length + 1) })
-                }
-              >
+          {sessions.isSuccess && list.length === 0 ? (
+            <div className="grid justify-items-start gap-3 rounded-lg border border-dashed p-5">
+              <CalendarBlankIcon size={20} className="text-muted-foreground" />
+              <div className="space-y-1">
+                <h2 className="text-sm font-semibold">{m.noSessions}</h2>
+                <p className="max-w-prose text-muted-foreground">{m.noSessionsHint}</p>
+              </div>
+              <Button onClick={addNewSession}>
                 <PlusIcon data-icon="inline-start" />
                 {m.addSession}
               </Button>
             </div>
-            {sessions.isSuccess && list.length === 0 ? (
-              <p className="text-muted-foreground">{m.noSessions}</p>
-            ) : (
-              <SortableList ids={list.map((x) => x.id)} onReorder={(ordered) => moveSessions.mutate(ordered)}>
-                <ul className="grid gap-3">
+          ) : (
+            <Tabs.Root value={current?.id ?? ''} onValueChange={setSelected}>
+              <div className="flex items-center gap-2 border-b">
+                <Tabs.List aria-label={m.sessions} className="flex min-w-0 gap-1 overflow-x-auto">
                   {list.map((x) => (
-                    <SortableItem key={x.id} id={x.id}>
-                      {(handle) => (
-                        <SessionBlock
-                          coachId={user.id}
-                          mesocycleId={mesocycleId}
-                          session={x}
-                          groups={(groups.data ?? []).filter((g) => g.session_id === x.id)}
-                          slots={slots.data ?? []}
-                          blocks={blocks.data ?? []}
-                          weeks={weekRows.data ?? []}
-                          totalWeeks={data.weeks}
-                          deloadWeeks={data.deload_weeks}
-                          lockedWeeks={lockedWeeks}
-                          handle={handle}
-                        />
-                      )}
-                    </SortableItem>
+                    <Tabs.Trigger
+                      key={x.id}
+                      value={x.id}
+                      className="-mb-px max-w-48 truncate border-b-2 border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=active]:border-primary data-[state=active]:text-foreground"
+                    >
+                      {x.name}
+                    </Tabs.Trigger>
                   ))}
-                </ul>
-              </SortableList>
-            )}
-          </div>
+                </Tabs.List>
+                <Button variant="ghost" size="sm" className="mb-1 shrink-0" onClick={addNewSession}>
+                  <PlusIcon data-icon="inline-start" />
+                  {m.addSessionShort}
+                </Button>
+              </div>
+              {current && (
+                <Tabs.Content value={current.id} className="pt-4 outline-none">
+                  <SessionBlock
+                    key={current.id}
+                    coachId={user.id}
+                    mesocycleId={mesocycleId}
+                    session={current}
+                    groups={(groups.data ?? []).filter((g) => g.session_id === current.id)}
+                    slots={slots.data ?? []}
+                    blocks={blocks.data ?? []}
+                    weeks={weekRows.data ?? []}
+                    totalWeeks={data.weeks}
+                    deloadWeeks={data.deload_weeks}
+                    lockedWeeks={lockedWeeks}
+                    index={list.indexOf(current)}
+                    total={list.length}
+                    onMove={(direction) => moveSession(current.id, direction)}
+                  />
+                </Tabs.Content>
+              )}
+            </Tabs.Root>
+          )}
         </>
       ) : (
         <div aria-hidden className="h-40 animate-pulse rounded-lg border bg-muted/40" />

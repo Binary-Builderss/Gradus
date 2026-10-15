@@ -89,8 +89,13 @@ export const sessionsQuery = (mesocycleId: string) =>
   })
 
 export async function addSession(mesocycleId: string, position: number, name: string) {
-  const { error } = await supabase.from('sessions').insert({ mesocycle_id: mesocycleId, position, name })
+  const { data, error } = await supabase
+    .from('sessions')
+    .insert({ mesocycle_id: mesocycleId, position, name })
+    .select('id')
+    .single()
   if (error) throw error
+  return data.id
 }
 
 export async function renameSession(sessionId: string, mesocycleId: string, name: string) {
