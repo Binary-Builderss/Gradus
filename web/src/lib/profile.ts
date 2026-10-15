@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 import { supabase } from './supabase'
 
-export type Profile = { fullName: string | null; email: string | null }
+export type Profile = { fullName: string | null; email: string | null; disabledAt: string | null }
 
 export const profileQuery = (userId: string) =>
   queryOptions({
@@ -9,11 +9,15 @@ export const profileQuery = (userId: string) =>
     queryFn: async (): Promise<Profile> => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('full_name, email')
+        .select('full_name, email, disabled_at')
         .eq('id', userId)
         .maybeSingle()
       if (error) throw error
-      return { fullName: data?.full_name ?? null, email: data?.email ?? null }
+      return {
+        fullName: data?.full_name ?? null,
+        email: data?.email ?? null,
+        disabledAt: data?.disabled_at ?? null,
+      }
     },
   })
 

@@ -11,6 +11,7 @@ import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/compo
 import { Tip } from '@/components/ui/tooltip'
 import { initials } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
+import type { PlanUsage } from '@/lib/plans'
 import { cn } from '@/lib/utils'
 
 const m = messages.app
@@ -23,7 +24,7 @@ const m = messages.app
 export function AccountMenu({
   name,
   email,
-  pro,
+  usage,
   variant,
   collapsed = false,
   onStartTour,
@@ -31,8 +32,8 @@ export function AccountMenu({
 }: {
   name: string
   email: string | undefined
-  /** Piano pro attivo; undefined finché non si sa. */
-  pro: boolean | undefined
+  /** Piano e posti; undefined finché non si sa. */
+  usage: PlanUsage | undefined
   variant: 'sidebar' | 'header'
   collapsed?: boolean
   onStartTour?: () => void
@@ -83,9 +84,9 @@ export function AccountMenu({
         <div className="grid gap-0.5 px-2.5 py-2">
           <p className="truncate text-sm font-medium">{name}</p>
           {email && email !== name && <p className="truncate text-xs text-muted-foreground">{email}</p>}
-          {pro !== undefined && (
+          {usage && (
             <p className="mt-1 w-fit rounded border px-1.5 py-px text-xs text-muted-foreground">
-              {pro ? m.customize.plan.pro : m.customize.plan.free}
+              {m.plans.planName[usage.plan]}
             </p>
           )}
         </div>
@@ -100,7 +101,7 @@ export function AccountMenu({
           <Link to="/personalizza">
             <PaintBrushIcon />
             {m.nav.customize}
-            {pro === false && (
+            {usage && !usage.canCustomize && (
               <span className="ml-auto rounded border px-1.5 py-px text-xs text-muted-foreground">Pro</span>
             )}
           </Link>

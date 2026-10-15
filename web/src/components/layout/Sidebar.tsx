@@ -14,6 +14,7 @@ import { AccountMenu } from '@/components/layout/AccountMenu'
 import { Button } from '@/components/ui/button'
 import { Tip } from '@/components/ui/tooltip'
 import { messages } from '@/lib/messages'
+import { type PlanUsage, upgradeHint } from '@/lib/plans'
 import { cn } from '@/lib/utils'
 
 const m = messages.app
@@ -84,8 +85,8 @@ function ActionItem({
 }
 
 /** Invito al piano Pro per chi non lo ha: sotto la Guida, porta alla pagina dei piani. */
-function UpgradeCta({ collapsed }: { collapsed: boolean }) {
-  const label = m.plans.upsellTitle
+function UpgradeCta({ collapsed, hint }: { collapsed: boolean; hint: { title: string; body: string } }) {
+  const label = hint.title
   return (
     <Tip label={label} disabled={!collapsed}>
       <Link
@@ -102,7 +103,7 @@ function UpgradeCta({ collapsed }: { collapsed: boolean }) {
         ) : (
           <span className="grid min-w-0">
             <span className="truncate text-sm font-semibold">{label}</span>
-            <span className="truncate text-xs opacity-80">{m.plans.upsellBody}</span>
+            <span className="truncate text-xs opacity-80">{hint.body}</span>
           </span>
         )}
       </Link>
@@ -116,7 +117,7 @@ export function Sidebar({
   onToggle,
   name,
   email,
-  pro,
+  usage,
   onStartTour,
   onSignOut,
 }: {
@@ -124,10 +125,11 @@ export function Sidebar({
   onToggle: () => void
   name: string
   email: string | undefined
-  pro: boolean | undefined
+  usage: PlanUsage | undefined
   onStartTour: () => void
   onSignOut: () => void
 }): ReactNode {
+  const hint = usage ? upgradeHint(usage) : null
   const toggle = (
     <Tip label={collapsed ? m.nav.expand : m.nav.collapse} disabled={!collapsed}>
       <Button
@@ -172,13 +174,13 @@ export function Sidebar({
 
       <div className="mt-auto grid gap-1 border-t px-2 py-2">
         <ActionItem icon={CompassIcon} label={m.tour.open} collapsed={collapsed} onClick={onStartTour} />
-        {pro === false && <UpgradeCta collapsed={collapsed} />}
+        {hint && <UpgradeCta collapsed={collapsed} hint={hint} />}
         <AccountMenu
           variant="sidebar"
           collapsed={collapsed}
           name={name}
           email={email}
-          pro={pro}
+          usage={usage}
           onSignOut={onSignOut}
         />
       </div>

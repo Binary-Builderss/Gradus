@@ -1,5 +1,6 @@
 import { PaperPlaneTiltIcon, UserPlusIcon, XIcon } from '@phosphor-icons/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,7 +12,8 @@ import { messages } from '@/lib/messages'
 
 const m = messages.app.athletes.invite
 
-export function InviteAthlete() {
+/** `limit`: tetto di atleti già raggiunto (null = si può invitare). */
+export function InviteAthlete({ limit }: { limit: number | null }) {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [fieldError, setFieldError] = useState<string | null>(null)
@@ -22,6 +24,7 @@ export function InviteAthlete() {
     onSuccess: async (result) => {
       setDone(inviteResultMessage(result))
       await queryClient.invalidateQueries({ queryKey: ['athletes'] })
+      await queryClient.invalidateQueries({ queryKey: ['plan-usage'] })
     },
   })
 
@@ -44,6 +47,23 @@ export function InviteAthlete() {
     setDone(null)
     const name = String(new FormData(form).get('name') ?? '').trim()
     invite.mutate({ email: parsed.data.email, name: name || undefined }, { onSuccess: () => form.reset() })
+  }
+
+  if (limit !== null) {
+    return (
+      <div className="grid max-w-xs gap-1.5 sm:justify-items-end" data-tour="invite">
+        <Button disabled>
+          <UserPlusIcon data-icon="inline-start" />
+          {m.open}
+        </Button>
+        <p className="text-sm text-muted-foreground sm:text-right">
+          {m.limitFull(limit)}{' '}
+          <Link to="/piani" className="text-primary underline-offset-4 hover:underline">
+            {m.limitUpgrade}
+          </Link>
+        </p>
+      </div>
+    )
   }
 
   if (!open) {

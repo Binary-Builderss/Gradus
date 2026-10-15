@@ -76,16 +76,28 @@ Esecuzione: `workouts → set_logs → set_segments`.
 - Sforzo: BUF = ripetizioni di riserva (RIR), quindi RPE = 10 − BUF. Lo sforzo si salva comunque con la
   sua scala (`effort_value` + `effort_scale`).
 
-## Piano e marchio del coach
+## Piano, tetto di atleti, marchio e account
 
-- `coach_plans`: nessuna riga = gratuito. Nessun client scrive qui (solo service_role o SQL): per provare le
-  funzioni a pagamento si inserisce una riga `pro` al coach di prova. `private.is_pro` / `has_pro_plan()` sono
-  l'unico posto dove si decide se un coach è pro (le funzioni a pagamento si controllano lì, non nel client).
-- `coach_branding`: logo (PNG base64) e colori `#RRGGBB` liberi con chiavi fisse (`primary`, `on_primary`,
-  `background`, `foreground`, `surface`, `muted_foreground`, `border`), nome del marchio. Lo scrive solo un
-  coach pro; l'atleta collegato lo legge solo finché il coach è pro. Chiavi assenti = colori standard di Gradus.
-- Le funzioni a pagamento oggi: PDF con marchio (colori, logo, filigrana) e colori personalizzati dell'app
-  atleta. Il sito del coach resta Gradus, uguale per tutti.
+- `coach_plans`: nessuna riga = gratuito. Nessun client scrive qui (solo service_role o SQL): per provare un
+  piano si inserisce una riga al coach di prova. Livelli e tetto di atleti: **free 20, mid 60, pro 100,
+  unlimited nessun tetto**; un piano a pagamento con `pro_until` scaduto vale free. Conta chi ha un
+  collegamento `pending` o `active` (l'invito in attesa occupa il posto), non quello con sé stesso né i chiusi.
+  Il tetto lo fa rispettare il trigger `enforce_athlete_limit` (vale per ogni via di scrittura); chi lo supera
+  dopo un declassamento tiene gli atleti ma non ne aggiunge. `plan_usage()` dà piano, tetto e atleti al client.
+  Le Edge Function e il web non ricalcolano le regole: le leggono da lì.
+- `private.is_pro` = pro **e unlimited** (non mid): è l'unico posto che decide chi ha Personalizza e il PDF col
+  marchio. `has_pro_plan()` lo espone al client.
+- `coach_branding`: logo (PNG base64), colori `#RRGGBB` liberi con chiavi fisse (`primary`, `on_primary`,
+  `background`, `foreground`, `surface`, `muted_foreground`, `border`), nome del marchio. Lo scrive solo un coach
+  pro in su; l'atleta collegato lo legge solo finché il coach è pro. Chiavi assenti = colori standard di Gradus.
+- **Account**: `profiles.disabled_at` = account disattivato, reversibile dalla persona (il web e l'app mostrano
+  una schermata per riattivarlo; un coach disattivato non può invitare). La **cancellazione** è definitiva ed è
+  la Edge Function `delete-account` (conferma con l'email scritta a mano): `prepare_account_deletion` (solo
+  service_role) ritira gli esercizi del coach usati in qualche programma (senza proprietario e con `deleted_at`)
+  e cancella le sedute registrate dalla persona; poi si elimina l'utente di Auth e il resto va in cascata. I
+  mesocicli scritti da un coach restano agli atleti; quelli di un atleta se ne vanno con lui.
+- Le funzioni a pagamento oggi: PDF con marchio, Personalizza e colori dell'app atleta. Il sito del coach resta
+  Gradus, uguale per tutti.
 
 ## Sicurezza
 

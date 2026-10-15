@@ -81,8 +81,8 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   allo stato di default.
 - Menu laterale (`components/layout/Sidebar.tsx`): in alto il marchio, al centro le sezioni di lavoro (Atleti,
   Esercizi), in basso la Guida e **il menu dell'account** (`AccountMenu`: nome, email e piano, Profilo, Personalizza, Piano e abbonamento,
-  Esci). Profilo, Personalizza e Piano sono pagine diverse: il Profilo è la persona (nome, email, password e,
-  più avanti, eliminazione dell'account), Personalizza è il marchio (solo piano Pro, bloccata per gli altri),
+  Esci). Profilo, Personalizza e Piano sono pagine diverse: il Profilo è la persona (nome, email, password, disattivazione ed
+  eliminazione dell'account), Personalizza è il marchio (piano Pro e Unlimited, bloccata per gli altri),
   Piano e abbonamento confronta Gratuito e Pro. Sotto la Guida, a chi non ha il Pro, compare «Passa a Pro». Si comprime a una barra di
   sole icone che tiene il marchio (scelta in localStorage); da compresso ogni voce ha l'etichetta al passaggio
   del mouse e il nome accessibile. Su telefono lo stesso menu è l'avatar nell'header. Una sezione di lavoro
@@ -96,6 +96,16 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 - **Guida a passi** (driver.js, pulsante "Guida" nella barra laterale): il percorso è in `src/lib/tourPlan.ts`,
   i testi in `messages.app.tour`, gli elementi evidenziati hanno `data-tour="..."`. Una pagina o un'azione
   principale nuova va aggiunta alla guida nello stesso commit. La guida non deve mai modificare dati.
+
+- **Piani** (`/piani`): Gratuito, Mid, Pro e Unlimited a confronto, con i posti usati (`plan_usage`) e i tetti letti
+  da `plan_limits` (i numeri stanno solo nel database). L'acquisto di ogni piano è un link https in
+  `VITE_CHECKOUT_URL_MID` / `_PRO` / `_UNLIMITED` (facoltative): finché manca il pulsante resta «Presto
+  disponibile». Nessun incasso nel codice. Sotto la Guida compare «Passa a Pro» a chi è free o mid e «Più
+  atleti» al Pro con i posti quasi finiti (`upgradeHint` in `lib/plans.ts`); a tetto raggiunto l'invito di
+  nuovi atleti è spento con il rimando ai piani (il blocco vero è il trigger del database).
+- **Profilo, account**: Disattiva (reversibile: al posto dell'app si vede solo la schermata per riattivare o
+  uscire) ed Elimina (definitivo, con le conseguenze elencate e l'email da scrivere a mano; Edge Function
+  `delete-account`).
 
 ## Regole specifiche del web
 

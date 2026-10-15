@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { DangerZone } from '@/components/account/DangerZone'
 import { PasswordReset } from '@/components/brand/PasswordReset'
 import { ProfileForm } from '@/components/brand/ProfileForm'
 import { messages } from '@/lib/messages'
@@ -27,6 +28,11 @@ function ProfilePage() {
           {profile.data.email && (
             <div className="max-w-md border-t pt-6">
               <PasswordReset email={profile.data.email} />
+            </div>
+          )}
+          {profile.data.email && (
+            <div className="max-w-md border-t pt-6">
+              <DangerZone userId={user.id} email={profile.data.email} />
             </div>
           )}
         </>
