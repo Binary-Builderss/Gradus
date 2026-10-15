@@ -1,0 +1,5 @@
+// Valori predefiniti; quelli veri stanno in Secrets.xcconfig (non nel repo, vedi Secrets.example.xcconfig).
+SUPABASE_URL =
+SUPABASE_ANON_KEY =
+SITE_URL = https:/$()/gradus-trainer.binarybuilders.dev
+#include? "Secrets.xcconfig"
