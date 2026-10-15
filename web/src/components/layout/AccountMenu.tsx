@@ -1,4 +1,11 @@
-import { CaretUpDownIcon, CompassIcon, GearSixIcon, SignOutIcon, UserIcon } from '@phosphor-icons/react'
+import {
+  CaretUpDownIcon,
+  CompassIcon,
+  CrownSimpleIcon,
+  PaintBrushIcon,
+  SignOutIcon,
+  UserIcon,
+} from '@phosphor-icons/react'
 import { Link } from '@tanstack/react-router'
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/components/ui/dropdown-menu'
 import { Tip } from '@/components/ui/tooltip'
@@ -9,7 +16,7 @@ import { cn } from '@/lib/utils'
 const m = messages.app
 
 /**
- * Il menu della persona collegata: profilo, impostazioni ed esci stanno qui, come nelle app di lavoro che
+ * Il menu della persona collegata: profilo, personalizza, piano ed esci stanno qui, come nelle app di lavoro che
  * conosci. Nel menu laterale è una riga con nome ed email, da compresso solo l'avatar; nell'header mobile
  * solo l'avatar (e lì dentro c'è anche la guida, che non ha un pulsante suo).
  */
@@ -78,7 +85,7 @@ export function AccountMenu({
           {email && email !== name && <p className="truncate text-xs text-muted-foreground">{email}</p>}
           {pro !== undefined && (
             <p className="mt-1 w-fit rounded border px-1.5 py-px text-xs text-muted-foreground">
-              {pro ? m.settings.plan.pro : m.settings.plan.free}
+              {pro ? m.customize.plan.pro : m.customize.plan.free}
             </p>
           )}
         </div>
@@ -90,9 +97,18 @@ export function AccountMenu({
           </Link>
         </MenuItem>
         <MenuItem asChild>
-          <Link to="/impostazioni">
-            <GearSixIcon />
-            {m.nav.settings}
+          <Link to="/personalizza">
+            <PaintBrushIcon />
+            {m.nav.customize}
+            {pro === false && (
+              <span className="ml-auto rounded border px-1.5 py-px text-xs text-muted-foreground">Pro</span>
+            )}
+          </Link>
+        </MenuItem>
+        <MenuItem asChild>
+          <Link to="/piani">
+            <CrownSimpleIcon />
+            {m.nav.plans}
           </Link>
         </MenuItem>
         {variant === 'header' && onStartTour && (

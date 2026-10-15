@@ -23,8 +23,8 @@ describe('buildTourPlan', () => {
       '/esercizi',
       '/profilo',
       '/profilo',
-      '/impostazioni',
-      '/impostazioni',
+      '/personalizza',
+      '/personalizza',
     ])
   })
 
@@ -43,8 +43,8 @@ describe('buildTourPlan', () => {
       '/esercizi',
       '/profilo',
       '/profilo',
-      '/impostazioni',
-      '/impostazioni',
+      '/personalizza',
+      '/personalizza',
     ])
     expect(plan[3]!.target).toBeUndefined()
   })

@@ -15,7 +15,8 @@ import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
 import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppEserciziRouteImport } from './routes/_app/esercizi'
-import { Route as AppImpostazioniRouteImport } from './routes/_app/impostazioni'
+import { Route as AppPersonalizzaRouteImport } from './routes/_app/personalizza'
+import { Route as AppPianiRouteImport } from './routes/_app/piani'
 import { Route as AppProfiloRouteImport } from './routes/_app/profilo'
 import { Route as AppAtletiAthleteIdRouteImport } from './routes/_app/atleti.$athleteId'
 import { Route as AppMesocicliMesocycleIdRouteImport } from './routes/_app/mesocicli.$mesocycleId'
@@ -49,9 +50,14 @@ const AppEserciziRoute = AppEserciziRouteImport.update({
   path: '/esercizi',
   getParentRoute: () => AppRoute,
 } as any)
-const AppImpostazioniRoute = AppImpostazioniRouteImport.update({
-  id: '/impostazioni',
-  path: '/impostazioni',
+const AppPersonalizzaRoute = AppPersonalizzaRouteImport.update({
+  id: '/personalizza',
+  path: '/personalizza',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPianiRoute = AppPianiRouteImport.update({
+  id: '/piani',
+  path: '/piani',
   getParentRoute: () => AppRoute,
 } as any)
 const AppProfiloRoute = AppProfiloRouteImport.update({
@@ -76,7 +82,8 @@ export interface FileRoutesByFullPath {
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/esercizi': typeof AppEserciziRoute
-  '/impostazioni': typeof AppImpostazioniRoute
+  '/personalizza': typeof AppPersonalizzaRoute
+  '/piani': typeof AppPianiRoute
   '/profilo': typeof AppProfiloRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -86,7 +93,8 @@ export interface FileRoutesByTo {
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/esercizi': typeof AppEserciziRoute
-  '/impostazioni': typeof AppImpostazioniRoute
+  '/personalizza': typeof AppPersonalizzaRoute
+  '/piani': typeof AppPianiRoute
   '/profilo': typeof AppProfiloRoute
   '/': typeof AppIndexRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
@@ -99,7 +107,8 @@ export interface FileRoutesById {
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/_app/esercizi': typeof AppEserciziRoute
-  '/_app/impostazioni': typeof AppImpostazioniRoute
+  '/_app/personalizza': typeof AppPersonalizzaRoute
+  '/_app/piani': typeof AppPianiRoute
   '/_app/profilo': typeof AppProfiloRoute
   '/_app/': typeof AppIndexRoute
   '/_app/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
@@ -113,7 +122,8 @@ export interface FileRouteTypes {
     | '/nuova-password'
     | '/recupero-password'
     | '/esercizi'
-    | '/impostazioni'
+    | '/personalizza'
+    | '/piani'
     | '/profilo'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
@@ -123,7 +133,8 @@ export interface FileRouteTypes {
     | '/nuova-password'
     | '/recupero-password'
     | '/esercizi'
-    | '/impostazioni'
+    | '/personalizza'
+    | '/piani'
     | '/profilo'
     | '/'
     | '/atleti/$athleteId'
@@ -135,7 +146,8 @@ export interface FileRouteTypes {
     | '/nuova-password'
     | '/recupero-password'
     | '/_app/esercizi'
-    | '/_app/impostazioni'
+    | '/_app/personalizza'
+    | '/_app/piani'
     | '/_app/profilo'
     | '/_app/'
     | '/_app/atleti/$athleteId'
@@ -193,11 +205,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEserciziRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/impostazioni': {
-      id: '/_app/impostazioni'
-      path: '/impostazioni'
-      fullPath: '/impostazioni'
-      preLoaderRoute: typeof AppImpostazioniRouteImport
+    '/_app/personalizza': {
+      id: '/_app/personalizza'
+      path: '/personalizza'
+      fullPath: '/personalizza'
+      preLoaderRoute: typeof AppPersonalizzaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/piani': {
+      id: '/_app/piani'
+      path: '/piani'
+      fullPath: '/piani'
+      preLoaderRoute: typeof AppPianiRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/profilo': {
@@ -226,7 +245,8 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppEserciziRoute: typeof AppEserciziRoute
-  AppImpostazioniRoute: typeof AppImpostazioniRoute
+  AppPersonalizzaRoute: typeof AppPersonalizzaRoute
+  AppPianiRoute: typeof AppPianiRoute
   AppProfiloRoute: typeof AppProfiloRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAtletiAthleteIdRoute: typeof AppAtletiAthleteIdRoute
@@ -235,7 +255,8 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppEserciziRoute: AppEserciziRoute,
-  AppImpostazioniRoute: AppImpostazioniRoute,
+  AppPersonalizzaRoute: AppPersonalizzaRoute,
+  AppPianiRoute: AppPianiRoute,
   AppProfiloRoute: AppProfiloRoute,
   AppIndexRoute: AppIndexRoute,
   AppAtletiAthleteIdRoute: AppAtletiAthleteIdRoute,
