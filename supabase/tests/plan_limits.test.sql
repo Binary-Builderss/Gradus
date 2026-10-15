@@ -102,6 +102,12 @@ select results_eq(
   $$select plan::text, athlete_limit, can_customize from public.plan_usage()$$,
   $$values ('free', 20, false)$$, 'plan_usage con pro scaduto vale free');
 
+-- Il catalogo dei piani per la pagina dei prezzi: stessi numeri dei tetti
+select results_eq(
+  $$select plan::text, athlete_limit from public.plan_limits() order by plan$$,
+  $$values ('free', 20), ('mid', 60), ('pro', 100), ('unlimited', null::int)$$,
+  'plan_limits elenca i quattro livelli con il loro tetto');
+
 -- Disattivazione: la persona cambia solo il proprio profilo
 select tests.login('00000000-0000-0000-0000-000000000001');
 select lives_ok(

@@ -729,6 +729,13 @@ export type Database = {
     Functions: {
       generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
       has_pro_plan: { Args: Record<PropertyKey, never>; Returns: boolean }
+      plan_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          athlete_limit: number
+          plan: Database['public']['Enums']['coach_plan']
+        }[]
+      }
       plan_usage: {
         Args: Record<PropertyKey, never>
         Returns: {

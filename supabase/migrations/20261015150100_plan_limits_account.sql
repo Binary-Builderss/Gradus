@@ -20,7 +20,16 @@ as $$
   );
 $$;
 
--- null = senza tetto
+-- Tetto di atleti di un piano; null = senza tetto. Unica fonte dei numeri: il web li legge da plan_limits().
+create function private.plan_limit(p_plan public.coach_plan)
+returns integer
+language sql
+immutable
+set search_path = ''
+as $$
+  select case p_plan when 'free' then 20 when 'mid' then 60 when 'pro' then 100 else null end;
+$$;
+
 create function private.athlete_limit(p_coach_id uuid)
 returns integer
 language sql
@@ -28,8 +37,7 @@ stable
 security definer
 set search_path = ''
 as $$
-  select case private.effective_plan(p_coach_id)
-    when 'free' then 20 when 'mid' then 60 when 'pro' then 100 else null end;
+  select private.plan_limit(private.effective_plan(p_coach_id));
 $$;
 
 create function private.athlete_count(p_coach_id uuid)
@@ -99,6 +107,17 @@ as $$
          private.is_pro((select auth.uid()));
 $$;
 
+-- Per la pagina dei piani: tutti i livelli con il loro tetto.
+create function public.plan_limits()
+returns table (plan public.coach_plan, athlete_limit integer)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$
+  select p, private.plan_limit(p) from unnest(enum_range(null::public.coach_plan)) as p;
+$$;
+
 -- Account disattivato: reversibile, lo decide la persona. Il web e l'app mostrano una schermata per
 -- riattivarlo; i dati restano. Non si scrive altro che questa colonna.
 alter table public.profiles add column disabled_at timestamptz;
@@ -125,12 +144,12 @@ begin
 end;
 $$;
 
-revoke execute on function private.effective_plan(uuid), private.athlete_limit(uuid), private.athlete_count(uuid),
-  private.enforce_athlete_limit() from public, anon;
-grant execute on function private.effective_plan(uuid), private.athlete_limit(uuid), private.athlete_count(uuid),
-  private.enforce_athlete_limit() to authenticated;
-revoke execute on function public.plan_usage() from public, anon;
-grant execute on function public.plan_usage() to authenticated;
+revoke execute on function private.effective_plan(uuid), private.plan_limit(public.coach_plan), private.athlete_limit(uuid),
+  private.athlete_count(uuid), private.enforce_athlete_limit() from public, anon;
+grant execute on function private.effective_plan(uuid), private.plan_limit(public.coach_plan), private.athlete_limit(uuid),
+  private.athlete_count(uuid), private.enforce_athlete_limit() to authenticated;
+revoke execute on function public.plan_usage(), public.plan_limits() from public, anon;
+grant execute on function public.plan_usage(), public.plan_limits() to authenticated;
 -- Solo la Edge Function (service_role): un client non deve poter lanciare la cancellazione di un altro.
 revoke execute on function public.prepare_account_deletion(uuid) from public, anon, authenticated;
 grant execute on function public.prepare_account_deletion(uuid) to service_role;
