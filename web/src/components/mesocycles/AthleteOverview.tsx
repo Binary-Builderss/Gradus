@@ -36,7 +36,11 @@ export function AthleteOverview({
   const percent = total > 0 ? Math.min(100, Math.round((count / total) * 100)) : 0
 
   return (
-    <section className="grid gap-3 rounded-lg border bg-card p-4" aria-labelledby="athlete-overview">
+    <section
+      className="grid gap-3 rounded-lg border bg-card p-4"
+      aria-labelledby="athlete-overview"
+      data-tour="athlete-overview"
+    >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h2 id="athlete-overview" className="text-xs font-medium text-muted-foreground">

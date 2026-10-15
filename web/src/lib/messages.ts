@@ -80,6 +80,10 @@ export const messages = {
           title: 'Ancora nessun atleta collegato',
           body: 'Quando un atleta accetta l’invito potrai creargli un programma. Riavvia la guida da qui: ti mostrerà anche quella parte.',
         },
+        overview: {
+          title: 'Come sta andando',
+          body: 'Per il mesociclo attivo vedi la settimana in corso, quante sedute l’atleta ha fatto su quelle previste e quando si è allenato l’ultima volta.',
+        },
         newMesocycle: {
           title: 'Nuovo mesociclo',
           body: 'Un mesociclo è un programma di alcune settimane. Scegli nome, data di inizio e durata. Nasce come bozza: l’atleta non vede le bozze.',
