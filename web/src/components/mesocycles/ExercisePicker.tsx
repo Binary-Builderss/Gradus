@@ -32,7 +32,9 @@ export function ExercisePicker({
     (e) => matchesSearch(e.name, search) && (group === null || muscleGroupOf(e.muscles) === group),
   )
   // Si apre in fondo alla seduta: lo porta in vista.
-  useEffect(() => rootRef.current?.scrollIntoView?.({ block: 'nearest' }), [])
+  useEffect(() => {
+    rootRef.current?.scrollIntoView?.({ block: 'nearest' })
+  }, [])
   const current = Math.min(active, Math.max(0, results.length - 1))
 
   function move(to: number) {

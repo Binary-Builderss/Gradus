@@ -30,12 +30,12 @@ vi.mock('@/lib/slots', () => ({
 function setup() {
   const onPick = vi.fn()
   const onClose = vi.fn()
-  render(
+  const { unmount } = render(
     <QueryClientProvider client={new QueryClient()}>
       <ExercisePicker coachId="c1" onPick={onPick} onClose={onClose} />
     </QueryClientProvider>,
   )
-  return { onPick, onClose }
+  return { onPick, onClose, unmount }
 }
 
 describe('ExercisePicker', () => {
@@ -79,5 +79,20 @@ describe('ExercisePicker', () => {
     await userEvent.type(screen.getByRole('combobox'), 'zzz')
     expect(screen.getByText('Nessun esercizio trovato.')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Apri la libreria esercizi' })).toBeInTheDocument()
+  })
+
+  it('si apre e si chiude senza errori anche se il browser restituisce un valore da scrollIntoView', async () => {
+    // Il bug vero: l'effetto restituiva il risultato di scrollIntoView, che per React è «la funzione di pulizia».
+    const original = Element.prototype.scrollIntoView
+    Element.prototype.scrollIntoView = (() => 'valore') as never
+    try {
+      const { onPick, unmount } = setup()
+      await screen.findByText('Panca piana')
+      await userEvent.click(screen.getByRole('option', { name: /Panca piana/ }))
+      expect(onPick).toHaveBeenCalledWith('e1')
+      expect(() => unmount()).not.toThrow()
+    } finally {
+      Element.prototype.scrollIntoView = original
+    }
   })
 })
