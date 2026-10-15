@@ -120,12 +120,12 @@ export function Sidebar({
     <aside className="sticky top-0 hidden h-dvh flex-col overflow-hidden border-r bg-sidebar lg:flex">
       {collapsed ? (
         <div className="grid justify-items-center gap-2 pt-4 pb-2">
-          <Mark className="h-5" />
+          <Mark className="h-7" />
           {toggle}
         </div>
       ) : (
         <div className="flex items-center justify-between py-3 pr-2 pl-4">
-          <Wordmark />
+          <Wordmark className="h-8" />
           {toggle}
         </div>
       )}

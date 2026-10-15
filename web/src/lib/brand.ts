@@ -12,15 +12,15 @@ export type BrandKey = (typeof BRAND_KEYS)[number]
 export type BrandColors = Record<BrandKey, string>
 export type BrandOverrides = Partial<BrandColors>
 
-/** Colori standard di Gradus (tema chiaro, equivalenti hex dei token in index.css). */
+/** Colori standard di Gradus: palette del brand kit, tema chiaro (equivalenti hex dei token in index.css). */
 export const STANDARD_COLORS: BrandColors = {
-  primary: '#1961D4',
-  on_primary: '#F9FAFB',
-  background: '#FBFCFD',
-  foreground: '#16181D',
-  surface: '#FEFEFF',
-  muted_foreground: '#60636A',
-  border: '#E1E3E6',
+  primary: '#0D54F3',
+  on_primary: '#FFFFFF',
+  background: '#F7F8FA',
+  foreground: '#1E2630',
+  surface: '#FFFFFF',
+  muted_foreground: '#5C646F',
+  border: '#E0E3E8',
 }
 
 /** «#abc», «abc», «#AABBCC» → «#AABBCC»; altro → null. */

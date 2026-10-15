@@ -49,7 +49,7 @@ function AppLayout() {
         />
 
         <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/85 px-4 py-3 backdrop-blur lg:hidden">
-          <Wordmark />
+          <Wordmark className="h-8" />
           <div className="flex items-center">
             <Button variant="ghost" size="icon" aria-label={m.nav.settings} asChild>
               <Link to="/impostazioni">

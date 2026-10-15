@@ -27,7 +27,7 @@ describe('BrandForm', () => {
 
   it('parte dai colori standard e salva solo quelli cambiati', async () => {
     setup(true)
-    expect(screen.getByLabelText('Colore principale, codice colore')).toHaveValue('#1961D4')
+    expect(screen.getByLabelText('Colore principale, codice colore')).toHaveValue('#0D54F3')
     await userEvent.type(screen.getByLabelText('Nome del marchio'), 'Studio Verde')
     const hex = screen.getByLabelText('Colore principale, codice colore')
     await userEvent.clear(hex)
@@ -47,7 +47,7 @@ describe('BrandForm', () => {
     fireEvent.change(screen.getByLabelText('Colore principale, selettore'), { target: { value: '#ff0000' } })
     expect(screen.getByLabelText('Colore principale, codice colore')).toHaveValue('#FF0000')
     await userEvent.click(screen.getByRole('button', { name: 'Ripristina colore principale' }))
-    expect(screen.getByLabelText('Colore principale, codice colore')).toHaveValue('#1961D4')
+    expect(screen.getByLabelText('Colore principale, codice colore')).toHaveValue('#0D54F3')
   })
 
   it('la forma corta del codice vale solo a fine scrittura', async () => {
