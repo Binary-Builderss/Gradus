@@ -161,6 +161,8 @@ export type Database = {
       }
       coach_plans: {
         Row: {
+          billing_ref: string | null
+          cancel_at_period_end: boolean
           coach_id: string
           created_at: string
           plan: Database['public']['Enums']['coach_plan']
@@ -169,6 +171,8 @@ export type Database = {
         }
         ComputedFields: never
         Insert: {
+          billing_ref?: string | null
+          cancel_at_period_end?: boolean
           coach_id: string
           created_at?: string
           plan?: Database['public']['Enums']['coach_plan']
@@ -176,6 +180,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          billing_ref?: string | null
+          cancel_at_period_end?: boolean
           coach_id?: string
           created_at?: string
           plan?: Database['public']['Enums']['coach_plan']
@@ -742,7 +748,10 @@ export type Database = {
           athlete_limit: number
           athletes: number
           can_customize: boolean
+          cancel_at_period_end: boolean
+          has_subscription: boolean
           plan: Database['public']['Enums']['coach_plan']
+          renews_until: string
         }[]
       }
       prepare_account_deletion: { Args: { p_user_id: string }; Returns: undefined }

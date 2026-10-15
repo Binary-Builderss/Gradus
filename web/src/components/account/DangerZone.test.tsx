@@ -4,15 +4,25 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DangerZone } from './DangerZone'
 
-const { setAccountDisabled, deleteAccount, signOut, navigate } = vi.hoisted(() => ({
+const { setAccountDisabled, deleteAccount, signOut, navigate, AccountError } = vi.hoisted(() => ({
+  AccountError: class extends Error {
+    code: string | undefined
+    constructor(code: string | undefined) {
+      super(code)
+      this.code = code
+    }
+  },
   setAccountDisabled: vi.fn(async () => {}),
   deleteAccount: vi.fn(async () => {}),
   signOut: vi.fn(async () => {}),
   navigate: vi.fn(async () => {}),
 }))
-vi.mock('@/lib/account', () => ({ setAccountDisabled, deleteAccount }))
+vi.mock('@/lib/account', () => ({ setAccountDisabled, deleteAccount, AccountError }))
 vi.mock('@/lib/supabase', () => ({ supabase: { auth: { signOut } } }))
-vi.mock('@tanstack/react-router', () => ({ useNavigate: () => navigate }))
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => navigate,
+  Link: ({ to, children }: { to: string; children: React.ReactNode }) => <a href={to}>{children}</a>,
+}))
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -58,6 +68,23 @@ describe('DangerZone', () => {
     await waitFor(() => expect(deleteAccount).toHaveBeenCalledWith('  coach@test.dev '))
     await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: '/login' }))
     expect(signOut).toHaveBeenCalled()
+  })
+
+  it('con un abbonamento che si rinnova spiega di disdire prima e rimanda ai piani', async () => {
+    deleteAccount.mockRejectedValueOnce(new AccountError('subscription_active'))
+    setup()
+    await userEvent.click(screen.getByRole('button', { name: 'Elimina…' }))
+    await userEvent.type(await screen.findByLabelText('Email di conferma'), 'coach@test.dev')
+    await userEvent.click(screen.getByRole('button', { name: 'Elimina per sempre' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('abbonamento che si rinnova ancora')
+    expect(screen.getByRole('link', { name: 'Vai a Piano e abbonamento' })).toHaveAttribute('href', '/piani')
+    expect(signOut).not.toHaveBeenCalled()
+  })
+
+  it('l’avviso sull’abbonamento sta già nell’elenco delle conseguenze e nella disattivazione', async () => {
+    setup()
+    await userEvent.click(screen.getByRole('button', { name: 'Elimina…' }))
+    expect(await screen.findByText(/disdicilo prima: l’eliminazione non lo ferma/)).toBeInTheDocument()
   })
 
   it('se la cancellazione fallisce lo dice e non esce', async () => {

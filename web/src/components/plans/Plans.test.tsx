@@ -7,11 +7,15 @@ vi.mock('@/lib/supabase', () => ({ supabase: {} }))
 afterEach(() => vi.unstubAllEnvs())
 
 const limits: Record<Plan, number | null> = { free: 20, mid: 60, pro: 100, unlimited: null }
-const usage = (plan: Plan, athletes = 12): PlanUsage => ({
+const usage = (plan: Plan, athletes = 12, extra: Partial<PlanUsage> = {}): PlanUsage => ({
   plan,
   athleteLimit: limits[plan],
   athletes,
   canCustomize: plan === 'pro' || plan === 'unlimited',
+  renewsUntil: null,
+  cancelAtPeriodEnd: false,
+  hasSubscription: false,
+  ...extra,
 })
 const card = (name: string) => screen.getByRole('region', { name })
 
@@ -59,5 +63,62 @@ describe('Plans', () => {
     render(<Plans usage={usage('free')} limits={limits} />)
     expect(card('Pro')).toHaveTextContent('Personalizza')
     expect(card('Mid')).not.toHaveTextContent('Personalizza')
+  })
+
+  it('il Gratuito non ha una sezione abbonamento', () => {
+    render(<Plans usage={usage('free')} limits={limits} />)
+    expect(screen.queryByRole('region', { name: 'Il tuo abbonamento' })).not.toBeInTheDocument()
+  })
+
+  it('con un abbonamento attivo dice quando si rinnova e cosa succede se disdici', () => {
+    render(
+      <Plans
+        usage={usage('pro', 40, { hasSubscription: true, renewsUntil: '2026-11-12T00:00:00Z' })}
+        limits={limits}
+      />,
+    )
+    const sub = screen.getByRole('region', { name: 'Il tuo abbonamento' })
+    expect(sub).toHaveTextContent('Si rinnova il 12 novembre 2026')
+    expect(sub).toHaveTextContent(
+      'non perdi nessun dato e tieni tutti i tuoi atleti, ma ne puoi aggiungere solo fino a 20',
+    )
+    expect(within(sub).getByRole('button', { name: 'Disdetta presto disponibile' })).toBeDisabled()
+  })
+
+  it('con il portale configurato il pulsante porta a gestire e disdire', () => {
+    vi.stubEnv('VITE_BILLING_PORTAL_URL', 'https://billing.example.com/p/abc')
+    render(
+      <Plans
+        usage={usage('mid', 10, { hasSubscription: true, renewsUntil: '2026-11-12T00:00:00Z' })}
+        limits={limits}
+      />,
+    )
+    expect(screen.getByRole('link', { name: 'Gestisci o disdici l’abbonamento' })).toHaveAttribute(
+      'href',
+      'https://billing.example.com/p/abc',
+    )
+  })
+
+  it('disdetto: resta attivo fino alla data e poi torna Gratuito', () => {
+    render(
+      <Plans
+        usage={usage('pro', 40, {
+          hasSubscription: true,
+          cancelAtPeriodEnd: true,
+          renewsUntil: '2026-11-12T00:00:00Z',
+        })}
+        limits={limits}
+      />,
+    )
+    expect(screen.getByRole('region', { name: 'Il tuo abbonamento' })).toHaveTextContent(
+      'Disdetto: il piano resta attivo fino al 12 novembre 2026, poi torni al Gratuito',
+    )
+  })
+
+  it('piano assegnato a mano: nessun addebito e nessun pulsante di disdetta', () => {
+    render(<Plans usage={usage('pro')} limits={limits} />)
+    const sub = screen.getByRole('region', { name: 'Il tuo abbonamento' })
+    expect(sub).toHaveTextContent('senza scadenza e senza addebiti')
+    expect(within(sub).queryByRole('button')).not.toBeInTheDocument()
   })
 })

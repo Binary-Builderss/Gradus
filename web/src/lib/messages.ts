@@ -268,7 +268,7 @@ export const messages = {
         disableButton: 'Disattiva',
         disableConfirmTitle: 'Disattivare l’account?',
         disableConfirmBody:
-          'Uscirai da Gradus. Per tornare accedi di nuovo e premi «Riattiva». Finché è disattivato non puoi invitare atleti.',
+          'Uscirai da Gradus. Per tornare accedi di nuovo e premi «Riattiva». Finché è disattivato non puoi invitare atleti. Disattivare non ferma un abbonamento: per smettere di pagare disdicilo da Piano e abbonamento.',
         disableConfirm: 'Disattiva l’account',
         deleteTitle: 'Elimina l’account',
         deleteBody: 'Cancella per sempre il tuo account e i tuoi dati. Non si può annullare.',
@@ -278,6 +278,7 @@ export const messages = {
           'Perdi l’accesso e la tua libreria di esercizi.',
           'I programmi che hai scritto restano ai tuoi atleti, che però non sono più collegati a te.',
           'Il tuo piano, il marchio e le impostazioni vengono cancellati.',
+          'Se hai un abbonamento che si rinnova, disdicilo prima: l’eliminazione non lo ferma.',
           'Se sei anche atleta di te stesso, spariscono i tuoi mesocicli e le sedute registrate.',
         ],
         deleteTypeEmail: (email: string) => `Per confermare scrivi la tua email: ${email}`,
@@ -286,6 +287,9 @@ export const messages = {
         cancel: 'Annulla',
         working: 'Un momento',
         error: 'Non è andata a buon fine. Riprova tra poco.',
+        subscriptionActive:
+          'Hai un abbonamento che si rinnova ancora: disdicilo e poi riprova, altrimenti ti verrebbe addebitato anche dopo.',
+        subscriptionLink: 'Vai a Piano e abbonamento',
       },
       disabled: {
         title: 'Il tuo account è disattivato',
@@ -339,6 +343,17 @@ export const messages = {
       ctaSoon: 'Presto disponibile',
       ctaSoonHint: 'L’acquisto dell’abbonamento arriva a breve. Ti avvisiamo appena è attivo.',
       billing: 'Abbonamento, si disdice quando vuoi.',
+      subscription: {
+        title: 'Il tuo abbonamento',
+        renews: (date: string) => `Si rinnova il ${date}.`,
+        ends: (date: string) => `Disdetto: il piano resta attivo fino al ${date}, poi torni al Gratuito.`,
+        manual: 'Piano attivo, senza scadenza e senza addebiti.',
+        manage: 'Gestisci o disdici l’abbonamento',
+        manageSoon: 'Disdetta presto disponibile',
+        manageSoonHint: 'Appena l’acquisto è attivo potrai disdire da qui, in un clic, quando vuoi.',
+        whatHappens: (freeLimit: number | null) =>
+          `Se disdici resti nel piano fino alla fine del periodo già pagato. Dopo torni al Gratuito: non perdi nessun dato e tieni tutti i tuoi atleti${freeLimit === null ? '' : `, ma ne puoi aggiungere solo fino a ${freeLimit}`}. Logo, colori e PDF col marchio tornano allo stile Gradus.`,
+      },
       upsellTitle: 'Passa a Pro',
       upsellBody: 'Logo e colori su PDF e app',
       moreAthletes: 'Più atleti',

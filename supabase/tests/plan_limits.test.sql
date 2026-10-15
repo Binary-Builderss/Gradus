@@ -97,10 +97,14 @@ select tests.login('00000000-0000-0000-0000-000000000004');
 select results_eq(
   $$select plan::text, athlete_limit, athletes, can_customize from public.plan_usage()$$,
   $$values ('unlimited', null::int, 330, true)$$, 'plan_usage di unlimited: nessun tetto');
+select results_eq(
+  $$select renews_until is null, cancel_at_period_end, has_subscription from public.plan_usage()$$,
+  $$values (true, false, false)$$, 'piano assegnato a mano: senza scadenza, non disdetto, senza abbonamento');
 select tests.login('00000000-0000-0000-0000-000000000005');
 select results_eq(
   $$select plan::text, athlete_limit, can_customize from public.plan_usage()$$,
   $$values ('free', 20, false)$$, 'plan_usage con pro scaduto vale free');
+select is((select renews_until from public.plan_usage()), null, 'un piano scaduto non mostra una data di rinnovo');
 
 -- Il catalogo dei piani per la pagina dei prezzi: stessi numeri dei tetti
 select results_eq(

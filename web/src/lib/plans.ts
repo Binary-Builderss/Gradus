@@ -15,6 +15,12 @@ export type PlanUsage = {
   athletes: number
   /** Personalizza e PDF col marchio (pro e unlimited). */
   canCustomize: boolean
+  /** Fine del periodo pagato (null = senza scadenza). */
+  renewsUntil: string | null
+  /** Disdetto: resta attivo fino a `renewsUntil`, poi torna Gratuito. */
+  cancelAtPeriodEnd: boolean
+  /** C'è un abbonamento presso il servizio di pagamento (false = piano assegnato a mano). */
+  hasSubscription: boolean
 }
 
 /** Piano, tetto di atleti e atleti attuali: la regola sta nel database (`plan_usage`), il web la legge. */
@@ -31,6 +37,9 @@ export const planUsageQuery = (userId: string) =>
         athleteLimit: row.athlete_limit as number | null,
         athletes: row.athletes,
         canCustomize: row.can_customize,
+        renewsUntil: row.renews_until as string | null,
+        cancelAtPeriodEnd: row.cancel_at_period_end,
+        hasSubscription: row.has_subscription,
       }
     },
   })
@@ -77,5 +86,14 @@ const httpsUrl = z.url().refine((u) => u.startsWith('https://'))
 export function checkoutUrl(plan: Plan, raw?: unknown): string | null {
   const value = raw ?? (import.meta.env as Record<string, unknown>)[`VITE_CHECKOUT_URL_${plan.toUpperCase()}`]
   const parsed = httpsUrl.safeParse(value)
+  return parsed.success ? parsed.data : null
+}
+
+/**
+ * Portale dove il cliente gestisce e disdice l'abbonamento (per esempio il portale clienti del servizio di
+ * pagamento): variabile pubblica `VITE_BILLING_PORTAL_URL`. Senza, la disdetta risulta «presto disponibile».
+ */
+export function billingPortalUrl(raw: unknown = import.meta.env.VITE_BILLING_PORTAL_URL): string | null {
+  const parsed = httpsUrl.safeParse(raw)
   return parsed.success ? parsed.data : null
 }
