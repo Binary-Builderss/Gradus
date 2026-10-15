@@ -14,6 +14,31 @@ vi.mock('@/lib/summary', async (original) => ({
       { week: 1, muscle: 'triceps', prescribed: 1.5, executed: 0 },
     ],
   }),
+  exerciseProgressQuery: () => ({
+    queryKey: ['p'],
+    queryFn: async () => [
+      {
+        exerciseId: 'e1',
+        exerciseName: 'Panca',
+        week: 1,
+        setsPrescribed: 3,
+        setsDone: 3,
+        topLoadKg: 90,
+        topReps: 5,
+        e1rm: 105,
+      },
+      {
+        exerciseId: 'e1',
+        exerciseName: 'Panca',
+        week: 2,
+        setsPrescribed: 3,
+        setsDone: 3,
+        topLoadKg: 92.5,
+        topReps: 5,
+        e1rm: 108,
+      },
+    ],
+  }),
   doneWorkoutsQuery: () => ({ queryKey: ['d'], queryFn: async () => [{ session_id: 's1', week: 1 }] }),
 }))
 
@@ -92,5 +117,15 @@ describe('MesocycleSummary', () => {
     expect(rows.findIndex((t) => t?.startsWith('Petto'))).toBeLessThan(
       rows.findIndex((t) => t?.startsWith('Tricipiti')),
     )
+  })
+
+  it('mostra la miglior serie di ogni settimana e il massimale stimato con la variazione', async () => {
+    setup()
+    const row = await screen.findByRole('row', { name: /Panca/ })
+    expect(row).toHaveTextContent('90 × 5')
+    expect(row).toHaveTextContent('92,5 × 5')
+    expect(row).toHaveTextContent('3/3 serie')
+    expect(row).toHaveTextContent('108 kg')
+    expect(row).toHaveTextContent('+3 kg')
   })
 })

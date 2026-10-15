@@ -656,6 +656,19 @@ export type Database = {
     }
     Functions: {
       generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
+      weekly_exercise_progress: {
+        Args: { p_mesocycle_id: string }
+        Returns: {
+          e1rm: number
+          exercise_id: string
+          exercise_name: string
+          sets_done: number
+          sets_prescribed: number
+          top_load_kg: number
+          top_reps: number
+          week: number
+        }[]
+      }
       weekly_muscle_volume: {
         Args: { p_mesocycle_id: string }
         Returns: {

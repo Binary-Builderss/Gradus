@@ -4,8 +4,11 @@ import { buildGridRows, type BlockData, type WeekData, weekSetTotals } from '@/l
 import { messages } from '@/lib/messages'
 import type { GroupRow, SlotRow } from '@/lib/slots'
 import {
+  buildProgressTable,
   buildVolumeTable,
   doneWorkoutsQuery,
+  exerciseProgressQuery,
+  formatChange,
   formatVolume,
   heatPercent,
   weeklyVolumeQuery,
@@ -41,6 +44,7 @@ export function MesocycleSummary({
 }) {
   const volume = useQuery(weeklyVolumeQuery(mesocycleId))
   const done = useQuery(doneWorkoutsQuery(mesocycleId))
+  const progress = useQuery(exerciseProgressQuery(mesocycleId))
   const weekNumbers = Array.from({ length: totalWeeks }, (_, i) => i + 1)
   const doneKeys = new Set((done.data ?? []).map((w) => `${w.session_id}:${w.week}`))
 
@@ -50,6 +54,8 @@ export function MesocycleSummary({
   }))
   const weekTotals = weekNumbers.map((_, i) => perSession.reduce((sum, s) => sum + s.sets[i]!, 0))
 
+  const progressTable = buildProgressTable(progress.data ?? [], totalWeeks)
+  const hasProgress = progressTable.some((e) => e.bestE1rm !== null || e.weeks.some((w) => w.setsDone > 0))
   const table = buildVolumeTable(volume.data ?? [], totalWeeks)
   const max = Math.max(0, ...table.flatMap((t) => t.weeks.map((w) => w.prescribed)))
 
@@ -141,6 +147,88 @@ export function MesocycleSummary({
                   ))}
                 </tr>
               </tfoot>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="grid gap-2" aria-labelledby="summary-progress">
+        <div>
+          <h2 id="summary-progress" className="text-sm font-semibold">
+            {m.progressTitle}
+          </h2>
+          <p className="max-w-prose text-muted-foreground">{m.progressHint}</p>
+        </div>
+        {progress.isError ? (
+          <p role="alert" className="text-destructive">
+            {m.progressError}
+          </p>
+        ) : progress.isSuccess && !hasProgress ? (
+          <p className="rounded-lg border border-dashed p-4 text-muted-foreground">{m.noProgress}</p>
+        ) : (
+          <div className="overflow-x-auto rounded-md border bg-card">
+            <table className="w-full min-w-[36rem] table-fixed border-collapse text-sm">
+              <thead>
+                <tr className="border-b bg-muted/50">
+                  <th scope="col" className={stickyHead}>
+                    {m.exercise}
+                  </th>
+                  {weekNumbers.map(weekHead)}
+                  <th scope="col" className={cn(headCell, 'w-28 border-l')}>
+                    {m.estimatedMax}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {progressTable.map((e) => (
+                  <tr key={e.exerciseId} className="border-b last:border-b-0">
+                    <th
+                      scope="row"
+                      className="sticky left-0 z-[1] border-r bg-card px-3 py-1.5 text-left font-medium"
+                    >
+                      {e.name}
+                    </th>
+                    {e.weeks.map((w, i) => (
+                      <td
+                        key={i}
+                        className={cn(
+                          'border-r px-2 py-1.5 text-center font-mono text-xs tabular-nums',
+                          deloadWeeks.includes(i + 1) && 'bg-warning/60',
+                        )}
+                      >
+                        {w.setsDone > 0 ? (
+                          <>
+                            {w.topLoadKg !== null && w.topReps !== null ? (
+                              `${formatVolume(w.topLoadKg)} × ${w.topReps}`
+                            ) : (
+                              <span className="text-muted-foreground">–</span>
+                            )}
+                            <span className="block text-[11px] font-normal text-muted-foreground">
+                              {m.setsOf(w.setsDone, w.setsPrescribed)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-muted-foreground">–</span>
+                        )}
+                      </td>
+                    ))}
+                    <td className="border-l px-2 py-1.5 text-center font-mono text-xs tabular-nums">
+                      {e.bestE1rm !== null ? (
+                        <>
+                          <span className="font-medium">{formatVolume(e.bestE1rm)} kg</span>
+                          {e.e1rmChange !== null && (
+                            <span className="block text-[11px] text-muted-foreground">
+                              {formatChange(e.e1rmChange)} kg
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground">–</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         )}

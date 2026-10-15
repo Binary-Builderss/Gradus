@@ -2,6 +2,7 @@ import { ArrowLeftIcon, CaretRightIcon, PlusIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { AthleteOverview } from '@/components/mesocycles/AthleteOverview'
 import { NewMesocycleForm } from '@/components/mesocycles/NewMesocycleForm'
 import { Button } from '@/components/ui/button'
 import { athleteQuery, mesocyclesQuery } from '@/lib/mesocycles'
@@ -32,11 +33,16 @@ function AthletePage() {
     )
   }
 
+  const activeMesocycle = mesocycles.data?.find((x) => x.status === 'active')
   const name = athlete.data?.athlete?.full_name?.trim() || athlete.data?.athlete?.email || ''
   return (
     <section className="space-y-5">
       <BackLink />
       <h1 className="min-h-7 text-xl font-semibold tracking-tight">{name}</h1>
+
+      {activeMesocycle && (
+        <AthleteOverview coachId={user.id} athleteId={athleteId} mesocycle={activeMesocycle} />
+      )}
 
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-sm font-semibold">{m.mesocycles}</h2>

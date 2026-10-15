@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { daysSince, initials, summarizeWorkouts } from './athleteStats'
+import { currentWeek, daysSince, initials, lastWorkoutLabel, summarizeWorkouts } from './athleteStats'
 
 const now = new Date(2026, 9, 14, 18, 0)
 
@@ -23,5 +23,21 @@ describe('summarizeWorkouts', () => {
     const r = summarizeWorkouts([t(7), t(6), t(0), t(2)], now)
     expect(r.workoutsLast7Days).toBe(3)
     expect(r.lastWorkoutAt).toBe(t(0))
+  })
+})
+
+describe('currentWeek', () => {
+  it('prima settimana nel giorno di inizio', () => expect(currentWeek('2026-10-14', 8, now)).toBe(1))
+  it('conta le settimane intere trascorse', () => expect(currentWeek('2026-09-30', 8, now)).toBe(3))
+  it('non supera la durata del mesociclo', () => expect(currentWeek('2026-01-01', 8, now)).toBe(8))
+  it('non ancora iniziato', () => expect(currentWeek('2026-10-19', 8, now)).toBeNull())
+})
+
+describe('lastWorkoutLabel', () => {
+  it('oggi, ieri, giorni fa, mai', () => {
+    expect(lastWorkoutLabel(new Date(2026, 9, 14, 8).toISOString(), now)).toBe('Oggi')
+    expect(lastWorkoutLabel(new Date(2026, 9, 13, 8).toISOString(), now)).toBe('Ieri')
+    expect(lastWorkoutLabel(new Date(2026, 9, 10, 8).toISOString(), now)).toBe('4 giorni fa')
+    expect(lastWorkoutLabel(null, now)).toBe('Nessuna seduta')
   })
 })

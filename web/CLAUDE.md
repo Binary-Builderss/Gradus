@@ -95,8 +95,11 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   - sessioni, gruppi e slot riordinabili con drag and drop; tipo di gruppo con i suoi recuperi;
   - "copia questa settimana sulle successive", "applica regola di progressione";
   - settimana di scarico marcata; anteprima "come la vede l'atleta".
-  - scheda **Riepilogo** accanto alla programmazione: serie per seduta e settimana, volume per muscolo (funzione
+  - scheda **Riepilogo** accanto alla programmazione: serie per seduta e settimana, progressi per esercizio
+    (miglior serie e massimale stimato, funzione SQL `weekly_exercise_progress`), volume per muscolo (funzione
     SQL `weekly_muscle_volume`, riscaldamento escluso) con le serie già eseguite sotto.
+  - nella pagina dell'atleta, sopra l'elenco dei mesocicli, il colpo d'occhio sul mesociclo attivo: settimana
+    in corso, sedute eseguite su previste, ultima seduta.
 - **Libreria esercizi**: catalogo globale + esercizi del coach, video, note, pesi per muscolo 0..1.
 - **Monitoraggio seduta**: prescritto contro eseguito per serie, sforzo prescritto contro percepito.
 

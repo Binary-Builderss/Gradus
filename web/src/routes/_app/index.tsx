@@ -6,7 +6,7 @@ import { TourBanner } from '@/components/tour/TourBanner'
 import { useGuidedTour } from '@/components/tour/useGuidedTour'
 import { Button } from '@/components/ui/button'
 import { type AthleteRow, athletesQuery } from '@/lib/athletes'
-import { daysSince, initials } from '@/lib/athleteStats'
+import { initials, lastWorkoutLabel } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
 
@@ -15,12 +15,6 @@ const m = messages.app.athletes
 export const Route = createFileRoute('/_app/')({
   component: AthletesPage,
 })
-
-function lastWorkoutLabel(iso: string | null) {
-  if (!iso) return m.never
-  const d = daysSince(iso, new Date())
-  return d <= 0 ? m.today : d === 1 ? m.yesterday : m.daysAgo(d)
-}
 
 function AthletesPage() {
   const { user } = Route.useRouteContext()
