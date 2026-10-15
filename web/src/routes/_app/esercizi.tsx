@@ -57,7 +57,7 @@ function ExercisesPage() {
         />
       )}
 
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4" data-tour="exercise-list">
         <Input
           aria-label={m.search}
           placeholder={m.search}

@@ -43,7 +43,7 @@ export function DangerZone({ userId, email }: { userId: string; email: string })
   })
 
   return (
-    <section className="grid max-w-md gap-4" aria-labelledby="danger-title">
+    <section className="grid max-w-md gap-4" aria-labelledby="danger-title" data-tour="danger-zone">
       <h2 id="danger-title" className="text-sm font-semibold">
         {m.title}
       </h2>

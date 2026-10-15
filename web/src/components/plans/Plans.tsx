@@ -38,6 +38,7 @@ function Subscription({ usage, freeLimit }: { usage: PlanUsage; freeLimit: numbe
   return (
     <section
       aria-labelledby="subscription-title"
+      data-tour="subscription"
       className="grid max-w-xl gap-3 rounded-lg border bg-card p-5"
     >
       <div className="grid gap-1">
@@ -108,7 +109,7 @@ export function Plans({ usage, limits }: { usage: PlanUsage; limits: Record<Plan
   const currentIndex = PLANS.indexOf(usage.plan)
   const someSoon = PLANS.some((plan, index) => index > currentIndex && checkoutUrl(plan) === null)
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6" data-tour="plans">
       {usage.plan !== 'free' && <Subscription usage={usage} freeLimit={limits.free} />}
       <Usage usage={usage} />
       <div className="grid max-w-6xl gap-4 md:grid-cols-2 xl:grid-cols-4">

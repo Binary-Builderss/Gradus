@@ -1,77 +1,87 @@
 import { describe, expect, it } from 'vitest'
 import { buildTourPlan } from './tourPlan'
 
-const targets = (args: Parameters<typeof buildTourPlan>[0]) => buildTourPlan(args).map((s) => s.target)
+type Args = Parameters<typeof buildTourPlan>[0]
+const full: Args = {
+  athleteId: 'a',
+  mesocycleId: 'm',
+  hasActiveMesocycle: true,
+  canFollowSelf: true,
+  hasSubscription: true,
+  sidebar: true,
+}
+const plan = (over: Partial<Args> = {}) => buildTourPlan({ ...full, ...over })
+const targets = (over: Partial<Args> = {}) => plan(over).map((s) => s.target)
+const routes = (over: Partial<Args> = {}) => plan(over).map((s) => s.route.to)
 
 describe('buildTourPlan', () => {
-  it('walks athletes, athlete, mesocycle and library when data exists', () => {
-    const plan = buildTourPlan({ athleteId: 'a', mesocycleId: 'm', hasActiveMesocycle: false, sidebar: true })
-    expect(plan.map((s) => s.route.to)).toEqual([
-      '/',
-      '/',
+  it('segue il lavoro: atleti, atleta, mesociclo, libreria, piano, profilo, personalizza', () => {
+    const order = routes().filter((to, i, all) => to !== all[i - 1])
+    expect(order).toEqual([
       '/',
       '/atleti/$athleteId',
-      '/atleti/$athleteId',
-      '/mesocicli/$mesocycleId',
-      '/mesocicli/$mesocycleId',
-      '/mesocicli/$mesocycleId',
-      '/mesocicli/$mesocycleId',
-      '/mesocicli/$mesocycleId',
-      '/mesocicli/$mesocycleId',
-      '/mesocicli/$mesocycleId',
       '/mesocicli/$mesocycleId',
       '/esercizi',
+      '/piani',
       '/profilo',
-      '/profilo',
-      '/personalizza',
       '/personalizza',
     ])
   })
 
-  it('replaces the athlete pages with one explanation when there is no athlete', () => {
-    const plan = buildTourPlan({
-      athleteId: null,
-      mesocycleId: null,
-      hasActiveMesocycle: false,
-      sidebar: true,
-    })
-    expect(plan.map((s) => s.route.to)).toEqual([
-      '/',
-      '/',
-      '/',
-      '/',
-      '/esercizi',
-      '/profilo',
-      '/profilo',
-      '/personalizza',
-      '/personalizza',
+  it('nel mesociclo copre scrittura, riepilogo e PDF', () => {
+    const inMeso = plan()
+      .filter((s) => s.route.to === '/mesocicli/$mesocycleId')
+      .map((s) => s.target)
+    expect(inMeso).toEqual([
+      'meso-settings',
+      'session-tabs',
+      'session-header',
+      'add-exercise',
+      'grid',
+      'measure',
+      'week-copy',
+      'row-options',
+      'fill-help',
+      'order-superset',
+      'save-status',
+      'meso-tabs',
+      'pdf-button',
     ])
-    expect(plan[3]!.target).toBeUndefined()
   })
 
-  it('stops at the athlete page when there is no mesocycle', () => {
-    const plan = buildTourPlan({
-      athleteId: 'a',
-      mesocycleId: null,
-      hasActiveMesocycle: false,
-      sidebar: true,
-    })
-    expect(plan.some((s) => s.route.to === '/mesocicli/$mesocycleId')).toBe(false)
-    expect(plan.some((s) => s.route.to === '/atleti/$athleteId')).toBe(true)
+  it('ogni passo ha titolo e testo', () => {
+    for (const s of plan()) {
+      expect(s.title.length).toBeGreaterThan(2)
+      expect(s.body.length).toBeGreaterThan(20)
+    }
   })
 
-  it('shows the overview step only when the athlete has an active mesocycle', () => {
-    const base = { athleteId: 'a', mesocycleId: 'm', sidebar: true }
-    expect(targets({ ...base, hasActiveMesocycle: true })).toContain('athlete-overview')
-    expect(targets({ ...base, hasActiveMesocycle: false })).not.toContain('athlete-overview')
+  it('senza atleti sostituisce le pagine dell’atleta con una spiegazione', () => {
+    const p = plan({ athleteId: null, mesocycleId: null })
+    expect(p.some((s) => s.route.to === '/atleti/$athleteId')).toBe(false)
+    expect(p.find((s) => s.target === undefined && s.route.to === '/')).toBeDefined()
   })
 
-  it('leaves out the sidebar step on small screens', () => {
-    expect(
-      targets({ athleteId: null, mesocycleId: null, hasActiveMesocycle: false, sidebar: false }),
-    ).not.toContain('nav-athletes')
-    expect(
-      targets({ athleteId: null, mesocycleId: null, hasActiveMesocycle: false, sidebar: true }),
-    ).toContain('nav-athletes')
+  it('senza mesociclo si ferma alla pagina dell’atleta', () => {
+    const p = plan({ mesocycleId: null })
+    expect(p.some((s) => s.route.to === '/mesocicli/$mesocycleId')).toBe(false)
+    expect(p.some((s) => s.route.to === '/atleti/$athleteId')).toBe(true)
+  })
+
+  it('i passi condizionali compaiono solo quando servono', () => {
+    expect(targets()).toContain('athlete-overview')
+    expect(targets({ hasActiveMesocycle: false })).not.toContain('athlete-overview')
+    expect(targets()).toContain('follow-self')
+    expect(targets({ canFollowSelf: false })).not.toContain('follow-self')
+    expect(targets()).toContain('subscription')
+    expect(targets({ hasSubscription: false })).not.toContain('subscription')
+  })
+
+  it('su schermo piccolo niente passi sulla barra laterale', () => {
+    const small = targets({ sidebar: false })
+    expect(small).not.toContain('nav-athletes')
+    expect(small).not.toContain('nav-collapse')
+    expect(targets()).toContain('nav-athletes')
+    expect(targets()).toContain('nav-collapse')
   })
 })

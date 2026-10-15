@@ -81,7 +81,7 @@ export function SessionBlock({
 
   return (
     <div className="rounded-lg border bg-card">
-      <div className="flex items-center gap-1 border-b px-3 py-2">
+      <div className="flex items-center gap-1 border-b px-3 py-2" data-tour="session-header">
         <Input
           key={session.name}
           aria-label={m.sessionName}
@@ -162,7 +162,7 @@ export function SessionBlock({
               </Button>
             )}
 
-            <Collapsible title={m.structure} className="border-t pt-3">
+            <Collapsible title={m.structure} className="border-t pt-3" data-tour="order-superset">
               <p className="max-w-prose text-xs text-muted-foreground">{m.structureHint}</p>
               <SortableList ids={groups.map((g) => g.id)} onReorder={(ordered) => moveGroups.mutate(ordered)}>
                 <ul className="grid gap-3">

@@ -9,7 +9,7 @@ export function PasswordReset({ email }: { email: string }) {
   const send = useMutation({ mutationFn: () => sendPasswordReset(email) })
 
   return (
-    <section className="grid max-w-md gap-3" aria-labelledby="security-title">
+    <section className="grid max-w-md gap-3" aria-labelledby="security-title" data-tour="security">
       <h2 id="security-title" className="text-sm font-semibold">
         {m.title}
       </h2>

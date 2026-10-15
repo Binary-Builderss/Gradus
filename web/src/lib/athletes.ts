@@ -53,3 +53,14 @@ async function fetchAthletes(coachId: string): Promise<AthleteRow[]> {
 
 export const athletesQuery = (coachId: string) =>
   queryOptions({ queryKey: ['athletes', coachId], queryFn: () => fetchAthletes(coachId) })
+
+/**
+ * Il coach si segue da solo: un collegamento con sé stesso (coach_id = athlete_id), con lo stesso account e senza
+ * una seconda email. Non occupa un posto del piano. L'app atleta mostra poi i suoi programmi come a ogni atleta.
+ */
+export async function followSelf(userId: string) {
+  const { error } = await supabase
+    .from('coach_athletes')
+    .upsert({ coach_id: userId, athlete_id: userId, status: 'active' }, { onConflict: 'coach_id,athlete_id' })
+  if (error) throw error
+}

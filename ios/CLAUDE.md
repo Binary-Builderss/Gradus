@@ -97,6 +97,9 @@ Data/Remote/    client Supabase
   non completata, note del coach, lista gruppi con riepilogo compatto e stato; storico mesocicli.
 - **Check** (fase 2): check giornaliero mattina/sera, feedback per muscolo a fine seduta, questionari.
 - **Progressi** (fase 3): misure, pliche, circonferenze, foto (Storage privato), grafico carichi.
+- **Coach che si segue da solo**: lo stesso account può essere coach e atleta (collegamento con sé stesso, vedi la
+  radice): se l'utente ha programmi come atleta, l'app mostra la vista atleta come per chiunque; niente seconda
+  email né secondo account.
 - **Profilo**: nome e cognome (modificabile: è il nome con cui il coach vede l'atleta; se l'invito non l'aveva, in elenco compare l'email, quindi chiederlo al primo accesso), coach collegato, impostazioni (scala sforzo, suoni timer), stato sincronizzazione, logout.
 
 ## Test obbligatori
