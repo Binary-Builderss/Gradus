@@ -1,7 +1,7 @@
 {
-  "name": "Gradus - Hypertrophy Training",
+  "name": "Gradus",
   "short_name": "Gradus",
-  "description": "Hypertrophy training and progressive overload",
+  "description": "Programmazione per l’ipertrofia: mesocicli, progressi e schede per personal trainer.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F7F8FA",
@@ -25,5 +25,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "lang": "it"
 }
