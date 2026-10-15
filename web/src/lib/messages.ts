@@ -52,6 +52,8 @@ export const messages = {
       athletes: 'Atleti',
       exercises: 'Esercizi',
       settings: 'Impostazioni',
+      profile: 'Profilo',
+      account: 'Menu dell’account',
       menu: 'Menu principale',
       collapse: 'Comprimi il menu',
       expand: 'Espandi il menu',
@@ -138,6 +140,10 @@ export const messages = {
         exercises: {
           title: 'Libreria esercizi',
           body: 'Gli esercizi che scegli nelle sedute vengono da qui. Il catalogo è comune; aggiungi i tuoi con “Nuovo esercizio”.',
+        },
+        account: {
+          title: 'Il tuo account',
+          body: 'In basso a sinistra c’è il tuo nome: cliccalo per aprire il Profilo, le Impostazioni (il marchio) o per uscire.',
         },
         profile: {
           title: 'Il tuo profilo',
