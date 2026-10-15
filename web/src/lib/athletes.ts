@@ -58,6 +58,20 @@ export const athletesQuery = (coachId: string) =>
  * Il coach si segue da solo: un collegamento con sé stesso (coach_id = athlete_id), con lo stesso account e senza
  * una seconda email. Non occupa un posto del piano. L'app atleta mostra poi i suoi programmi come a ogni atleta.
  */
+/**
+ * Chiude il collegamento con un atleta (o annulla un invito in attesa): libera il posto del piano e il coach non
+ * vede più i suoi dati. Non cancella nulla: invitandolo di nuovo, e se accetta, si ritrova tutto.
+ */
+export async function endLink(coachId: string, athleteId: string) {
+  const { error } = await supabase
+    .from('coach_athletes')
+    .update({ status: 'ended' })
+    .eq('coach_id', coachId)
+    .eq('athlete_id', athleteId)
+    .neq('status', 'ended')
+  if (error) throw error
+}
+
 export async function followSelf(userId: string) {
   const { error } = await supabase
     .from('coach_athletes')
