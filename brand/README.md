@@ -54,3 +54,6 @@ Per il logo della navbar utilizza il file `gradus-horizontal-light.svg` o `gradu
 Trascina / sostituisci `AppIcon.appiconset` in `Assets.xcassets`, poi imposta l'asset `AppIcon` in Target > General > App Icons.
 
 Nota: i file SVG sono vettorializzazioni del concept grafico generato, non il progetto Figma/Illustrator originale. Non contengono font distribuiti.
+
+## Modifiche al kit
+- `03_Favicon_Web/favicon.ico` e `favicon.svg`: sostituiti con il marchio solo, a sfondo trasparente e ritagliato stretto (quelli del kit erano un quadrato chiaro con il marchio piccolo al centro). I PNG con sfondo (apple-touch, android-chrome, maskable) restano quelli del kit.
