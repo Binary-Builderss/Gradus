@@ -20,17 +20,6 @@ export const brandingQuery = (coachId: string) =>
     },
   })
 
-/** Piano pro attivo oggi: la regola sta nel database (`has_pro_plan`), il web non la ricalcola. */
-export const proPlanQuery = (coachId: string) =>
-  queryOptions({
-    queryKey: ['pro-plan', coachId],
-    queryFn: async (): Promise<boolean> => {
-      const { data, error } = await supabase.rpc('has_pro_plan')
-      if (error) throw error
-      return data
-    },
-  })
-
 export async function saveBranding(coachId: string, branding: Branding) {
   const { error } = await supabase.from('coach_branding').upsert(
     {

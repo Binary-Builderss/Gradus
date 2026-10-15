@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { type AthleteRow, athletesQuery } from '@/lib/athletes'
 import { initials, lastWorkoutLabel } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
+import { atLimit, planUsageQuery } from '@/lib/plans'
 import { cn } from '@/lib/utils'
 
 const m = messages.app.athletes
@@ -20,12 +21,13 @@ function AthletesPage() {
   const { user } = Route.useRouteContext()
   const { data, isPending, isError, refetch } = useQuery(athletesQuery(user.id))
   const startTour = useGuidedTour(user.id)
+  const usage = useQuery(planUsageQuery(user.id))
 
   return (
     <section className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 className="text-xl font-semibold tracking-tight">{m.title}</h1>
-        <InviteAthlete />
+        <InviteAthlete limit={usage.data && atLimit(usage.data) ? usage.data.athleteLimit : null} />
       </div>
       <TourBanner onStart={() => void startTour()} />
       {isPending ? (

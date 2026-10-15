@@ -10,6 +10,11 @@ describe('inviteErrorMessage', () => {
     expect(inviteErrorMessage('self_invite')).toBe(e.selfInvite)
     expect(inviteErrorMessage('invite_failed', 502)).toBe(e.inviteFailed)
   })
+  it('tetto di atleti e account disattivato', () => {
+    expect(inviteErrorMessage('athlete_limit_reached', 409, 20)).toContain('limite di 20 atleti')
+    expect(inviteErrorMessage('athlete_limit_reached', 409, null)).toContain('limite di atleti')
+    expect(inviteErrorMessage('account_disabled', 403)).toContain('disattivato')
+  })
   it('429 vince sul codice', () => expect(inviteErrorMessage('invite_failed', 429)).toBe(e.rateLimit))
   it('codice sconosciuto o assente', () => {
     expect(inviteErrorMessage('boh')).toBe(e.generic)

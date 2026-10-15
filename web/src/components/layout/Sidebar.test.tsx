@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useSidebarCollapsed } from '@/lib/useSidebarCollapsed'
+import type { PlanUsage } from '@/lib/plans'
 import { Sidebar } from './Sidebar'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))
@@ -21,7 +22,19 @@ vi.mock('@tanstack/react-router', () => ({
   ),
 }))
 
-function Harness({ onSignOut = () => {}, onStartTour = () => {}, pro = true as boolean | undefined }) {
+const usage = (plan: PlanUsage['plan'], athletes = 5): PlanUsage => ({
+  plan,
+  athleteLimit: plan === 'free' ? 20 : plan === 'mid' ? 60 : plan === 'pro' ? 100 : null,
+  athletes,
+  canCustomize: plan === 'pro' || plan === 'unlimited',
+})
+
+function Harness({
+  onSignOut = () => {},
+  onStartTour = () => {},
+  plan = 'pro' as PlanUsage['plan'] | undefined,
+  athletes = 5,
+}) {
   const [collapsed, toggle] = useSidebarCollapsed()
   return (
     <TooltipProvider>
@@ -30,7 +43,7 @@ function Harness({ onSignOut = () => {}, onStartTour = () => {}, pro = true as b
         onToggle={toggle}
         name="Marco Bianchi"
         email="marco@test.dev"
-        pro={pro}
+        usage={plan ? usage(plan, athletes) : undefined}
         onStartTour={onStartTour}
         onSignOut={onSignOut}
       />
@@ -99,17 +112,29 @@ describe('Sidebar', () => {
     vi.restoreAllMocks()
   })
 
-  it('senza piano Pro sotto la guida c’è il link per passarci, con il Pro no', () => {
-    const { unmount } = render(<Harness pro={false} />)
+  it('free e mid hanno sotto la guida il link per passare a Pro, con i posti se stanno finendo', () => {
+    const { unmount } = render(<Harness plan="free" />)
     expect(screen.getByRole('link', { name: /Passa a Pro/ })).toHaveAttribute('href', '/piani')
+    expect(screen.getByText('Logo e colori su PDF e app')).toBeInTheDocument()
     unmount()
-    render(<Harness pro={true} />)
-    expect(screen.queryByRole('link', { name: /Passa a Pro/ })).not.toBeInTheDocument()
+    render(<Harness plan="mid" athletes={50} />)
+    expect(screen.getByText('50 atleti su 60')).toBeInTheDocument()
+  })
+
+  it('il Pro vede l’invito solo quando i posti stanno finendo, Unlimited mai', () => {
+    const { unmount } = render(<Harness plan="pro" athletes={10} />)
+    expect(screen.queryByRole('link', { name: /Passa a|Più atleti/ })).not.toBeInTheDocument()
+    unmount()
+    const second = render(<Harness plan="pro" athletes={85} />)
+    expect(screen.getByRole('link', { name: /Più atleti/ })).toHaveAttribute('href', '/piani')
+    second.unmount()
+    render(<Harness plan="unlimited" athletes={900} />)
+    expect(screen.queryByRole('link', { name: /Passa a|Più atleti/ })).not.toBeInTheDocument()
   })
 
   it('finché non si sa il piano non mostra inviti', () => {
-    render(<Harness pro={undefined} />)
-    expect(screen.queryByRole('link', { name: /Passa a Pro/ })).not.toBeInTheDocument()
+    render(<Harness plan={undefined} />)
+    expect(screen.queryByRole('link', { name: /Passa a|Più atleti/ })).not.toBeInTheDocument()
   })
 
   it('la guida parte anche da compresso', async () => {

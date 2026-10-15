@@ -2,11 +2,12 @@ import { useQuery } from '@tanstack/react-query'
 import type { CSSProperties } from 'react'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { Wordmark } from '@/components/brand'
+import { DisabledAccount } from '@/components/account/DisabledAccount'
 import { AccountMenu } from '@/components/layout/AccountMenu'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useGuidedTour } from '@/components/tour/useGuidedTour'
-import { proPlanQuery } from '@/lib/branding'
+import { planUsageQuery } from '@/lib/plans'
 import { displayName, profileQuery } from '@/lib/profile'
 import { useSidebarCollapsed } from '@/lib/useSidebarCollapsed'
 import { supabase } from '@/lib/supabase'
@@ -27,9 +28,12 @@ function AppLayout() {
   const signOut = () => void supabase.auth.signOut()
   const startTour = useGuidedTour(user.id)
   const profile = useQuery(profileQuery(user.id))
-  const pro = useQuery(proPlanQuery(user.id))
+  const usage = useQuery(planUsageQuery(user.id))
   const name = displayName(profile.data, user.email)
   const [collapsed, toggleSidebar] = useSidebarCollapsed()
+
+  // Account disattivato: al posto dell'app si vede solo la schermata per riattivarlo.
+  if (profile.data?.disabledAt) return <DisabledAccount userId={user.id} onSignOut={signOut} />
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -42,7 +46,7 @@ function AppLayout() {
           onToggle={toggleSidebar}
           name={name}
           email={user.email}
-          pro={pro.data}
+          usage={usage.data}
           onStartTour={() => void startTour()}
           onSignOut={signOut}
         />
@@ -53,7 +57,7 @@ function AppLayout() {
             variant="header"
             name={name}
             email={user.email}
-            pro={pro.data}
+            usage={usage.data}
             onStartTour={() => void startTour()}
             onSignOut={signOut}
           />

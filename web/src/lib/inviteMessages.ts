@@ -20,7 +20,9 @@ const errorMessage: Record<string, string> = {
 export const inviteResultMessage = (result: InviteResult) => resultMessage[result]
 
 /** Codice d'errore della Edge Function (corpo `{ error }`) tradotto in testo per il coach. */
-export function inviteErrorMessage(code: string | undefined, status?: number): string {
+export function inviteErrorMessage(code: string | undefined, status?: number, limit?: number | null): string {
   if (status === 429) return m.errors.rateLimit
+  if (code === 'athlete_limit_reached') return m.errors.limitReached(limit ?? null)
+  if (code === 'account_disabled') return m.errors.accountDisabled
   return (code && errorMessage[code]) || m.errors.generic
 }

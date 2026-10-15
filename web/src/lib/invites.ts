@@ -12,8 +12,8 @@ export async function inviteAthlete(args: { email: string; name?: string }): Pro
   if (error) {
     if (error instanceof FunctionsHttpError) {
       const res = error.context as Response
-      const payload = (await res.json().catch(() => null)) as { error?: string } | null
-      throw new Error(inviteErrorMessage(payload?.error, res.status))
+      const payload = (await res.json().catch(() => null)) as { error?: string; limit?: number | null } | null
+      throw new Error(inviteErrorMessage(payload?.error, res.status, payload?.limit))
     }
     throw new Error(m.errors.network)
   }

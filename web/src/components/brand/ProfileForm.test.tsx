@@ -10,7 +10,7 @@ vi.mock('@/lib/profile', () => ({ saveProfileName }))
 function setup(fullName: string | null) {
   render(
     <QueryClientProvider client={new QueryClient()}>
-      <ProfileForm userId="u1" profile={{ fullName, email: 'coach@test.dev' }} />
+      <ProfileForm userId="u1" profile={{ fullName, email: 'coach@test.dev', disabledAt: null }} />
     </QueryClientProvider>,
   )
 }
