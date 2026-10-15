@@ -123,6 +123,75 @@ export type Database = {
           },
         ]
       }
+      coach_branding: {
+        Row: {
+          brand_name: string | null
+          coach_id: string
+          colors: NonNullable<Json>
+          created_at: string
+          logo_png: string | null
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          brand_name?: string | null
+          coach_id: string
+          colors?: NonNullable<Json>
+          created_at?: string
+          logo_png?: string | null
+          updated_at?: string
+        }
+        Update: {
+          brand_name?: string | null
+          coach_id?: string
+          colors?: NonNullable<Json>
+          created_at?: string
+          logo_png?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'coach_branding_coach_id_fkey'
+            columns: ['coach_id']
+            isOneToOne: true
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      coach_plans: {
+        Row: {
+          coach_id: string
+          created_at: string
+          plan: Database['public']['Enums']['coach_plan']
+          pro_until: string | null
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          coach_id: string
+          created_at?: string
+          plan?: Database['public']['Enums']['coach_plan']
+          pro_until?: string | null
+          updated_at?: string
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          plan?: Database['public']['Enums']['coach_plan']
+          pro_until?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'coach_plans_coach_id_fkey'
+            columns: ['coach_id']
+            isOneToOne: true
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       exercise_muscles: {
         Row: {
           created_at: string
@@ -656,6 +725,7 @@ export type Database = {
     }
     Functions: {
       generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
+      has_pro_plan: { Args: Record<PropertyKey, never>; Returns: boolean }
       weekly_exercise_progress: {
         Args: { p_mesocycle_id: string }
         Returns: {
@@ -681,6 +751,7 @@ export type Database = {
     }
     Enums: {
       block_role: 'warmup' | 'top' | 'backoff' | 'working'
+      coach_plan: 'free' | 'pro'
       effort_scale: 'BUF' | 'RPE'
       group_kind: 'single' | 'superset' | 'giant' | 'circuit' | 'jumpset'
       intensity_method: 'BUF' | 'RPE' | 'RM' | 'PCT_1RM' | 'LOAD'
@@ -820,6 +891,7 @@ export const Constants = {
   public: {
     Enums: {
       block_role: ['warmup', 'top', 'backoff', 'working'],
+      coach_plan: ['free', 'pro'],
       effort_scale: ['BUF', 'RPE'],
       group_kind: ['single', 'superset', 'giant', 'circuit', 'jumpset'],
       intensity_method: ['BUF', 'RPE', 'RM', 'PCT_1RM', 'LOAD'],

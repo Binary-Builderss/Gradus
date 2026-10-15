@@ -34,6 +34,8 @@ Ogni dato ha un solo autore.
 | --- | --- | --- |
 | Mesocicli, sessioni, gruppi, slot, blocchi, prescrizioni settimanali | coach (web) | atleta, sola lettura |
 | Libreria esercizi, pesi per muscolo, template | coach (web) | atleta (nome, video, note) |
+| Marchio del coach (logo, nome, colori) | coach pro (web) | atleta collegato, solo se il coach è pro |
+| Piano del coach (`coach_plans`) | solo service_role / SQL | il coach, il proprio |
 | Sedute, serie, segmenti, feedback per muscolo | atleta (iOS) | coach |
 | Check giornalieri, questionari compilati, misure, foto, massimali | atleta (iOS) | coach |
 
@@ -73,6 +75,17 @@ Esecuzione: `workouts → set_logs → set_segments`.
 - Sforzo: BUF = ripetizioni di riserva (RIR), quindi RPE = 10 − BUF. Lo sforzo si salva comunque con la
   sua scala (`effort_value` + `effort_scale`).
 
+## Piano e marchio del coach
+
+- `coach_plans`: nessuna riga = gratuito. Nessun client scrive qui (solo service_role o SQL): per provare le
+  funzioni a pagamento si inserisce una riga `pro` al coach di prova. `private.is_pro` / `has_pro_plan()` sono
+  l'unico posto dove si decide se un coach è pro (le funzioni a pagamento si controllano lì, non nel client).
+- `coach_branding`: logo (PNG base64) e colori `#RRGGBB` liberi con chiavi fisse (`primary`, `on_primary`,
+  `background`, `foreground`, `surface`, `muted_foreground`, `border`), nome del marchio. Lo scrive solo un
+  coach pro; l'atleta collegato lo legge solo finché il coach è pro. Chiavi assenti = colori standard di Gradus.
+- Le funzioni a pagamento oggi: PDF con marchio (colori, logo, filigrana) e colori personalizzati dell'app
+  atleta. Il sito del coach resta Gradus, uguale per tutti.
+
 ## Sicurezza
 
 - RLS attiva su ogni tabella, nessuna policy `using (true)`. Ogni policy ha test pgTAP con: coach
@@ -85,8 +98,8 @@ Esecuzione: `workouts → set_logs → set_segments`.
 
 ## Fuori perimetro
 
-Nutrizione, gamification, directory pubblica dei professionisti, branding per coach, pagamenti, chat
-(fase successiva).
+Nutrizione, gamification, directory pubblica dei professionisti, incassi e abbonamenti veri (esiste solo il
+piano `free` / `pro` in `coach_plans`, impostato a mano), chat (fase successiva).
 
 ## Prima di dichiarare finito
 
