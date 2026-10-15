@@ -60,7 +60,7 @@ Dopo una migrazione: rigenera i tipi e indica nel commit quali modelli Swift van
 - `generate_progression(block_id, rule jsonb)` — riempie `block_weeks` (es. BUF da 3 a 0, +1 serie a settimana)
 - `preview_progression(block_id, rule jsonb)` — stesso calcolo (`private.progression_plan`), non scrive: alimenta l'anteprima settimana per settimana
 - `weekly_muscle_volume(mesocycle_id)` — prescritto ed eseguito
-- `previous_week_reference(workout_id)` — stessi casi di `/fixtures/previous_week_cases.json`
+- `previous_week_reference(session_id, week)` — stessi casi di `/fixtures/previous_week_cases.json` (test pgTAP generato da lì: `node fixtures/generate-sql.mjs`)
 
 Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scarico a metà, superset.
 

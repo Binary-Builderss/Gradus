@@ -15,12 +15,22 @@ quando un task tocca anche `/supabase` o `/fixtures`.
 - Test: Swift Testing / XCTest. UI test solo per i flussi principali.
 - Codice in inglese; testi in italiano in `Localizable.xcstrings`.
 
+## Progetto e comandi
+
+- `ios/project.yml` (XcodeGen) genera `ios/Gradus.xcodeproj`, che è nel repo: `cd ios && xcodegen generate` se cambia il
+  file. Bundle id `dev.binarybuilders.gradus` (da cambiare in `project.yml` se serve un altro); per provarla
+  sull'iPhone imposta il team in Signing & Capabilities (o `DEVELOPMENT_TEAM` in `project.yml`).
+- `ios/Domain` è un pacchetto Swift locale con le regole pure: `cd ios/Domain && swift test` (senza simulatore, legge
+  `/fixtures`). L'app lo importa con `import Domain`.
+- App e test: `xcodebuild test -project Gradus.xcodeproj -scheme Gradus -destination 'platform=iOS Simulator,id=<id>'`
+  (gli id con `xcodebuild -showdestinations`); aggiungi `CODE_SIGNING_ALLOWED=NO` da terminale.
+
 ## Architettura
 
 ```
 App/            entry point, DI, routing
 Features/       Workout, Exercise, Timer, Checks, Progress, Profile — View + ViewModel (@Observable)
-Domain/         modelli e regole pure, senza I/O (stati, riferimento settimana precedente, back-off, timer)
+Domain/         pacchetto Swift locale: modelli e regole pure, senza I/O (stati, riferimento settimana precedente, back-off, timer)
 Data/Local/     GRDB: migrazioni locali, record, repository
 Data/Sync/      SyncEngine: pull incrementale + coda di push
 Data/Remote/    client Supabase

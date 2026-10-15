@@ -1,0 +1,12 @@
+{
+  "sourceLanguage" : "it",
+  "strings" : {
+    "profile.account" : { "localizations" : { "it" : { "stringUnit" : { "state" : "translated", "value" : "Account" } } } },
+    "profile.notSignedIn" : { "localizations" : { "it" : { "stringUnit" : { "state" : "translated", "value" : "Accedi con l'account che ti ha dato il tuo coach." } } } },
+    "tab.profile" : { "localizations" : { "it" : { "stringUnit" : { "state" : "translated", "value" : "Profilo" } } } },
+    "tab.workout" : { "localizations" : { "it" : { "stringUnit" : { "state" : "translated", "value" : "Allenamento" } } } },
+    "workout.empty.description" : { "localizations" : { "it" : { "stringUnit" : { "state" : "translated", "value" : "Quando il tuo coach attiva un mesociclo lo trovi qui, anche senza rete." } } } },
+    "workout.empty.title" : { "localizations" : { "it" : { "stringUnit" : { "state" : "translated", "value" : "Nessun programma attivo" } } } }
+  },
+  "version" : "1.0"
+}

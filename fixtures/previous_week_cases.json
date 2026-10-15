@@ -1,0 +1,245 @@
+{
+  "rule": "Riferimento alla settimana precedente: stessa seduta, stesso blocco, stessa serie, dentro il mesociclo in corso. Settimana 1 → nessuno. Si cerca a ritroso la prima settimana che non è di scarico; se in quella settimana la seduta non ha dati (saltata) → nessun riferimento, non si risale oltre. Mai dati di un mesociclo precedente né di un'altra seduta.",
+  "cases": [
+    {
+      "name": "settimana 1: nessun riferimento",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 1,
+        "logs": []
+      },
+      "expected": []
+    },
+    {
+      "name": "settimana 2: la stessa serie della settimana 1, con lo sforzo",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": { "value": 1, "scale": "BUF" } },
+          { "week": 1, "block": "top", "set_idx": 1, "segments": [{ "load_kg": 100, "reps": 4 }], "effort": { "value": 0.5, "scale": "BUF" } }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 1, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": { "value": 1, "scale": "BUF" } },
+        { "block": "top", "set_idx": 1, "week": 1, "segments": [{ "load_kg": 100, "reps": 4 }], "effort": { "value": 0.5, "scale": "BUF" } }
+      ]
+    },
+    {
+      "name": "serie senza sforzo: il riferimento c'è, lo sforzo no",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 80, "reps": 10 }], "effort": null }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 1, "segments": [{ "load_kg": 80, "reps": 10 }], "effort": null }
+      ]
+    },
+    {
+      "name": "drop set: i segmenti restano nell'ordine registrato",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["drop"],
+        "week": 3,
+        "logs": [
+          { "week": 2, "block": "drop", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 8 }, { "load_kg": 75, "reps": 6 }], "effort": { "value": 0, "scale": "BUF" } }
+        ]
+      },
+      "expected": [
+        { "block": "drop", "set_idx": 0, "week": 2, "segments": [{ "load_kg": 100, "reps": 8 }, { "load_kg": 75, "reps": 6 }], "effort": { "value": 0, "scale": "BUF" } }
+      ]
+    },
+    {
+      "name": "lo sforzo resta nella scala in cui è stato inserito (RPE)",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 120, "reps": 3 }], "effort": { "value": 8.5, "scale": "RPE" } }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 1, "segments": [{ "load_kg": 120, "reps": 3 }], "effort": { "value": 8.5, "scale": "RPE" } }
+      ]
+    },
+    {
+      "name": "ogni blocco ha il suo riferimento (multiset)",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top", "backoff"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "backoff", "set_idx": 0, "segments": [{ "load_kg": 90, "reps": 7 }], "effort": null },
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null },
+          { "week": 1, "block": "backoff", "set_idx": 1, "segments": [{ "load_kg": 90, "reps": 6 }], "effort": null }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 1, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null },
+        { "block": "backoff", "set_idx": 0, "week": 1, "segments": [{ "load_kg": 90, "reps": 7 }], "effort": null },
+        { "block": "backoff", "set_idx": 1, "week": 1, "segments": [{ "load_kg": 90, "reps": 6 }], "effort": null }
+      ]
+    },
+    {
+      "name": "solo le serie registrate: gli indici saltati non hanno riferimento",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null },
+          { "week": 1, "block": "top", "set_idx": 2, "segments": [{ "load_kg": 95, "reps": 6 }], "effort": null }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 1, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null },
+        { "block": "top", "set_idx": 2, "week": 1, "segments": [{ "load_kg": 95, "reps": 6 }], "effort": null }
+      ]
+    },
+    {
+      "name": "serie con il solo sforzo (nessun carico): il riferimento c'è",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [], "effort": { "value": 2, "scale": "BUF" } }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 1, "segments": [], "effort": { "value": 2, "scale": "BUF" } }
+      ]
+    },
+    {
+      "name": "seduta saltata in N−1: nessun riferimento, non si risale alle settimane prima",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 3,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null }
+        ]
+      },
+      "expected": []
+    },
+    {
+      "name": "la settimana richiesta ha già dati propri: il riferimento resta N−1",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null },
+          { "week": 2, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 102.5, "reps": 5 }], "effort": null }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 1, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null }
+      ]
+    },
+    {
+      "name": "scarico a metà: la settimana di scarico è esclusa dalla ricerca, si usa quella prima",
+      "input": {
+        "weeks": 8,
+        "deload_weeks": [3],
+        "blocks": ["top"],
+        "week": 4,
+        "logs": [
+          { "week": 2, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 105, "reps": 5 }], "effort": { "value": 1, "scale": "BUF" } },
+          { "week": 3, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 60, "reps": 8 }], "effort": { "value": 4, "scale": "BUF" } }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 2, "segments": [{ "load_kg": 105, "reps": 5 }], "effort": { "value": 1, "scale": "BUF" } }
+      ]
+    },
+    {
+      "name": "scarico a metà e seduta saltata prima dello scarico: nessun riferimento",
+      "input": {
+        "weeks": 8,
+        "deload_weeks": [3],
+        "blocks": ["top"],
+        "week": 4,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null },
+          { "week": 3, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 60, "reps": 8 }], "effort": null }
+        ]
+      },
+      "expected": []
+    },
+    {
+      "name": "due scarichi di fila: si salta anche il secondo",
+      "input": {
+        "weeks": 8,
+        "deload_weeks": [3, 4],
+        "blocks": ["top"],
+        "week": 5,
+        "logs": [
+          { "week": 2, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 105, "reps": 5 }], "effort": null }
+        ]
+      },
+      "expected": [
+        { "block": "top", "set_idx": 0, "week": 2, "segments": [{ "load_kg": 105, "reps": 5 }], "effort": null }
+      ]
+    },
+    {
+      "name": "tutte le settimane prima sono di scarico: nessun riferimento",
+      "input": {
+        "weeks": 8,
+        "deload_weeks": [1],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 60, "reps": 8 }], "effort": null }
+        ]
+      },
+      "expected": []
+    },
+    {
+      "name": "un'altra seduta nella stessa settimana non conta",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [],
+        "other_session_logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null }
+        ]
+      },
+      "expected": []
+    },
+    {
+      "name": "mai dati di un mesociclo precedente, nemmeno come ripiego",
+      "input": {
+        "weeks": 6,
+        "deload_weeks": [],
+        "blocks": ["top"],
+        "week": 2,
+        "logs": [],
+        "previous_mesocycle_logs": [
+          { "week": 1, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 100, "reps": 5 }], "effort": null },
+          { "week": 2, "block": "top", "set_idx": 0, "segments": [{ "load_kg": 102.5, "reps": 5 }], "effort": null }
+        ]
+      },
+      "expected": []
+    }
+  ]
+}

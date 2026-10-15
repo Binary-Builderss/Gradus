@@ -1,0 +1,513 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC631A430AF67AA936C5AC /* ProfileView.swift */; };
+		3B0EC4D9193A08AD049ABDF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9D43462907B6067E227250DC /* Assets.xcassets */; };
+		73CB5473C7886C9C5DDC3FBA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B764FF928E312383A6B7389D /* RootView.swift */; };
+		B8C4E3AE25172604F411C2F2 /* GradusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */; };
+		CDABB546EEE4E96644418A48 /* WorkoutHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */; };
+		CFF1A6C346545044567C57D0 /* AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122A91D31856795C6331649B /* AppTests.swift */; };
+		E5AD3DD145207E1D5526A437 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */; };
+		F7AAAA38107F9E3FBF859EDA /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = D3CC16077424650BF678E67A /* Domain */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		40C0F18457C83CD68467986A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A4B6E385E59ABD21A653315 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5E6B2541415948FA49C41242;
+			remoteInfo = Gradus;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		122A91D31856795C6331649B /* AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTests.swift; sourceTree = "<group>"; };
+		243F1694CC06A475AF48ACE8 /* GradusTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GradusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6227B6A7F402DCD1A8CDF538 /* Gradus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Gradus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		9D43462907B6067E227250DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B764FF928E312383A6B7389D /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutHomeView.swift; sourceTree = "<group>"; };
+		C7CC631A430AF67AA936C5AC /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradusApp.swift; sourceTree = "<group>"; };
+		E5CF97CAFD07A441E7D2F5B4 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Domain; path = Domain; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F6DB6AC384C80EFBF48B7886 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F7AAAA38107F9E3FBF859EDA /* Domain in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		05E73C43858D9B1E5C90ED45 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		3B2A63F5976D0AD055F73732 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				C7CC631A430AF67AA936C5AC /* ProfileView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		5C300B27DE084E4EE7B4EC63 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E5CF97CAFD07A441E7D2F5B4 /* Domain */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		97F2CA1BF82F929E752C7CB5 = {
+			isa = PBXGroup;
+			children = (
+				A93135EDBFA90998BC3DF65C /* App */,
+				F50168A906FA09DC97791A14 /* Features */,
+				5C300B27DE084E4EE7B4EC63 /* Packages */,
+				05E73C43858D9B1E5C90ED45 /* Resources */,
+				F6A610C345981446CAF7CE85 /* Tests */,
+				F657F6619D44C9F97D49D03B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A93135EDBFA90998BC3DF65C /* App */ = {
+			isa = PBXGroup;
+			children = (
+				9D43462907B6067E227250DC /* Assets.xcassets */,
+				D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */,
+				B764FF928E312383A6B7389D /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F50168A906FA09DC97791A14 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				3B2A63F5976D0AD055F73732 /* Profile */,
+				F65E56AF4DF7B35FA2396C35 /* Workout */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		F657F6619D44C9F97D49D03B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6227B6A7F402DCD1A8CDF538 /* Gradus.app */,
+				243F1694CC06A475AF48ACE8 /* GradusTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F65E56AF4DF7B35FA2396C35 /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+				C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */,
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
+		F6A610C345981446CAF7CE85 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				122A91D31856795C6331649B /* AppTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5E6B2541415948FA49C41242 /* Gradus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0CA3EDCBDC0370DD49DB3D56 /* Build configuration list for PBXNativeTarget "Gradus" */;
+			buildPhases = (
+				84667E3B21D14514116F0218 /* Sources */,
+				7EB3B8FD0CE3721C6B1B673A /* Resources */,
+				F6DB6AC384C80EFBF48B7886 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Gradus;
+			packageProductDependencies = (
+				D3CC16077424650BF678E67A /* Domain */,
+			);
+			productName = Gradus;
+			productReference = 6227B6A7F402DCD1A8CDF538 /* Gradus.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D2BFB809F3B50F1D7434AC9D /* GradusTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93A258E4E372DBBB55B87B57 /* Build configuration list for PBXNativeTarget "GradusTests" */;
+			buildPhases = (
+				6E6BC7760CB7E07CA1BAFF92 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1778906CC4963656E139ACC9 /* PBXTargetDependency */,
+			);
+			name = GradusTests;
+			packageProductDependencies = (
+			);
+			productName = GradusTests;
+			productReference = 243F1694CC06A475AF48ACE8 /* GradusTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0A4B6E385E59ABD21A653315 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					5E6B2541415948FA49C41242 = {
+						DevelopmentTeam = "";
+					};
+					D2BFB809F3B50F1D7434AC9D = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = 29A0E8BFA2FF0A70EFB9C609 /* Build configuration list for PBXProject "Gradus" */;
+			developmentRegion = it;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				it,
+			);
+			mainGroup = 97F2CA1BF82F929E752C7CB5;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				659D27F7FE3CA695DDA2C57D /* XCLocalSwiftPackageReference "Domain" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F657F6619D44C9F97D49D03B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5E6B2541415948FA49C41242 /* Gradus */,
+				D2BFB809F3B50F1D7434AC9D /* GradusTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7EB3B8FD0CE3721C6B1B673A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B0EC4D9193A08AD049ABDF5 /* Assets.xcassets in Resources */,
+				E5AD3DD145207E1D5526A437 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6E6BC7760CB7E07CA1BAFF92 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFF1A6C346545044567C57D0 /* AppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84667E3B21D14514116F0218 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B8C4E3AE25172604F411C2F2 /* GradusApp.swift in Sources */,
+				1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */,
+				73CB5473C7886C9C5DDC3FBA /* RootView.swift in Sources */,
+				CDABB546EEE4E96644418A48 /* WorkoutHomeView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1778906CC4963656E139ACC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5E6B2541415948FA49C41242 /* Gradus */;
+			targetProxy = 40C0F18457C83CD68467986A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0F173B242A2CD1E53363EDE9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.binarybuilders.gradus.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Gradus.app/Gradus";
+			};
+			name = Release;
+		};
+		21FD7BAC64D578606CB563A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.binarybuilders.gradus.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Gradus.app/Gradus";
+			};
+			name = Debug;
+		};
+		2705512BD8F7F34EA459BFA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Gradus;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.binarybuilders.gradus;
+				PRODUCT_NAME = Gradus;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4B366B9DA871BBD3C6CAB2D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		7147809917ED7852E71F91D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		AD6C46437628EFAD9364BCB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Gradus;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.binarybuilders.gradus;
+				PRODUCT_NAME = Gradus;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0CA3EDCBDC0370DD49DB3D56 /* Build configuration list for PBXNativeTarget "Gradus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2705512BD8F7F34EA459BFA7 /* Debug */,
+				AD6C46437628EFAD9364BCB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		29A0E8BFA2FF0A70EFB9C609 /* Build configuration list for PBXProject "Gradus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B366B9DA871BBD3C6CAB2D7 /* Debug */,
+				7147809917ED7852E71F91D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		93A258E4E372DBBB55B87B57 /* Build configuration list for PBXNativeTarget "GradusTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21FD7BAC64D578606CB563A6 /* Debug */,
+				0F173B242A2CD1E53363EDE9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		659D27F7FE3CA695DDA2C57D /* XCLocalSwiftPackageReference "Domain" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Domain;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D3CC16077424650BF678E67A /* Domain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Domain;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 0A4B6E385E59ABD21A653315 /* Project object */;
+}

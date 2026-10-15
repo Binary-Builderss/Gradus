@@ -912,6 +912,17 @@ export type Database = {
           week: number
         }[]
       }
+      previous_week_reference: {
+        Args: { p_session_id: string; p_week: number }
+        Returns: {
+          block_id: string
+          effort_scale: Database['public']['Enums']['effort_scale']
+          effort_value: number
+          ref_week: number
+          segments: Json
+          set_idx: number
+        }[]
+      }
       save_mesocycle_as_template: {
         Args: { p_description?: string; p_mesocycle_id: string; p_name: string }
         Returns: string
