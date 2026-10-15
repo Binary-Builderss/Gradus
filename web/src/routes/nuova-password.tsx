@@ -5,6 +5,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { mapAuthError } from '@/lib/auth'
 import { messages } from '@/lib/messages'
 import { supabase } from '@/lib/supabase'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.auth.newPassword
 
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/nuova-password')({
 })
 
 function NewPasswordPage() {
+  usePageTitle(m.title)
   const { hasSession } = Route.useLoaderData()
   const navigate = useNavigate()
 
