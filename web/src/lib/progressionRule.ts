@@ -40,6 +40,35 @@ export const progressionSchema = z
       issue('toWeek', e.weekOrder)
   })
 export type ProgressionForm = z.infer<typeof progressionSchema>
+/** Ciò che si scrive nei campi (tutto testo, anche vuoto). */
+export type ProgressionInput = z.input<typeof progressionSchema>
+
+export const EMPTY_PROGRESSION: ProgressionInput = {
+  setsStart: '',
+  setsStep: '',
+  setsMax: '',
+  repsMin: '',
+  repsMax: '',
+  method: '',
+  intStart: '',
+  intStep: '',
+  intMin: '',
+  fromWeek: '',
+  toWeek: '',
+}
+
+/** Punti di partenza da completare: scrivono tutti i campi, poi si ritoccano. */
+export const PROGRESSION_EXAMPLES = {
+  moreSets: { ...EMPTY_PROGRESSION, setsStart: '3', setsStep: '1', setsMax: '5' },
+  closerToFailure: {
+    ...EMPTY_PROGRESSION,
+    setsStart: '3',
+    method: 'BUF',
+    intStart: '3',
+    intStep: '-1',
+    intMin: '0',
+  },
+} as const satisfies Record<string, ProgressionInput>
 
 type Series = { start: number; step?: number; min?: number; max?: number }
 const series = (start: number | undefined, step?: number, min?: number, max?: number): Series | undefined =>

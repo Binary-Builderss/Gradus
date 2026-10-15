@@ -1,4 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
+import type { CellValue } from './cellFields'
 import type { Json } from './database.types'
 import type { CellOp, BlockData, BlockRole, Technique, WeekData } from './gridModel'
 import { supabase } from './supabase'
@@ -166,4 +167,35 @@ export async function applyProgression(blockId: string, rule: Record<string, unk
   })
   if (error) throw error
   return data
+}
+
+export type ProgressionWeek = {
+  week: number
+  /** `write` si scrive, `deload` scarico (saltata), `locked` già eseguita (intatta). */
+  action: 'write' | 'deload' | 'locked'
+  cell: CellValue
+}
+
+/** Cosa farebbe una regola, settimana per settimana, senza scrivere nulla (stesso calcolo di `generate_progression`). */
+export async function previewProgression(
+  blockId: string,
+  rule: Record<string, unknown>,
+): Promise<ProgressionWeek[]> {
+  const { data, error } = await supabase.rpc('preview_progression', {
+    p_block_id: blockId,
+    p_rule: rule as Json,
+  })
+  if (error) throw error
+  return data.map((r) => ({
+    week: r.week,
+    action: r.action as ProgressionWeek['action'],
+    cell: {
+      sets: r.sets,
+      repsMin: r.reps_min,
+      repsMax: r.reps_max,
+      method: r.method,
+      value: r.intensity_value,
+      refPct: null,
+    },
+  }))
 }

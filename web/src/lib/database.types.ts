@@ -755,6 +755,18 @@ export type Database = {
         }[]
       }
       prepare_account_deletion: { Args: { p_user_id: string }; Returns: undefined }
+      preview_progression: {
+        Args: { p_block_id: string; p_rule: Json }
+        Returns: {
+          action: string
+          intensity_value: number
+          method: Database['public']['Enums']['intensity_method']
+          reps_max: number
+          reps_min: number
+          sets: number
+          week: number
+        }[]
+      }
       weekly_exercise_progress: {
         Args: { p_mesocycle_id: string }
         Returns: {
