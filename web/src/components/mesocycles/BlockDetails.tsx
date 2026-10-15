@@ -23,10 +23,12 @@ const TEMPO_PRESETS = {
 const REST_PRESETS = [30, 60, 90, 120, 180, 300] as const
 
 export function BlockDetails({
+  coachId,
   mesocycleId,
   block,
   siblings,
 }: {
+  coachId: string
   mesocycleId: string
   block: BlockData
   /** Altri blocchi dello stesso esercizio a cui questo può essere collegato. */
@@ -187,7 +189,7 @@ export function BlockDetails({
       </Section>
 
       <Section title={progression.title}>
-        <ProgressionForm mesocycleId={mesocycleId} blockId={block.id} />
+        <ProgressionForm coachId={coachId} mesocycleId={mesocycleId} blockId={block.id} />
       </Section>
 
       <div className="border-t pt-3">

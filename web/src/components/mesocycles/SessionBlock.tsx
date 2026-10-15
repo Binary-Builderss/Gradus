@@ -143,6 +143,7 @@ export function SessionBlock({
           <>
             {gridRows.length > 0 && (
               <SessionGrid
+                coachId={coachId}
                 mesocycleId={mesocycleId}
                 rows={gridRows}
                 totalWeeks={totalWeeks}

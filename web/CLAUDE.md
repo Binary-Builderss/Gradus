@@ -171,6 +171,12 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi non è pro vede la
   pagina bloccata. Il sito del coach non cambia colori: il marchio vale per PDF e app atleta.
 - **Libreria esercizi**: catalogo globale + esercizi del coach, note, pesi per muscolo 0..1.
+- **Modelli di progressione** (`progression_presets`, nel modulo «Progressione automatica» di ogni gruppo di serie): il coach salva con un
+  nome la progressione compilata («Sforzo che sale: BUF da 3 a 0, +1 serie») e la ritrova su ogni serie di ogni mesociclo:
+  un clic compila i campi, che si ritoccano e si applicano con l'anteprima di sempre. Sono solo del coach (l'atleta non li vede);
+  la regola è il jsonb di `generate_progression`, validato dal database (`private.valid_progression_rule`). Per riusarli su
+  mesocicli di durata diversa si lasciano vuote le settimane. Nessuna logica di calcolo nuova: restano `preview_progression`
+  e `generate_progression`.
 - **Video degli esercizi** (`exercise_videos`, `ExerciseVideos`): nessun video di default (nessuna fonte con diritti a posto: il
   catalogo non ne ha). Ogni coach aggiunge i propri link, più d'uno per esercizio e anche sugli esercizi del catalogo senza
   duplicarli; solo https, il link senza schema prende https://. Li vede il coach che li ha messi e i suoi atleti. La

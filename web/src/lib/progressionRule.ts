@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { Json } from './database.types'
 import { messages } from './messages'
 
 const e = messages.app.mesocycle.progression.errors
@@ -93,4 +94,29 @@ export function buildRule(v: ProgressionForm): Record<string, unknown> {
     to_week: v.toWeek,
   }
   return Object.fromEntries(Object.entries(rule).filter(([, value]) => value !== undefined))
+}
+
+const isObject = (v: unknown): v is Record<string, Json | undefined> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v)
+const text = (v: unknown) => (typeof v === 'number' ? String(v) : '')
+const startOf = (series: unknown) => (isObject(series) ? text(series.start) : '')
+const field = (series: unknown, key: 'step' | 'min' | 'max') => (isObject(series) ? text(series[key]) : '')
+
+/** Una regola salvata (jsonb) come testo nei campi del modulo, da ritoccare prima di applicarla. */
+export function ruleToInput(rule: Json): ProgressionInput {
+  if (!isObject(rule)) return EMPTY_PROGRESSION
+  const method = typeof rule.method === 'string' ? rule.method : ''
+  return {
+    setsStart: startOf(rule.sets),
+    setsStep: field(rule.sets, 'step'),
+    setsMax: field(rule.sets, 'max'),
+    repsMin: startOf(rule.reps_min),
+    repsMax: startOf(rule.reps_max),
+    method: (['BUF', 'RPE', 'RM', 'PCT_1RM', 'LOAD'] as const).find((x) => x === method) ?? '',
+    intStart: startOf(rule.intensity),
+    intStep: field(rule.intensity, 'step'),
+    intMin: field(rule.intensity, 'min'),
+    fromWeek: text(rule.from_week),
+    toWeek: text(rule.to_week),
+  }
 }

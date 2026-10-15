@@ -6,6 +6,11 @@ import type { BlockData } from '@/lib/gridModel'
 import { BlockDetails } from './BlockDetails'
 
 const { updateBlock } = vi.hoisted(() => ({ updateBlock: vi.fn(async () => undefined) }))
+vi.mock('@/lib/progressionPresets', () => ({
+  progressionPresetsQuery: () => ({ queryKey: ['progression-presets', 'c1'], queryFn: async () => [] }),
+  savePreset: vi.fn(),
+  deletePreset: vi.fn(),
+}))
 vi.mock('@/lib/blocks', () => ({
   updateBlock,
   deleteBlock: vi.fn(),
@@ -34,6 +39,7 @@ function setup(block: Partial<BlockData> = {}) {
   render(
     <QueryClientProvider client={new QueryClient()}>
       <BlockDetails
+        coachId="c1"
         mesocycleId="m1"
         block={{ ...base, ...block }}
         siblings={[{ id: 'x', label: 'Top set 1' }]}
