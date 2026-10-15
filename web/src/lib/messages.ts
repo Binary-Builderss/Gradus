@@ -4,6 +4,11 @@ export const messages = {
     name: 'Gradus',
   },
   auth: {
+    notFound: {
+      title: 'Pagina non trovata',
+      subtitle: 'Questo indirizzo non esiste. Per entrare nel tuo spazio coach vai alla pagina di accesso.',
+      toLogin: 'Vai all’accesso',
+    },
     email: 'Email',
     password: 'Password',
     showPassword: 'Mostra password',
