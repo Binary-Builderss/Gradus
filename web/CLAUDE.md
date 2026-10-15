@@ -96,6 +96,14 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 - **Guida a passi** (driver.js, pulsante "Guida" nella barra laterale): il percorso è in `src/lib/tourPlan.ts`,
   i testi in `messages.app.tour`, gli elementi evidenziati hanno `data-tour="..."`. Una pagina o un'azione
   principale nuova va aggiunta alla guida nello stesso commit. La guida non deve mai modificare dati.
+  **La guida deve coprire tutto il sito**: `src/tourCoverage.test.ts` fallisce se un elemento con `data-tour` non ha
+  un passo, se un passo punta a un elemento che non esiste, o se una pagina dell'area riservata non è nel percorso.
+  I passi che valgono solo in certe condizioni (seguirsi da soli, abbonamento, schermo largo) si decidono in
+  `buildTourPlan` con i dati raccolti da `useGuidedTour`.
+- **Seguirsi da soli**: un coach è anche atleta di sé stesso con lo stesso account (nessuna seconda email): il
+  pulsante «Segui anche te stesso» nella lista atleti (o scrivere la propria email nell'invito) crea il
+  collegamento con sé stesso (`coach_id = athlete_id`, `active`), che compare come «Tu», non occupa un posto del
+  piano e porta i suoi programmi nell'app atleta con lo stesso login.
 
 - **Piani** (`/piani`): Gratuito, Mid, Pro e Unlimited a confronto, con i posti usati (`plan_usage`) e i tetti letti
   da `plan_limits` (i numeri stanno solo nel database). L'acquisto di ogni piano è un link https in

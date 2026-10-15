@@ -4,6 +4,7 @@ import { driver, type DriveStep } from 'driver.js'
 import { useCallback } from 'react'
 import 'driver.js/dist/driver.css'
 import { athletesQuery } from '@/lib/athletes'
+import { planUsageQuery } from '@/lib/plans'
 import { mesocyclesQuery } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
 import { buildTourPlan, type TourRoute } from '@/lib/tourPlan'
@@ -16,23 +17,46 @@ const findTarget = (target: string) =>
     (el) => el.getClientRects().length > 0,
   ) ?? null
 
-/** Un atleta collegato e un suo mesociclo su cui mostrare le pagine; null se ancora non ci sono. */
-async function findExamples(queryClient: QueryClient, coachId: string) {
+type Examples = {
+  athleteId: string | null
+  mesocycleId: string | null
+  hasActiveMesocycle: boolean
+  canFollowSelf: boolean
+  hasSubscription: boolean
+}
+
+/** Un atleta collegato e un suo mesociclo su cui mostrare le pagine, e cosa serve a scegliere i passi condizionali. */
+async function findExamples(queryClient: QueryClient, coachId: string): Promise<Examples> {
+  const none: Examples = {
+    athleteId: null,
+    mesocycleId: null,
+    hasActiveMesocycle: false,
+    canFollowSelf: false,
+    hasSubscription: false,
+  }
   try {
-    const athletes = await queryClient.ensureQueryData(athletesQuery(coachId))
+    const [athletes, usage] = await Promise.all([
+      queryClient.ensureQueryData(athletesQuery(coachId)),
+      queryClient.ensureQueryData(planUsageQuery(coachId)).catch(() => null),
+    ])
+    const base = {
+      canFollowSelf: !athletes.some((a) => a.isSelf),
+      hasSubscription: usage?.hasSubscription ?? false,
+    }
     const linked = athletes.filter((a) => a.status === 'active').slice(0, 5)
     for (const a of linked) {
       const list = await queryClient.ensureQueryData(mesocyclesQuery(a.id))
       if (list[0])
         return {
+          ...base,
           athleteId: a.id,
           mesocycleId: list[0].id,
           hasActiveMesocycle: list.some((x) => x.status === 'active'),
         }
     }
-    return { athleteId: linked[0]?.id ?? null, mesocycleId: null, hasActiveMesocycle: false }
+    return { ...none, ...base, athleteId: linked[0]?.id ?? null }
   } catch {
-    return { athleteId: null, mesocycleId: null, hasActiveMesocycle: false }
+    return none
   }
 }
 
