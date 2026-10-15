@@ -21,7 +21,10 @@ Lo schema in `/supabase` è gestito da questa parte del progetto.
 - Lint: oxlint (`.oxlintrc.json`). Formattazione: Prettier (`.prettierrc.json`, plugin Tailwind).
 - Test: Vitest + Testing Library (jsdom), Playwright (e2e, da aggiungere), pgTAP (RLS e funzioni SQL).
 - Variabili d'ambiente validate con zod in `src/lib/env.ts`; client Supabase unico in `src/lib/supabase.ts`.
-- Deploy: hosting statico (Netlify, Vercel o Cloudflare Pages) con fallback SPA su `index.html`.
+- Deploy: Cloudflare Pages (progetto `gradus`, ramo `prod`, cartella `web`, comando `npm run build`, uscita `dist`;
+  variabili `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` nelle impostazioni del progetto). Il fallback SPA su
+  `index.html` lo fa Pages da solo (non aggiungere un `404.html`); le intestazioni di sicurezza stanno in
+  `web/public/_headers`.
 - Codice in inglese; testi dell'interfaccia in italiano, in un unico file di messaggi.
 
 ## Comandi
