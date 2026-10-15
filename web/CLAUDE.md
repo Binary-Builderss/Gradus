@@ -81,8 +81,8 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   allo stato di default.
 - Menu laterale (`components/layout/Sidebar.tsx`): in alto il marchio, al centro le sezioni di lavoro (Atleti,
   Esercizi), in basso la Guida e **il menu dell'account** (`AccountMenu`: nome, email e piano, Profilo, Personalizza, Piano e abbonamento,
-  Esci). Profilo, Personalizza e Piano sono pagine diverse: il Profilo è la persona (nome, email, password e,
-  più avanti, eliminazione dell'account), Personalizza è il marchio (solo piano Pro, bloccata per gli altri),
+  Esci). Profilo, Personalizza e Piano sono pagine diverse: il Profilo è la persona (nome, email, password, disattivazione ed
+  eliminazione dell'account), Personalizza è il marchio (piano Pro e Unlimited, bloccata per gli altri),
   Piano e abbonamento confronta Gratuito e Pro. Sotto la Guida, a chi non ha il Pro, compare «Passa a Pro». Si comprime a una barra di
   sole icone che tiene il marchio (scelta in localStorage); da compresso ogni voce ha l'etichetta al passaggio
   del mouse e il nome accessibile. Su telefono lo stesso menu è l'avatar nell'header. Una sezione di lavoro
