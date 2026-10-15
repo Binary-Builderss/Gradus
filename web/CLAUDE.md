@@ -68,6 +68,10 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   annidate.
 - Icone: solo Phosphor (`@phosphor-icons/react`). Componenti shadcn/ui in `src/components/ui`, mai lasciati
   allo stato di default.
+- Menu laterale (`components/layout/Sidebar.tsx`): in alto il marchio, al centro le sezioni di lavoro (Atleti,
+  Esercizi), in basso Guida, Impostazioni e l'utente. Si comprime a una barra di sole icone che tiene il
+  marchio di Gradus (scelta ricordata in localStorage); da compresso ogni voce ha l'etichetta al passaggio del
+  mouse e il nome accessibile. Una sezione di lavoro nuova va nel blocco centrale, non in basso.
 - Ogni stringa visibile sta in `src/lib/messages.ts`.
 - Semplicità prima della densità: un dato ha **una sola vista** (la griglia della seduta, non anche un
   elenco degli stessi esercizi); le opzioni avanzate stanno in `Collapsible` (`<details>`, chiusi di

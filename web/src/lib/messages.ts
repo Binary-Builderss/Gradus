@@ -48,7 +48,14 @@ export const messages = {
     },
   },
   app: {
-    nav: { athletes: 'Atleti', exercises: 'Esercizi', settings: 'Impostazioni' },
+    nav: {
+      athletes: 'Atleti',
+      exercises: 'Esercizi',
+      settings: 'Impostazioni',
+      menu: 'Menu principale',
+      collapse: 'Comprimi il menu',
+      expand: 'Espandi il menu',
+    },
     signOut: 'Esci',
     tour: {
       open: 'Guida',
