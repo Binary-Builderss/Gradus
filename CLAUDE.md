@@ -56,6 +56,9 @@ Esecuzione: `workouts → set_logs → set_segments`.
 - **Prescrizione** per settimana (`block_weeks`): serie, range reps, metodo `BUF | RPE | RM | PCT_1RM | LOAD`
   e valore; back-off legato con `ref_block_id` + `ref_pct`.
 - **Mesociclo**: `draft → active → completed`, un solo `active` per atleta, l'atleta non vede i `draft`.
+  Passaggi ammessi (trigger `check_mesocycle_status_change`): `draft → active` solo se ha almeno una prescrizione e l'atleta
+  non ne ha già un altro attivo; `active → completed` sempre; `active → draft` solo senza sedute registrate; tutto
+  il resto no. Si elimina fisicamente solo una bozza. Lo fa il coach (anche per sé stesso), mai l'atleta.
   È sempre una **copia** del template o del mesociclo clonato, mai un riferimento.
 - Le righe di esecuzione esistono solo se contengono dati reali. Chiavi naturali uniche
   (`workout_id, block_id, set_idx`; `set_log_id, seg_idx`) → scritture come upsert idempotenti.

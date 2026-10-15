@@ -115,3 +115,18 @@ export async function deleteSession(sessionId: string, mesocycleId: string) {
     .eq('mesocycle_id', mesocycleId)
   if (error) throw error
 }
+
+/**
+ * Pubblica, conclude o ritira un mesociclo. Le regole sono nel database (trigger): qui si legge solo l'esito.
+ * Un rifiuto arriva come errore con il codice nel messaggio (e, per `athlete_has_active`, il nome nel suggerimento).
+ */
+export async function setMesocycleStatus(mesocycleId: string, status: MesocycleStatus) {
+  const { error } = await supabase.from('mesocycles').update({ status }).eq('id', mesocycleId)
+  if (error) throw error
+}
+
+/** Eliminazione fisica: il database la ammette solo per le bozze. */
+export async function deleteDraftMesocycle(mesocycleId: string) {
+  const { error } = await supabase.from('mesocycles').delete().eq('id', mesocycleId).eq('status', 'draft')
+  if (error) throw error
+}

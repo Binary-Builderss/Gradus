@@ -166,6 +166,10 @@ export const messages = {
           title: 'Durata e scarico',
           body: 'In una riga vedi quante settimane dura il programma e quali sono di scarico. “Modifica” apre i controlli.',
         },
+        status: {
+          title: 'Attiva il mesociclo',
+          body: 'Nasce in bozza e l’atleta non lo vede. Quando è pronto lo attivi da qui: da quel momento lo vede nell’app. A fine ciclo lo concludi per attivare il successivo.',
+        },
         sessions: {
           title: 'Le sedute',
           body: 'Una seduta è un giorno di allenamento. Le schede ne mostrano una alla volta; con “Seduta” ne aggiungi altre.',
@@ -603,6 +607,47 @@ export const messages = {
           ]
             .filter(Boolean)
             .join(', '),
+      },
+      status: {
+        activate: 'Attiva',
+        complete: 'Concludi',
+        more: 'Altre azioni',
+        unpublish: 'Riporta in bozza…',
+        remove: 'Elimina bozza…',
+        cancel: 'Annulla',
+        working: 'Un momento',
+        activateTitle: (name: string) => `Attivare «${name}»?`,
+        activateBody: [
+          'L’atleta lo vede subito nell’app e può registrare le sedute.',
+          'Le settimane già eseguite si bloccano: potrai modificare solo quelle senza dati.',
+          'Un atleta ha un solo mesociclo attivo alla volta.',
+        ],
+        completeTitle: (name: string) => `Concludere «${name}»?`,
+        completeBody: [
+          'L’atleta continua a vedere il programma e le sue sedute.',
+          'Un mesociclo concluso non si riattiva: dopo potrai attivare il successivo.',
+        ],
+        unpublishTitle: (name: string) => `Riportare «${name}» in bozza?`,
+        unpublishBody: [
+          'L’atleta non lo vedrà più finché non lo riattivi.',
+          'Si può fare solo se non ha ancora registrato nessuna seduta.',
+        ],
+        removeTitle: (name: string) => `Eliminare la bozza «${name}»?`,
+        removeBody: [
+          'Cancella per sempre il mesociclo con le sue sedute ed esercizi.',
+          'Non si può annullare.',
+        ],
+        errors: {
+          empty:
+            'Prima di attivarlo aggiungi almeno una seduta con un esercizio e le sue prescrizioni: un mesociclo vuoto non si pubblica.',
+          hasActive: (name: string) =>
+            name
+              ? `Questo atleta ha già un mesociclo attivo («${name}»): concludilo prima di attivarne un altro.`
+              : 'Questo atleta ha già un mesociclo attivo: concludilo prima di attivarne un altro.',
+          hasWorkouts: 'L’atleta ha già registrato delle sedute: non si può riportare in bozza.',
+          notAllowed: 'Questo passaggio di stato non si può fare.',
+          generic: 'Non è andata a buon fine. Riprova tra poco.',
+        },
       },
       tabs: { plan: 'Programmazione', summary: 'Riepilogo' },
       summary: {
