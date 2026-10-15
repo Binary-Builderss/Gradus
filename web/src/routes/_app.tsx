@@ -1,4 +1,4 @@
-import { BarbellIcon, CompassIcon, SignOutIcon, UsersThreeIcon } from '@phosphor-icons/react'
+import { BarbellIcon, CompassIcon, GearSixIcon, SignOutIcon, UsersThreeIcon } from '@phosphor-icons/react'
 import { createFileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
 import { Wordmark } from '@/components/brand'
 import { Button } from '@/components/ui/button'
@@ -41,6 +41,10 @@ function AppLayout() {
             <BarbellIcon size={18} />
             {m.nav.exercises}
           </Link>
+          <Link to="/impostazioni" className={navLink} data-tour="nav-settings">
+            <GearSixIcon size={18} />
+            {m.nav.settings}
+          </Link>
         </nav>
         <div className="mt-auto grid gap-0.5 border-t p-2.5">
           <p className="truncate px-2.5 py-1 text-xs text-muted-foreground" title={user.email}>
@@ -68,6 +72,11 @@ function AppLayout() {
       <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/85 px-4 py-3 backdrop-blur lg:hidden">
         <Wordmark />
         <div className="flex items-center">
+          <Button variant="ghost" size="icon" aria-label={m.nav.settings} asChild>
+            <Link to="/impostazioni">
+              <GearSixIcon size={18} />
+            </Link>
+          </Button>
           <Button variant="ghost" size="icon" aria-label={m.tour.open} onClick={() => void startTour()}>
             <CompassIcon size={18} />
           </Button>
