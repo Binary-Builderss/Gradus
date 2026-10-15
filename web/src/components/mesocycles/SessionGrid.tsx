@@ -41,12 +41,14 @@ const col = createColumnHelper<GridRow>()
 const fieldWidth: Record<Field, string> = { sets: 'w-10', reps: 'w-14', value: 'w-14' }
 
 export function SessionGrid({
+  coachId,
   mesocycleId,
   rows,
   totalWeeks,
   deloadWeeks,
   lockedWeeks,
 }: {
+  coachId: string
   mesocycleId: string
   rows: GridRow[]
   totalWeeks: number
@@ -415,7 +417,12 @@ export function SessionGrid({
                     {open && row.block && (
                       <tr className="border-b bg-muted/30">
                         <td colSpan={totalCols + 1} className="p-0">
-                          <BlockDetails mesocycleId={mesocycleId} block={row.block} siblings={siblings} />
+                          <BlockDetails
+                            coachId={coachId}
+                            mesocycleId={mesocycleId}
+                            block={row.block}
+                            siblings={siblings}
+                          />
                         </td>
                       </tr>
                     )}

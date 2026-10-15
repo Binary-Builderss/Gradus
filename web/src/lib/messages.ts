@@ -136,7 +136,7 @@ export const messages = {
         },
         rowOptions: {
           title: 'Opzioni di queste serie',
-          body: 'La freccia in giù apre le opzioni a sezioni: tipo di lavoro (riscaldamento, top set, back-off) e tecnica, tempo di esecuzione (TUT), recuperi e progressione automatica, che mostra settimana per settimana cosa scriverà prima di applicarla.',
+          body: 'La freccia in giù apre le opzioni a sezioni: tipo di lavoro (riscaldamento, top set, back-off) e tecnica, tempo di esecuzione (TUT), recuperi e progressione automatica. La progressione mostra settimana per settimana cosa scriverà prima di applicarla e puoi salvarla come modello, per riusarla su altre serie.',
         },
         orderSuperset: {
           title: 'Ordine e superset',
@@ -777,6 +777,28 @@ export const messages = {
         title: 'Progressione automatica',
         hint: 'Scrivi come parte la prima settimana e di quanto cambia ogni settimana: le altre le compila Gradus. Le settimane di scarico si saltano, quelle già eseguite restano come sono.',
         examples: 'Esempi da cui partire',
+        models: {
+          title: 'I tuoi modelli',
+          empty:
+            'Nessun modello salvato. Compila una progressione e salvala sotto: la ritrovi su tutte le tue serie e in tutti i mesocicli.',
+          loadError: 'Non riesco a caricare i tuoi modelli.',
+          remove: (name: string) => `Elimina il modello ${name}`,
+          saveTitle: 'Salva come modello',
+          saveHint:
+            'Dai un nome a questa progressione per riusarla su altre serie. Lascia vuote le settimane se vuoi usarla su mesocicli di durata diversa.',
+          nameLabel: 'Nome del modello',
+          save: 'Salva modello',
+          saving: 'Salvataggio',
+          saved: (name: string) => `Modello «${name}» salvato.`,
+          errors: {
+            nameRequired: 'Dai un nome al modello.',
+            nameTooLong: 'Il nome è troppo lungo (massimo 80 caratteri).',
+            duplicate: 'Hai già un modello con questo nome.',
+            incomplete: 'Completa prima la progressione: servono almeno le serie della prima settimana.',
+            generic: 'Non sono riuscito a salvare il modello. Riprova.',
+            removeFailed: 'Non sono riuscito a eliminare il modello. Riprova.',
+          },
+        },
         exampleNames: {
           moreSets: 'Una serie in più a settimana',
           closerToFailure: 'Sempre più vicino al cedimento',

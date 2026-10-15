@@ -7,6 +7,11 @@ import type { GridRow } from '@/lib/gridModel'
 import { SessionGrid } from './SessionGrid'
 
 const { writeCells } = vi.hoisted(() => ({ writeCells: vi.fn(async () => {}) }))
+vi.mock('@/lib/progressionPresets', () => ({
+  progressionPresetsQuery: () => ({ queryKey: ['progression-presets', 'c1'], queryFn: async () => [] }),
+  savePreset: vi.fn(),
+  deletePreset: vi.fn(),
+}))
 vi.mock('@/lib/blocks', () => ({
   writeCells,
   addBlock: vi.fn(),
@@ -54,6 +59,7 @@ function setup(locked: number[] = []) {
   render(
     <QueryClientProvider client={new QueryClient()}>
       <SessionGrid
+        coachId="c1"
         mesocycleId="m1"
         rows={rows}
         totalWeeks={3}
