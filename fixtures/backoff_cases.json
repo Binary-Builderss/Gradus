@@ -1,0 +1,19 @@
+{
+  "rule": "Carico target del back-off = carico del top set × percentuale del back-off ÷ 100, arrotondato al 2,5 kg più vicino (a metà si sale). È un'indicazione («≈ 90 kg»), mai un valore inserito nei campi. Per scegliere quale serie del blocco di riferimento fa da top set vedi ios/Domain (BackOff.referenceLoad).",
+  "rounding_step_kg": 2.5,
+  "cases": [
+    { "name": "85% di 100 kg è già un multiplo di 2,5", "input": { "top_load_kg": 100, "ref_pct": 85 }, "expected": { "target_kg": 85 } },
+    { "name": "90% di 100 kg", "input": { "top_load_kg": 100, "ref_pct": 90 }, "expected": { "target_kg": 90 } },
+    { "name": "85% di 105 kg = 89,25 → 90", "input": { "top_load_kg": 105, "ref_pct": 85 }, "expected": { "target_kg": 90 } },
+    { "name": "percentuale con decimali: 82,5% di 100 kg", "input": { "top_load_kg": 100, "ref_pct": 82.5 }, "expected": { "target_kg": 82.5 } },
+    { "name": "carico con decimali: 80% di 90,9 kg = 72,72 → 72,5", "input": { "top_load_kg": 90.9, "ref_pct": 80 }, "expected": { "target_kg": 72.5 } },
+    { "name": "a metà si sale: 83,75 → 85", "input": { "top_load_kg": 100, "ref_pct": 83.75 }, "expected": { "target_kg": 85 } },
+    { "name": "a metà si sale: 81,25 → 82,5", "input": { "top_load_kg": 100, "ref_pct": 81.25 }, "expected": { "target_kg": 82.5 } },
+    { "name": "70% di 60 kg = 42 → 42,5", "input": { "top_load_kg": 60, "ref_pct": 70 }, "expected": { "target_kg": 42.5 } },
+    { "name": "75% di 140 kg = 105", "input": { "top_load_kg": 140, "ref_pct": 75 }, "expected": { "target_kg": 105 } },
+    { "name": "50% di 20 kg = 10", "input": { "top_load_kg": 20, "ref_pct": 50 }, "expected": { "target_kg": 10 } },
+    { "name": "90% di 127,5 kg = 114,75 → 115", "input": { "top_load_kg": 127.5, "ref_pct": 90 }, "expected": { "target_kg": 115 } },
+    { "name": "oltre il 100%: 105% di 100 kg", "input": { "top_load_kg": 100, "ref_pct": 105 }, "expected": { "target_kg": 105 } },
+    { "name": "carichi leggeri: 85% di 7 kg = 5,95 → 5", "input": { "top_load_kg": 7, "ref_pct": 85 }, "expected": { "target_kg": 5 } }
+  ]
+}

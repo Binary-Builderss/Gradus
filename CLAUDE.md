@@ -80,7 +80,10 @@ Esecuzione: `workouts → set_logs → set_segments`.
   settimana la seduta non ha dati (saltata) → nessun riferimento, non si risale oltre. Mai dati di un mesociclo
   precedente. La funzione SQL è `previous_week_reference(session_id, week)` (non prende un workout: prima della
   prima serie il workout di N non esiste, le righe di esecuzione ci sono solo con dati).
-- Le fixture sono la fonte: `fixtures/previous_week_cases.json` genera il test pgTAP
+- Carico target del back-off: carico del top set × percentuale ÷ 100, arrotondato al **2,5 kg** più vicino (a metà si sale);
+  funzione SQL `backoff_target_load(top_load_kg, ref_pct)`, indicazione mai scritta nei campi dell'atleta. Come top set si usa
+  la serie registrata per ultima nel blocco di riferimento che ha un carico (primo segmento).
+- Le fixture sono la fonte: `fixtures/previous_week_cases.json` e `backoff_cases.json` generano i test pgTAP
   (`node fixtures/generate-sql.mjs`, controllato in CI con `--check`) e lo legge direttamente il test Swift.
 - Sforzo: BUF = ripetizioni di riserva (RIR), quindi RPE = 10 − BUF. Lo sforzo si salva comunque con la
   sua scala (`effort_value` + `effort_scale`).

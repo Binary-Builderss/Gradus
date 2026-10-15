@@ -870,6 +870,7 @@ export type Database = {
           workouts: number
         }[]
       }
+      backoff_target_load: { Args: { p_ref_pct: number; p_top_load_kg: number }; Returns: number }
       clone_mesocycle: {
         Args: { p_mesocycle_id: string; p_name?: string; p_start_date: string }
         Returns: string

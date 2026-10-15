@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 // Genera i test pgTAP dalle fixture condivise (stessi casi dei test Swift).
-//   node fixtures/generate-sql.mjs          scrive supabase/tests/previous_week_fixtures.test.sql
-//   node fixtures/generate-sql.mjs --check  non scrive: esce con errore se il file non è aggiornato (CI)
+//   node fixtures/generate-sql.mjs          scrive supabase/tests/previous_week_fixtures.test.sql e backoff_fixtures.test.sql
+//   node fixtures/generate-sql.mjs --check  non scrive: esce con errore se un file non è aggiornato (CI)
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const input = join(root, 'fixtures', 'previous_week_cases.json')
-const output = join(root, 'supabase', 'tests', 'previous_week_fixtures.test.sql')
+const fixture = (name) => join(root, 'fixtures', name)
+const testFile = (name) => join(root, 'supabase', 'tests', name)
 
 const q = (s) => `'${String(s).replaceAll("'", "''")}'`
 const pad = (n, len) => String(n).padStart(len, '0')
@@ -16,8 +16,8 @@ const pad = (n, len) => String(n).padStart(len, '0')
 const uuid = (kind, caseNo, n) => `${kind}${pad(caseNo, 7)}-0000-4000-8000-${pad(n, 12)}`
 const sqlNumber = (n) => (n === null || n === undefined ? 'null' : String(n))
 
-function build() {
-  const { cases } = JSON.parse(readFileSync(input, 'utf8'))
+function buildPreviousWeek() {
+  const { cases } = JSON.parse(readFileSync(fixture('previous_week_cases.json'), 'utf8'))
   const out = []
   const emit = (s = '') => out.push(s)
 
@@ -130,15 +130,41 @@ function build() {
   return out.join('\n') + '\n'
 }
 
-const generated = build()
-if (process.argv.includes('--check')) {
-  const current = existsSync(output) ? readFileSync(output, 'utf8') : ''
-  if (current !== generated) {
-    console.error('supabase/tests/previous_week_fixtures.test.sql non è aggiornato: esegui `node fixtures/generate-sql.mjs`.')
-    process.exit(1)
-  }
-  console.log('previous_week_fixtures.test.sql è aggiornato.')
-} else {
-  writeFileSync(output, generated)
-  console.log(`Scritto ${output}`)
+function buildBackoff() {
+  const { cases } = JSON.parse(readFileSync(fixture('backoff_cases.json'), 'utf8'))
+  const out = [
+    '-- GENERATO da fixtures/generate-sql.mjs a partire da fixtures/backoff_cases.json: non modificare a mano.',
+    "-- backoff_target_load: gli stessi casi della fixture che passa anche l'implementazione Swift.",
+    '',
+    'begin;',
+    'create extension if not exists pgtap with schema extensions;',
+    `select plan(${cases.length});`,
+    '',
+  ]
+  for (const c of cases)
+    out.push(
+      `select is(public.backoff_target_load(${c.input.top_load_kg}, ${c.input.ref_pct}), ${c.expected.target_kg}::numeric, ${q(c.name)});`,
+    )
+  out.push('', 'select * from finish();', 'rollback;')
+  return out.join('\n') + '\n'
 }
+
+const outputs = [
+  [testFile('previous_week_fixtures.test.sql'), buildPreviousWeek()],
+  [testFile('backoff_fixtures.test.sql'), buildBackoff()],
+]
+let stale = false
+for (const [file, content] of outputs) {
+  if (process.argv.includes('--check')) {
+    const current = existsSync(file) ? readFileSync(file, 'utf8') : ''
+    if (current !== content) {
+      console.error(`${file} non è aggiornato: esegui \`node fixtures/generate-sql.mjs\`.`)
+      stale = true
+    }
+  } else {
+    writeFileSync(file, content)
+    console.log(`Scritto ${file}`)
+  }
+}
+if (stale) process.exit(1)
+if (process.argv.includes('--check')) console.log('I test SQL generati sono aggiornati.')
