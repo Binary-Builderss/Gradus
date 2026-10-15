@@ -58,7 +58,10 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 - Unico colore di stato oltre all'accento: l'ambra (`warning`) per le settimane di scarico. Le settimane già
   eseguite si distinguono con le righe oblique (`bg-hatch`), mai con un altro colore.
 - Nella griglia dell'editor la colonna e la riga della cella attiva restano evidenziate, e sopra la griglia
-  una barra dice sempre quale esercizio, blocco e settimana stai modificando.
+  una barra dice sempre quale esercizio, blocco e settimana stai modificando e, a parole, cosa hai prescritto
+  («3 serie da 8-10 ripetizioni, 2 ripetizioni in riserva»).
+- Ogni settimana ha tre campi visibili (serie, ripetizioni, sforzo): niente sigle da imparare né sintassi da
+  digitare. Il menu sotto il nome dell'esercizio sceglie come si misura lo sforzo.
 - Tipografia: Geist per il testo (base 14 px), Geist Mono per numeri e celle della griglia. Titoli in
   semibold, mai maiuscoli.
 - Forma: raggio 6 px ovunque, controlli da 32 px, liste e tabelle con righe divise invece di card

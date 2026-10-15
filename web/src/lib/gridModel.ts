@@ -1,4 +1,4 @@
-import { type CellValue, formatCell, parseCell, parseTsv, toTsv } from './cellSyntax'
+import { type CellValue, editField, FIELDS, fieldText, type Measure, parseTsv, toTsv } from './cellFields'
 import type { GroupKind } from './slotRules'
 
 export type BlockRole = 'warmup' | 'top' | 'backoff' | 'working'
@@ -89,6 +89,9 @@ export function copyForwardOps(
   return ops
 }
 
+/** Una colonna per campo: la settimana w (da 1) occupa le colonne (w-1)·3 … (w-1)·3 + 2. */
+export const weekOfColumn = (c: number) => Math.floor(c / FIELDS.length) + 1
+
 export type Range = { r1: number; c1: number; r2: number; c2: number }
 
 export const normalizeRange = (a: { r: number; c: number }, b: { r: number; c: number }): Range => ({
@@ -98,43 +101,87 @@ export const normalizeRange = (a: { r: number; c: number }, b: { r: number; c: n
   c2: Math.max(a.c, b.c),
 })
 
-/** TSV delle celle nell'intervallo (colonna c = settimana c + 1). */
-export function rangeToTsv(rows: readonly GridRow[], range: Range): string {
+type RowMeasure = (row: GridRow) => Measure
+
+/** TSV dei campi nell'intervallo, nello stesso ordine della griglia. */
+export function rangeToTsv(rows: readonly GridRow[], range: Range, measureOf: RowMeasure): string {
   const matrix: string[][] = []
   for (let r = range.r1; r <= range.r2; r++) {
+    const row = rows[r]
     const line: string[] = []
-    for (let c = range.c1; c <= range.c2; c++) line.push(formatCell(rows[r]?.cells.get(c + 1)))
+    for (let c = range.c1; c <= range.c2; c++)
+      line.push(
+        row ? fieldText(row.cells.get(weekOfColumn(c)), FIELDS[c % FIELDS.length]!, measureOf(row)) : '',
+      )
     matrix.push(line)
   }
   return toTsv(matrix)
 }
 
+export type FieldEdit = { r: number; c: number; text: string }
+
 /**
- * Incolla una matrice TSV a partire da (riga, colonna). Celle fuori griglia, su righe senza blocco o
- * su settimane bloccate vengono saltate; testo non valido viene contato, non scritto.
+ * Applica più scritture di campo, anche sulla stessa settimana, e le raccoglie in una sola operazione
+ * per settimana. Campi fuori griglia, su righe senza blocco o su settimane bloccate sono saltati;
+ * testo non valido è contato, non scritto.
  */
+export function applyEdits(
+  rows: readonly GridRow[],
+  edits: readonly FieldEdit[],
+  totalWeeks: number,
+  locked: ReadonlySet<number>,
+  measureOf: RowMeasure,
+): { ops: CellOp[]; invalid: number; skipped: number } {
+  const working = new Map<
+    string,
+    { blockId: string; week: number; cell: CellValue | null; existed: boolean }
+  >()
+  let invalid = 0
+  let skipped = 0
+  for (const { r, c, text } of edits) {
+    const row = rows[r]
+    const week = weekOfColumn(c)
+    if (!row?.blockId || week > totalWeeks || locked.has(week)) {
+      skipped++
+      continue
+    }
+    const key = `${row.blockId}:${week}`
+    const current = working.has(key) ? working.get(key)!.cell : (row.cells.get(week) ?? null)
+    const result = editField(current ?? undefined, FIELDS[c % FIELDS.length]!, text, measureOf(row))
+    if (!result.ok) invalid++
+    else working.set(key, { blockId: row.blockId, week, cell: result.cell, existed: row.cells.has(week) })
+  }
+  const ops = [...working.values()]
+    .filter((w) => w.cell !== null || w.existed)
+    .map((w): CellOp => ({ blockId: w.blockId, week: w.week, value: w.cell }))
+  return { ops, invalid, skipped }
+}
+
+/** Incolla una tabella TSV (un campo per colonna) a partire da (riga, colonna). */
 export function pasteOps(
   rows: readonly GridRow[],
   anchor: { r: number; c: number },
   tsv: string,
   totalWeeks: number,
   locked: ReadonlySet<number>,
-): { ops: CellOp[]; invalid: number; skipped: number } {
-  const ops: CellOp[] = []
-  let invalid = 0
-  let skipped = 0
-  for (const [dr, line] of parseTsv(tsv).entries()) {
-    for (const [dc, text] of line.entries()) {
-      const row = rows[anchor.r + dr]
-      const week = anchor.c + dc + 1
-      if (!row?.blockId || week > totalWeeks || locked.has(week)) {
-        skipped++
-        continue
-      }
-      const parsed = parseCell(text)
-      if (!parsed.ok) invalid++
-      else ops.push({ blockId: row.blockId, week, value: parsed.value })
-    }
-  }
-  return { ops, invalid, skipped }
+  measureOf: RowMeasure,
+) {
+  const edits = parseTsv(tsv).flatMap((line, dr) =>
+    line.map((text, dc): FieldEdit => ({ r: anchor.r + dr, c: anchor.c + dc, text })),
+  )
+  return applyEdits(rows, edits, totalWeeks, locked, measureOf)
+}
+
+/** Svuota i campi dell'intervallo (Canc): le serie vuote tolgono tutta la settimana. */
+export function clearOps(
+  rows: readonly GridRow[],
+  range: Range,
+  totalWeeks: number,
+  locked: ReadonlySet<number>,
+  measureOf: RowMeasure,
+) {
+  const edits: FieldEdit[] = []
+  for (let r = range.r1; r <= range.r2; r++)
+    for (let c = range.c1; c <= range.c2; c++) edits.push({ r, c, text: '' })
+  return applyEdits(rows, edits, totalWeeks, locked, measureOf).ops
 }

@@ -52,7 +52,7 @@ export function buildTourPlan(args: {
         step(meso, t.sessions, 'session-tabs'),
         step(meso, t.addExercise, 'add-exercise'),
         step(meso, t.grid, 'grid'),
-        step(meso, t.syntax, 'syntax-help'),
+        step(meso, t.fill, 'fill-help'),
         step(meso, t.save, 'save-status'),
       )
     }

@@ -1,20 +1,32 @@
 import { ArrowLineRightIcon, CaretDownIcon, LockSimpleIcon, PlusIcon } from '@phosphor-icons/react'
-import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { Fragment, useMemo, useRef, useState, type ClipboardEvent, type KeyboardEvent } from 'react'
 import { BlockDetails } from '@/components/mesocycles/BlockDetails'
 import { useEditorMutation } from '@/components/mesocycles/useEditorMutation'
 import { Button } from '@/components/ui/button'
 import { Collapsible } from '@/components/ui/collapsible'
 import { addBlock, writeCells } from '@/lib/blocks'
-import { formatCell, parseCell } from '@/lib/cellSyntax'
+import {
+  changeMeasure,
+  describeCell,
+  editField,
+  type Field,
+  FIELDS,
+  fieldText,
+  type Measure,
+  MEASURES,
+  measureOf,
+} from '@/lib/cellFields'
 import {
   type CellOp,
+  clearOps,
   copyForwardOps,
   type GridRow,
   normalizeRange,
   pasteOps,
   type Range,
   rangeToTsv,
+  weekOfColumn,
   weekSetTotals,
 } from '@/lib/gridModel'
 import { messages } from '@/lib/messages'
@@ -24,6 +36,9 @@ const m = messages.app.mesocycle
 type Pos = { r: number; c: number }
 
 const col = createColumnHelper<GridRow>()
+
+// Larghezza dei tre campi di una settimana: serie, ripetizioni, sforzo.
+const fieldWidth: Record<Field, string> = { sets: 'w-10', reps: 'w-14', value: 'w-14' }
 
 export function SessionGrid({
   mesocycleId,
@@ -44,6 +59,8 @@ export function SessionGrid({
   const [expanded, setExpanded] = useState<string | null>(null)
   const [note, setNote] = useState('')
   const [hasFocus, setHasFocus] = useState(false)
+  // Misura scelta per le righe ancora senza prescrizioni: poi la deducono dalle celle scritte.
+  const [picked, setPicked] = useState<ReadonlyMap<string, Measure>>(new Map())
   const extending = useRef(false)
 
   const keys = [
@@ -56,19 +73,19 @@ export function SessionGrid({
     keys,
   )
 
+  const rowMeasure = (row: GridRow): Measure => picked.get(row.key) ?? measureOf(row.cells.values())
   const range: Range = normalizeRange(anchor, active)
   const multi = range.r1 !== range.r2 || range.c1 !== range.c2
+  const totalCols = totalWeeks * FIELDS.length
   const weekNumbers = Array.from({ length: totalWeeks }, (_, i) => i + 1)
   const totals = weekSetTotals(rows, totalWeeks)
   const activeRow = hasFocus ? rows[active.r] : undefined
-  const activeWeek = activeRow ? active.c + 1 : null
+  const activeWeek = activeRow ? weekOfColumn(active.c) : null
 
   const columns = useMemo(
     () => [
-      col.display({ id: 'label', header: m.grid.exercise }),
-      ...Array.from({ length: totalWeeks }, (_, i) =>
-        col.display({ id: `w${i + 1}`, header: String(i + 1) }),
-      ),
+      col.display({ id: 'label' }),
+      ...Array.from({ length: totalWeeks }, (_, i) => col.display({ id: `w${i + 1}` })),
     ],
     [totalWeeks],
   )
@@ -76,7 +93,7 @@ export function SessionGrid({
 
   function focusCell(r: number, c: number, extend: boolean) {
     const rr = Math.max(0, Math.min(rows.length - 1, r))
-    const cc = Math.max(0, Math.min(totalWeeks - 1, c))
+    const cc = Math.max(0, Math.min(totalCols - 1, c))
     const input = tableRef.current?.querySelector<HTMLInputElement>(`[data-r="${rr}"][data-c="${cc}"]`)
     if (!input) return
     extending.current = extend
@@ -103,13 +120,7 @@ export function SessionGrid({
     else if (e.key === 'ArrowLeft' && (atStart || extend)) go(0, -1)
     else if ((e.key === 'Delete' || e.key === 'Backspace') && multi) {
       e.preventDefault()
-      const ops: CellOp[] = []
-      for (let rr = range.r1; rr <= range.r2; rr++)
-        for (let cc = range.c1; cc <= range.c2; cc++) {
-          const row = rows[rr]
-          if (row?.blockId && !lockedWeeks.has(cc + 1) && row.cells.has(cc + 1))
-            ops.push({ blockId: row.blockId, week: cc + 1, value: null })
-        }
+      const ops = clearOps(rows, range, totalWeeks, lockedWeeks, rowMeasure)
       if (ops.length > 0) write.mutate(ops)
     }
   }
@@ -117,17 +128,31 @@ export function SessionGrid({
   function onCopy(e: ClipboardEvent<HTMLTableElement>) {
     if (!multi) return
     e.preventDefault()
-    e.clipboardData.setData('text/plain', rangeToTsv(rows, range))
+    e.clipboardData.setData('text/plain', rangeToTsv(rows, range, rowMeasure))
   }
 
   function onPaste(e: ClipboardEvent<HTMLTableElement>) {
     const text = e.clipboardData.getData('text/plain')
-    if (!/[\t\n]/.test(text.trim())) return // un solo valore: incolla normale nella cella
+    if (!/[\t\n]/.test(text.trim())) return // un solo valore: incolla normale nel campo
     e.preventDefault()
-    const result = pasteOps(rows, { r: range.r1, c: range.c1 }, text, totalWeeks, lockedWeeks)
+    const result = pasteOps(rows, { r: range.r1, c: range.c1 }, text, totalWeeks, lockedWeeks, rowMeasure)
     setNote(m.grid.pasteReport(result.invalid, result.skipped))
     if (result.ops.length > 0) write.mutate(result.ops)
   }
+
+  function changeRowMeasure(row: GridRow, to: Measure) {
+    const from = rowMeasure(row)
+    setPicked(new Map(picked).set(row.key, to))
+    if (!row.blockId) return
+    const ops: CellOp[] = [...row.cells].map(([week, cell]) => ({
+      blockId: row.blockId!,
+      week,
+      value: changeMeasure(cell, from, to),
+    }))
+    if (ops.length > 0) write.mutate(ops)
+  }
+
+  const activeCell = activeRow && activeWeek ? activeRow.cells.get(activeWeek) : undefined
 
   return (
     <div className="grid gap-2">
@@ -141,8 +166,8 @@ export function SessionGrid({
               <span className="text-muted-foreground">
                 {m.grid.activeCell(activeRow.exerciseName, m.block.roles[activeRow.block.role], activeWeek)}
               </span>
-              <span className="min-w-24 rounded border border-primary px-2 py-0.5 font-mono text-xs">
-                {formatCell(activeRow.cells.get(activeWeek)) || '\u00a0'}
+              <span className="font-medium">
+                {activeCell ? describeCell(activeCell, rowMeasure(activeRow)) : '–'}
               </span>
             </>
           ) : (
@@ -162,76 +187,90 @@ export function SessionGrid({
             className="w-full border-collapse text-sm"
           >
             <thead>
-              {table.getHeaderGroups().map((hg) => (
-                <tr key={hg.id} className="border-b bg-muted/50">
-                  {hg.headers.map((h, i) => {
-                    const week = i
-                    return i === 0 ? (
-                      <th
-                        key={h.id}
-                        scope="col"
-                        className="sticky left-0 z-[1] min-w-48 border-r bg-muted px-3 py-1.5 text-left text-xs font-medium text-muted-foreground"
-                      >
-                        {flexRender(h.column.columnDef.header, h.getContext())}
-                      </th>
-                    ) : (
-                      <th
-                        key={h.id}
-                        scope="col"
-                        className={cn(
-                          'min-w-28 border-r px-2 py-1 text-center font-mono text-xs font-medium text-muted-foreground last:border-r-0',
-                          deloadWeeks.includes(week) && 'bg-warning text-warning-foreground',
-                          week === activeWeek && 'bg-accent text-accent-foreground',
-                        )}
-                      >
-                        <span className="inline-flex items-center gap-1">
-                          {m.weekShort(week)}
-                          {lockedWeeks.has(week) && (
-                            <LockSimpleIcon
-                              size={14}
-                              aria-label={m.grid.locked}
-                              className="text-muted-foreground"
-                            />
-                          )}
-                          {week < totalWeeks && !lockedWeeks.has(week) && (
-                            <Button
-                              variant="ghost"
-                              size="icon-xs"
-                              aria-label={m.grid.copyForward(week)}
-                              title={m.grid.copyForward(week)}
-                              onClick={() => {
-                                const ops = copyForwardOps(rows, week, totalWeeks, lockedWeeks)
-                                if (ops.length > 0) write.mutate(ops)
-                              }}
-                            >
-                              <ArrowLineRightIcon />
-                            </Button>
-                          )}
-                        </span>
-                        <span className="block font-sans text-[11px] font-normal">
-                          {lockedWeeks.has(week)
-                            ? m.grid.weekState.locked
-                            : deloadWeeks.includes(week)
-                              ? m.grid.weekState.deload
-                              : '\u00a0'}
-                        </span>
-                      </th>
-                    )
-                  })}
-                </tr>
-              ))}
+              <tr className="bg-muted/50">
+                <th
+                  scope="col"
+                  rowSpan={2}
+                  className="sticky left-0 z-[1] min-w-52 border-r border-b bg-muted px-3 py-1.5 text-left text-xs font-medium text-muted-foreground"
+                >
+                  {m.grid.exercise}
+                </th>
+                {weekNumbers.map((week) => (
+                  <th
+                    key={week}
+                    scope="colgroup"
+                    colSpan={FIELDS.length}
+                    className={cn(
+                      'border-r px-2 py-1 text-center font-mono text-xs font-medium text-muted-foreground',
+                      deloadWeeks.includes(week) && 'bg-warning text-warning-foreground',
+                      week === activeWeek && 'bg-accent text-accent-foreground',
+                    )}
+                  >
+                    <span className="inline-flex items-center gap-1">
+                      {m.weekShort(week)}
+                      {lockedWeeks.has(week) && (
+                        <LockSimpleIcon
+                          size={14}
+                          aria-label={m.grid.locked}
+                          className="text-muted-foreground"
+                        />
+                      )}
+                      {week < totalWeeks && !lockedWeeks.has(week) && (
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          aria-label={m.grid.copyForward(week)}
+                          title={m.grid.copyForward(week)}
+                          onClick={() => {
+                            const ops = copyForwardOps(rows, week, totalWeeks, lockedWeeks)
+                            if (ops.length > 0) write.mutate(ops)
+                          }}
+                        >
+                          <ArrowLineRightIcon />
+                        </Button>
+                      )}
+                    </span>
+                    <span className="block font-sans text-[11px] font-normal">
+                      {lockedWeeks.has(week)
+                        ? m.grid.weekState.locked
+                        : deloadWeeks.includes(week)
+                          ? m.grid.weekState.deload
+                          : ' '}
+                    </span>
+                  </th>
+                ))}
+              </tr>
+              <tr className="border-b bg-muted/50">
+                {weekNumbers.flatMap((week) =>
+                  FIELDS.map((field, f) => (
+                    <th
+                      key={`${week}-${field}`}
+                      scope="col"
+                      className={cn(
+                        'px-1 pb-1 text-center text-[11px] font-normal text-muted-foreground',
+                        f === FIELDS.length - 1 && 'border-r',
+                        week === activeWeek && 'bg-accent/60',
+                      )}
+                    >
+                      {m.grid.fields[field]}
+                    </th>
+                  )),
+                )}
+              </tr>
             </thead>
             <tbody>
               {table.getRowModel().rows.map((tr, r) => {
                 const row = tr.original
                 const firstOfSlot = r === 0 || rows[r - 1]!.slotId !== row.slotId
                 const open = expanded === row.key
+                const measure = rowMeasure(row)
                 const siblings = rows
                   .filter((x) => x.slotId === row.slotId && x.blockId && x.blockId !== row.blockId)
                   .map((x) => ({
                     id: x.blockId!,
                     label: `${messages.app.mesocycle.block.roles[x.block!.role]} ${x.block!.position + 1}`,
                   }))
+                const rowLocked = [...row.cells.keys()].some((week) => lockedWeeks.has(week))
                 return (
                   <Fragment key={row.key}>
                     <tr
@@ -243,7 +282,7 @@ export function SessionGrid({
                       <th
                         scope="row"
                         className={cn(
-                          'sticky left-0 z-[1] border-r bg-card px-3 py-1 text-left font-normal',
+                          'sticky left-0 z-[1] border-r bg-card px-3 py-1.5 text-left font-normal',
                           r === active.r && hasFocus && 'bg-accent',
                         )}
                       >
@@ -251,14 +290,32 @@ export function SessionGrid({
                           <div className="min-w-0 flex-1">
                             {firstOfSlot && <p className="truncate font-medium">{row.exerciseName}</p>}
                             {row.block ? (
-                              <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-                                <span className="rounded border bg-background px-1.5 py-px">
-                                  {m.block.roles[row.block.role]}
-                                </span>
-                                {row.block.technique !== 'none' && (
-                                  <span className="truncate">{m.block.techniques[row.block.technique]}</span>
-                                )}
-                              </p>
+                              <div className="mt-0.5 grid gap-1">
+                                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                  <span className="rounded border bg-background px-1.5 py-px">
+                                    {m.block.roles[row.block.role]}
+                                  </span>
+                                  {row.block.technique !== 'none' && (
+                                    <span className="truncate">
+                                      {m.block.techniques[row.block.technique]}
+                                    </span>
+                                  )}
+                                </p>
+                                <select
+                                  aria-label={`${m.grid.measure}: ${row.exerciseName}`}
+                                  title={rowLocked ? m.grid.locked : m.grid.measure}
+                                  value={measure}
+                                  disabled={rowLocked}
+                                  onChange={(e) => changeRowMeasure(row, e.target.value as Measure)}
+                                  className="h-6 w-full max-w-44 rounded border border-input bg-background px-1 text-xs text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                  {MEASURES.map((x) => (
+                                    <option key={x} value={x}>
+                                      {m.grid.measures[x]}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
                             ) : (
                               <Button
                                 variant="outline"
@@ -304,51 +361,57 @@ export function SessionGrid({
                           )}
                         </div>
                       </th>
-                      {weekNumbers.map((week) => (
-                        <td
-                          key={week}
-                          className={cn(
-                            'border-r p-0 last:border-r-0',
-                            deloadWeeks.includes(week) && 'bg-warning/60',
-                            lockedWeeks.has(week) && 'bg-hatch',
-                            week === activeWeek && 'bg-accent/40',
-                          )}
-                        >
-                          {row.blockId ? (
-                            <GridCell
-                              r={r}
-                              c={week - 1}
-                              label={m.grid.cell(row.exerciseName, week)}
-                              text={formatCell(row.cells.get(week))}
-                              locked={lockedWeeks.has(week)}
-                              selected={
-                                multi &&
-                                r >= range.r1 &&
-                                r <= range.r2 &&
-                                week - 1 >= range.c1 &&
-                                week - 1 <= range.c2
-                              }
-                              onFocus={() => {
-                                setActive({ r, c: week - 1 })
-                                if (!extending.current) setAnchor({ r, c: week - 1 })
-                              }}
-                              onShiftClick={() => {
-                                setActive({ r, c: week - 1 })
-                              }}
-                              onCommit={(text) => {
-                                const parsed = parseCell(text)
-                                if (!parsed.ok) return false
-                                write.mutate([{ blockId: row.blockId!, week, value: parsed.value }])
-                                return true
-                              }}
-                            />
-                          ) : null}
-                        </td>
-                      ))}
+                      {weekNumbers.flatMap((week) =>
+                        FIELDS.map((field, f) => {
+                          const c = (week - 1) * FIELDS.length + f
+                          return (
+                            <td
+                              key={`${week}-${field}`}
+                              className={cn(
+                                'p-0',
+                                f === FIELDS.length - 1 && 'border-r',
+                                deloadWeeks.includes(week) && 'bg-warning/60',
+                                lockedWeeks.has(week) && 'bg-hatch',
+                                week === activeWeek && 'bg-accent/40',
+                              )}
+                            >
+                              {row.blockId ? (
+                                <FieldInput
+                                  r={r}
+                                  c={c}
+                                  width={fieldWidth[field]}
+                                  label={m.grid.field(row.exerciseName, week, m.grid.fieldNames[field])}
+                                  text={fieldText(row.cells.get(week), field, measure)}
+                                  placeholder={
+                                    field === 'value'
+                                      ? m.grid.measureShort[measure]
+                                      : m.grid.fieldPlaceholders[field]
+                                  }
+                                  locked={lockedWeeks.has(week)}
+                                  selected={
+                                    multi && r >= range.r1 && r <= range.r2 && c >= range.c1 && c <= range.c2
+                                  }
+                                  onFocus={() => {
+                                    setActive({ r, c })
+                                    if (!extending.current) setAnchor({ r, c })
+                                  }}
+                                  onShiftClick={() => setActive({ r, c })}
+                                  onCommit={(text) => {
+                                    const result = editField(row.cells.get(week), field, text, measure)
+                                    if (!result.ok) return false
+                                    write.mutate([{ blockId: row.blockId!, week, value: result.cell }])
+                                    return true
+                                  }}
+                                />
+                              ) : null}
+                            </td>
+                          )
+                        }),
+                      )}
                     </tr>
                     {open && row.block && (
                       <tr className="border-b bg-muted/30">
-                        <td colSpan={totalWeeks + 1} className="p-0">
+                        <td colSpan={totalCols + 1} className="p-0">
                           <BlockDetails mesocycleId={mesocycleId} block={row.block} siblings={siblings} />
                         </td>
                       </tr>
@@ -368,7 +431,8 @@ export function SessionGrid({
                 {weekNumbers.map((week) => (
                   <td
                     key={week}
-                    className="border-r px-2 py-1.5 text-center font-mono text-xs tabular-nums last:border-r-0"
+                    colSpan={FIELDS.length}
+                    className="border-r px-2 py-1.5 text-center font-mono text-xs tabular-nums"
                   >
                     {totals[week - 1] || ''}
                   </td>
@@ -381,30 +445,24 @@ export function SessionGrid({
       <p className="text-xs text-muted-foreground empty:hidden" aria-live="polite">
         {note}
       </p>
-      <Collapsible title={m.grid.syntaxTitle} className="text-muted-foreground" data-tour="syntax-help">
-        <p className="text-xs">{m.grid.syntaxIntro}</p>
-        <dl className="grid gap-1.5 text-xs">
-          {m.grid.syntaxExamples.map((x) => (
-            <div key={x.code} className="flex flex-wrap items-baseline gap-x-3">
-              <dt>
-                <code className="rounded border bg-muted px-1.5 py-0.5 font-mono text-foreground">
-                  {x.code}
-                </code>
-              </dt>
-              <dd>{x.text}</dd>
-            </div>
+      <Collapsible title={m.grid.fillTitle} className="text-muted-foreground" data-tour="fill-help">
+        <ul className="grid list-disc gap-1.5 pl-4 text-xs">
+          {m.grid.fillSteps.map((step) => (
+            <li key={step}>{step}</li>
           ))}
-        </dl>
+        </ul>
       </Collapsible>
     </div>
   )
 }
 
-function GridCell({
+function FieldInput({
   r,
   c,
+  width,
   label,
   text,
+  placeholder,
   locked,
   selected,
   onFocus,
@@ -413,8 +471,10 @@ function GridCell({
 }: {
   r: number
   c: number
+  width: string
   label: string
   text: string
+  placeholder: string
   locked: boolean
   selected: boolean
   onFocus: () => void
@@ -424,7 +484,7 @@ function GridCell({
   const [draft, setDraft] = useState(text)
   const [invalid, setInvalid] = useState(false)
   const [prev, setPrev] = useState(text)
-  // Il valore salvato cambia (altra cella, incolla, copia): la bozza si riallinea.
+  // Il valore salvato cambia (altro campo, incolla, copia): la bozza si riallinea.
   if (prev !== text) {
     setPrev(text)
     setDraft(text)
@@ -442,16 +502,10 @@ function GridCell({
       data-c={c}
       aria-label={label}
       aria-invalid={invalid || undefined}
-      title={
-        invalid
-          ? messages.app.mesocycle.grid.invalid
-          : locked
-            ? messages.app.mesocycle.grid.locked
-            : undefined
-      }
+      title={invalid ? m.grid.invalid : locked ? m.grid.locked : undefined}
       readOnly={locked}
       value={draft}
-      placeholder={messages.app.mesocycle.grid.cellPlaceholder}
+      placeholder={placeholder}
       onChange={(e) => setDraft(e.target.value)}
       onFocus={onFocus}
       onMouseDown={(e) => {
@@ -467,7 +521,8 @@ function GridCell({
         }
       }}
       className={cn(
-        'h-8 w-full min-w-28 bg-transparent px-2 text-center font-mono text-xs tabular-nums outline-none placeholder:text-transparent focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset focus:placeholder:text-muted-foreground/60',
+        'h-8 bg-transparent px-1 text-center font-mono text-xs tabular-nums outline-none placeholder:text-transparent focus:bg-accent focus:ring-2 focus:ring-ring focus:ring-inset focus:placeholder:text-muted-foreground/60',
+        width,
         selected && 'bg-accent/40',
         locked && 'cursor-not-allowed text-muted-foreground',
         invalid && 'bg-destructive/10 ring-2 ring-destructive ring-inset',
