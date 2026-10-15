@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { CellValue } from './cellSyntax'
+import type { CellValue } from './cellFields'
 import {
   type BlockData,
   buildGridRows,
+  clearOps,
   copyForwardOps,
   normalizeRange,
   pasteOps,
@@ -70,26 +71,54 @@ describe('copyForwardOps', () => {
 
 describe('rangeToTsv e pasteOps', () => {
   const rows = buildGridRows('s1', groups, slots, blocks, weeks)
-  it('copia un intervallo', () =>
-    expect(rangeToTsv(rows, normalizeRange({ r: 0, c: 1 }, { r: 3, c: 0 }))).toBe('3x8\t4x8\n\t\n\t\n5x8\t'))
-  it('incolla da una cella, saltando righe senza blocco, settimane bloccate e fuori griglia', () => {
-    const r = pasteOps(rows, { r: 1, c: 0 }, '2x10\t3x10\t4x10\n9x9\t3x8 BUF 2\t', 3, new Set([2]))
+  const bufMeasure = () => 'BUF' as const
+  // colonne: sett. 1 = 0..2 (serie, rip., sforzo), sett. 2 = 3..5, sett. 3 = 6..8
+  it('copia un intervallo di campi', () =>
+    expect(rangeToTsv(rows, normalizeRange({ r: 0, c: 0 }, { r: 3, c: 4 }), bufMeasure)).toBe(
+      '3\t8\t\t4\t8\n\t\t\t\t\n\t\t\t\t\n5\t8\t\t\t',
+    ))
+  it('incolla campo per campo, saltando righe senza blocco, settimane bloccate e fuori griglia', () => {
+    const r = pasteOps(rows, { r: 1, c: 0 }, '2\t10\t\t3\t10\t\t4\t10\n9\t9', 3, new Set([2]), bufMeasure)
     // riga 1 = b2; riga 2 = slot-a (senza blocco); colonne: sett. 1, 2 (bloccata), 3
     expect(r.ops).toEqual([
-      { blockId: 'b2', week: 1, value: expect.objectContaining({ sets: 2 }) },
-      { blockId: 'b2', week: 3, value: expect.objectContaining({ sets: 4 }) },
+      { blockId: 'b2', week: 1, value: expect.objectContaining({ sets: 2, repsMin: 10 }) },
+      { blockId: 'b2', week: 3, value: expect.objectContaining({ sets: 4, repsMin: 10 }) },
     ])
-    expect(r.skipped).toBe(4)
+    expect(r.skipped).toBe(5)
+  })
+  it('più campi della stessa settimana diventano una sola scrittura', () => {
+    const r = pasteOps(rows, { r: 1, c: 0 }, '3\t8\t2', 3, new Set(), bufMeasure)
+    expect(r.ops).toEqual([
+      {
+        blockId: 'b2',
+        week: 1,
+        value: expect.objectContaining({ sets: 3, repsMin: 8, method: 'BUF', value: 2 }),
+      },
+    ])
   })
   it('conta il testo non valido senza scriverlo', () => {
-    const r = pasteOps(rows, { r: 0, c: 0 }, 'boh\t3x8', 4, new Set())
+    const r = pasteOps(rows, { r: 0, c: 0 }, 'boh\t8', 4, new Set(), bufMeasure)
     expect(r.invalid).toBe(1)
     expect(r.ops).toHaveLength(1)
   })
-  it('cella vuota incollata = cancella la prescrizione', () =>
-    expect(pasteOps(rows, { r: 0, c: 0 }, '', 4, new Set()).ops).toEqual([
+  it('lo sforzo prende la misura della riga', () => {
+    const r = pasteOps(rows, { r: 1, c: 0 }, '3\t8\t60', 3, new Set(), () => 'LOAD')
+    expect(r.ops[0]!.value).toEqual(expect.objectContaining({ method: 'LOAD', value: 60 }))
+  })
+  it('serie vuote incollate = cancella la settimana; su una settimana senza dati non scrive nulla', () => {
+    expect(pasteOps(rows, { r: 0, c: 0 }, '', 4, new Set(), bufMeasure).ops).toEqual([
       { blockId: 'b1', week: 1, value: null },
-    ]))
+    ])
+    expect(pasteOps(rows, { r: 1, c: 0 }, '', 4, new Set(), bufMeasure).ops).toEqual([])
+  })
+})
+
+describe('clearOps', () => {
+  const rows = buildGridRows('s1', groups, slots, blocks, weeks)
+  it('svuota solo le ripetizioni se non tocchi le serie', () =>
+    expect(clearOps(rows, normalizeRange({ r: 0, c: 1 }, { r: 0, c: 1 }), 4, new Set(), () => 'BUF')).toEqual(
+      [{ blockId: 'b1', week: 1, value: expect.objectContaining({ sets: 3, repsMin: null }) }],
+    ))
 })
 
 describe('weekSetTotals', () => {
