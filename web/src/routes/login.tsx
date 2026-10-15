@@ -4,6 +4,7 @@ import { LoginForm } from '@/components/auth/forms'
 import { mapAuthError } from '@/lib/auth'
 import { messages } from '@/lib/messages'
 import { supabase } from '@/lib/supabase'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.auth
 
@@ -16,6 +17,7 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginPage() {
+  usePageTitle(m.login.title)
   const navigate = useNavigate()
   return (
     <AuthLayout>

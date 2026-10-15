@@ -18,6 +18,7 @@ import { messages } from '@/lib/messages'
 import { positionChanges } from '@/lib/slotRules'
 import { groupsQuery, reorder, slotsQuery } from '@/lib/slots'
 import { blocksQuery, lockedWeeksQuery, weeksQuery } from '@/lib/blocks'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.mesocycle
 const athleteMessages = messages.app.athleteDetail
@@ -33,6 +34,7 @@ function MesocyclePage() {
   const { mesocycleId } = Route.useParams()
   const { user } = Route.useRouteContext()
   const meso = useQuery(mesocycleQuery(mesocycleId))
+  usePageTitle(meso.data?.name)
   const sessions = useQuery(sessionsQuery(mesocycleId))
   const groups = useQuery(groupsQuery(mesocycleId))
   const slots = useQuery(slotsQuery(mesocycleId))

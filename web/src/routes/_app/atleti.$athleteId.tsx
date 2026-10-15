@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { athleteQuery, mesocyclesQuery } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.athleteDetail
 
@@ -23,6 +24,8 @@ function AthletePage() {
   const [creating, setCreating] = useState(false)
   const athlete = useQuery(athleteQuery(user.id, athleteId))
   const mesocycles = useQuery(mesocyclesQuery(athleteId))
+  const name = athlete.data?.athlete?.full_name?.trim() || athlete.data?.athlete?.email || ''
+  usePageTitle(name || undefined)
 
   if (athlete.isSuccess && !athlete.data) {
     return (
@@ -34,7 +37,6 @@ function AthletePage() {
   }
 
   const activeMesocycle = mesocycles.data?.find((x) => x.status === 'active')
-  const name = athlete.data?.athlete?.full_name?.trim() || athlete.data?.athlete?.email || ''
   return (
     <section className="space-y-5">
       <BackLink />

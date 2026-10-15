@@ -10,6 +10,7 @@ import { initials, lastWorkoutLabel } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
 import { atLimit, planUsageQuery } from '@/lib/plans'
 import { cn } from '@/lib/utils'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.athletes
 
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/_app/')({
 })
 
 function AthletesPage() {
+  usePageTitle(m.title)
   const { user } = Route.useRouteContext()
   const { data, isPending, isError, refetch } = useQuery(athletesQuery(user.id))
   const startTour = useGuidedTour(user.id)

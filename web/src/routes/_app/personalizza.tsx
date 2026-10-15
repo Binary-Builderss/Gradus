@@ -5,6 +5,7 @@ import { brandingQuery } from '@/lib/branding'
 import { planUsageQuery } from '@/lib/plans'
 import { messages } from '@/lib/messages'
 import { displayName, profileQuery } from '@/lib/profile'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.customize
 
@@ -13,6 +14,7 @@ export const Route = createFileRoute('/_app/personalizza')({
 })
 
 function SettingsPage() {
+  usePageTitle(m.title)
   const { user } = Route.useRouteContext()
   const branding = useQuery(brandingQuery(user.id))
   const usage = useQuery(planUsageQuery(user.id))

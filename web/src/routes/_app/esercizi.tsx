@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { deleteExercise, type LibraryExercise, libraryQuery } from '@/lib/library'
 import { messages } from '@/lib/messages'
 import { matchesSearch } from '@/lib/slotRules'
+import { usePageTitle } from '@/lib/pageTitle'
 
 const m = messages.app.exercises
 
@@ -19,6 +20,7 @@ export const Route = createFileRoute('/_app/esercizi')({
 type Editing = { mode: 'new' } | { mode: 'edit'; id: string } | { mode: 'copy'; source: LibraryExercise }
 
 function ExercisesPage() {
+  usePageTitle(m.title)
   const { user } = Route.useRouteContext()
   const queryClient = useQueryClient()
   const library = useQuery(libraryQuery(user.id))
