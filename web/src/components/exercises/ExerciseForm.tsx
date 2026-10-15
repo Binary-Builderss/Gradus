@@ -24,7 +24,7 @@ export function ExerciseForm({
 }: {
   coachId: string
   exercise?: LibraryExercise
-  seed?: Omit<LibraryExercise, 'id' | 'owner_id'>
+  seed?: Pick<LibraryExercise, 'name' | 'notes' | 'muscles'>
   onDone: () => void
 }) {
   const queryClient = useQueryClient()
@@ -32,7 +32,7 @@ export function ExerciseForm({
   const [rows, setRows] = useState<MuscleRow[]>(
     source ? toRows(source.muscles) : [{ muscle: 'chest', weight: '1' }],
   )
-  const [errors, setErrors] = useState<Partial<Record<'name' | 'video_url' | 'muscles', string>>>({})
+  const [errors, setErrors] = useState<Partial<Record<'name' | 'muscles', string>>>({})
 
   const save = useMutation({
     mutationFn: (input: ReturnType<typeof exerciseSchema.parse>) =>
@@ -48,14 +48,13 @@ export function ExerciseForm({
     const f = new FormData(event.currentTarget)
     const parsed = exerciseSchema.safeParse({
       name: f.get('name'),
-      video_url: f.get('video_url'),
       notes: f.get('notes'),
       muscles: rows.map((r) => ({ muscle: r.muscle, weight: Number(r.weight.replace(',', '.')) })),
     })
     if (!parsed.success) {
       const next: typeof errors = {}
       for (const issue of parsed.error.issues) {
-        const key = issue.path[0] === 'muscles' ? 'muscles' : (issue.path[0] as 'name' | 'video_url')
+        const key = issue.path[0] === 'muscles' ? 'muscles' : (issue.path[0] as 'name')
         next[key] ??= issue.message
       }
       return setErrors(next)
@@ -72,16 +71,6 @@ export function ExerciseForm({
     <form noValidate onSubmit={submit} className="grid gap-5 rounded-lg border bg-card p-4">
       <Field id="ex-name" label={m.name} error={errors.name}>
         <Input id="ex-name" name="name" autoFocus defaultValue={source?.name ?? ''} className="h-9 text-sm" />
-      </Field>
-      <Field id="ex-video" label={m.video} error={errors.video_url}>
-        <Input
-          id="ex-video"
-          name="video_url"
-          type="url"
-          inputMode="url"
-          defaultValue={source?.video_url ?? ''}
-          className="h-9 text-sm"
-        />
       </Field>
       <Field id="ex-notes" label={m.notes}>
         <textarea

@@ -26,15 +26,13 @@ beforeEach(() => {
 })
 
 describe('ExerciseForm', () => {
-  it('crea un esercizio con nome, video e muscoli', async () => {
+  it('crea un esercizio con nome e muscoli', async () => {
     setup()
     await userEvent.type(screen.getByLabelText('Nome'), 'Curl al cavo')
-    await userEvent.type(screen.getByLabelText('Video (link)'), 'https://youtu.be/abc')
     await userEvent.click(screen.getByRole('button', { name: 'Salva' }))
     await waitFor(() => expect(createExercise).toHaveBeenCalledTimes(1))
     expect(createExercise).toHaveBeenCalledWith('coach-1', {
       name: 'Curl al cavo',
-      video_url: 'https://youtu.be/abc',
       notes: null,
       muscles: [{ muscle: 'chest', weight: 1 }],
     })
@@ -45,15 +43,6 @@ describe('ExerciseForm', () => {
     setup()
     await userEvent.click(screen.getByRole('button', { name: 'Salva' }))
     expect(await screen.findByText('Inserisci il nome.')).toBeInTheDocument()
-    expect(createExercise).not.toHaveBeenCalled()
-  })
-
-  it('rifiuta un video che non è http(s)', async () => {
-    setup()
-    await userEvent.type(screen.getByLabelText('Nome'), 'X')
-    await userEvent.type(screen.getByLabelText('Video (link)'), 'ftp://x.y/z')
-    await userEvent.click(screen.getByRole('button', { name: 'Salva' }))
-    expect(await screen.findByText(/http:\/\/ o https:\/\//)).toBeInTheDocument()
     expect(createExercise).not.toHaveBeenCalled()
   })
 
@@ -79,7 +68,6 @@ describe('ExerciseForm', () => {
     setup({
       seed: {
         name: 'Panca piana (copia)',
-        video_url: null,
         notes: null,
         muscles: [
           { muscle: 'chest', weight: 1 },
@@ -98,8 +86,8 @@ describe('ExerciseForm', () => {
       id: 'e1',
       owner_id: 'coach-1',
       name: 'Mio curl',
-      video_url: null,
       notes: null,
+      videos: [],
       muscles: [{ muscle: 'biceps' as const, weight: 1 }],
     }
     setup({ exercise })

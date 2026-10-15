@@ -234,6 +234,52 @@ export type Database = {
           },
         ]
       }
+      exercise_videos: {
+        Row: {
+          created_at: string
+          exercise_id: string
+          id: string
+          owner_id: string
+          title: string | null
+          updated_at: string
+          url: string
+        }
+        ComputedFields: never
+        Insert: {
+          created_at?: string
+          exercise_id: string
+          id?: string
+          owner_id: string
+          title?: string | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          exercise_id?: string
+          id?: string
+          owner_id?: string
+          title?: string | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'exercise_videos_exercise_id_fkey'
+            columns: ['exercise_id']
+            isOneToOne: false
+            referencedRelation: 'exercises'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'exercise_videos_owner_id_fkey'
+            columns: ['owner_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       exercises: {
         Row: {
           created_at: string
@@ -243,7 +289,6 @@ export type Database = {
           notes: string | null
           owner_id: string | null
           updated_at: string
-          video_url: string | null
         }
         ComputedFields: never
         Insert: {
@@ -254,7 +299,6 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           updated_at?: string
-          video_url?: string | null
         }
         Update: {
           created_at?: string
@@ -264,7 +308,6 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           updated_at?: string
-          video_url?: string | null
         }
         Relationships: [
           {

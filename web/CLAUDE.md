@@ -162,7 +162,12 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   PNG base64) e sette colori liberi con anteprima; i colori non cambiati restano quelli standard
   (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi non è pro vede la
   pagina bloccata. Il sito del coach non cambia colori: il marchio vale per PDF e app atleta.
-- **Libreria esercizi**: catalogo globale + esercizi del coach, video, note, pesi per muscolo 0..1.
+- **Libreria esercizi**: catalogo globale + esercizi del coach, note, pesi per muscolo 0..1.
+- **Video degli esercizi** (`exercise_videos`, `ExerciseVideos`): nessun video di default (nessuna fonte con diritti a posto: il
+  catalogo non ne ha). Ogni coach aggiunge i propri link, più d'uno per esercizio e anche sugli esercizi del catalogo senza
+  duplicarli; solo https, il link senza schema prende https://. Li vede il coach che li ha messi e i suoi atleti. La
+  piattaforma (YouTube, Vimeo, Instagram, TikTok, altro) si riconosce dal dominio e serve solo all'etichetta (`lib/videos.ts`).
+  L'incorporamento nell'app atleta (YouTube-nocookie, Vimeo) è lavoro di iOS.
 - **Monitoraggio seduta**: prescritto contro eseguito per serie, sforzo prescritto contro percepito.
 
 Fasi successive (non implementare senza richiesta): template, questionari, misure e

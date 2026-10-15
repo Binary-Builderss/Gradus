@@ -35,6 +35,7 @@ Ogni dato ha un solo autore.
 | --- | --- | --- |
 | Mesocicli, sessioni, gruppi, slot, blocchi, prescrizioni settimanali | coach (web) | atleta, sola lettura |
 | Libreria esercizi, pesi per muscolo, template | coach (web) | atleta (nome, video, note) |
+| Link ai video degli esercizi (`exercise_videos`, nessuno di default) | coach (web), ognuno i propri | i suoi atleti |
 | Marchio del coach (logo, nome, colori) | coach pro (web) | atleta collegato, solo se il coach è pro |
 | Piano del coach (`coach_plans`) | solo service_role / SQL | il coach, il proprio |
 | Sedute, serie, segmenti, feedback per muscolo | atleta (iOS) | coach |
