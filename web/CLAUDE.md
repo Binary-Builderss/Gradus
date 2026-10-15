@@ -52,7 +52,11 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 
 - Linguaggio **strumento di lavoro, chiaro prima che denso** (riferimenti: Linear, Notion): il coach usa la griglia
   per ore. Prima di ogni lavoro di UI carica la skill `design-taste-frontend` (tasteskill).
-- Colori solo dai token in `src/index.css`: grigi neutri e **un solo accento** blu cobalto (`primary`),
+- Identità: il brand kit sta in `/brand` (marchio, logo, favicon, icona iOS, anteprima social) ed è la fonte
+  dei colori: blu `#0D54F3`, ink `#1E2630`, fondo `#F7F8FA`. I token di `src/index.css` e `STANDARD_COLORS` in
+  `lib/brand.ts` derivano da lì: se cambia il kit, si cambiano insieme. Il marchio (`Mark`) e il logo
+  (`Wordmark`) stanno in `components/brand.tsx`.
+- Colori solo dai token in `src/index.css`: grigi tinti di blu e **un solo accento**, il blu del brand `#0D54F3` (`primary`; nel tema scuro la stessa tinta schiarita),
   usato per azioni e stato attivo. Il tema segue il sistema (chiaro / scuro): ogni schermata va controllata
   in entrambi.
 - Unico colore di stato oltre all'accento: l'ambra (`warning`) per le settimane di scarico. Le settimane già

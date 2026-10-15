@@ -19,6 +19,7 @@ Questo file vale per tutto il repo. Le regole specifiche stanno in `web/CLAUDE.m
 /web         gestionale coach — SPA Vite + React + TypeScript (VS Code)
 /ios         app atleta — SwiftUI (Xcode)
 /fixtures    casi di test condivisi web/iOS, in JSON
+/brand       brand kit: marchio, logo, favicon, icona iOS (AppIcon.appiconset), anteprima social, palette
 ```
 
 - Una modifica che tocca schema e client si fa in un solo commit: migrazione, tipi TypeScript

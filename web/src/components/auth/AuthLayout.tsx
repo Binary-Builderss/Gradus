@@ -6,7 +6,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main className="grid min-h-dvh place-items-center px-4 py-10">
       <div className="w-full max-w-sm space-y-8">
-        <Wordmark />
+        <Wordmark className="h-12" />
         <div className="rounded-lg border bg-card p-6 shadow-sm sm:p-8">{children}</div>
       </div>
     </main>
