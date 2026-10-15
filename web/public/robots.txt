@@ -1,0 +1,4 @@
+# Le pagine dell'app stanno dietro il login e non c'è nulla da indicizzare oltre alla pagina di accesso.
+# Quando ci sarà la landing, qui va anche la riga «Sitemap: https://.../sitemap.xml».
+User-agent: *
+Allow: /

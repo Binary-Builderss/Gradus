@@ -21,6 +21,10 @@ Lo schema in `/supabase` è gestito da questa parte del progetto.
 - Lint: oxlint (`.oxlintrc.json`). Formattazione: Prettier (`.prettierrc.json`, plugin Tailwind).
 - Test: Vitest + Testing Library (jsdom), Playwright (e2e, da aggiungere), pgTAP (RLS e funzioni SQL).
 - Variabili d'ambiente validate con zod in `src/lib/env.ts`; client Supabase unico in `src/lib/supabase.ts`.
+- Anteprima del link e SEO: titolo, descrizione, Open Graph e Twitter card sono in `index.html` (statici, perché
+  WhatsApp, Telegram, Slack e iMessage non eseguono JavaScript), con l'immagine `public/gradus-open-graph-1200x630.png`.
+  Gli indirizzi sono assoluti con il dominio di produzione: se cambia, si cambia in `index.html` (canonical, `og:url`,
+  immagini). `src/seo.test.ts` controlla che i tag ci siano e coerenti.
 - Deploy: Cloudflare Pages (progetto `gradus`, ramo `prod`, cartella `web`, comando `npm run build`, uscita `dist`;
   variabili `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` nelle impostazioni del progetto). Il fallback SPA su
   `index.html` lo fa Pages da solo (non aggiungere un `404.html`); le intestazioni di sicurezza stanno in
