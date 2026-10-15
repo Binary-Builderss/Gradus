@@ -97,6 +97,16 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   i testi in `messages.app.tour`, gli elementi evidenziati hanno `data-tour="..."`. Una pagina o un'azione
   principale nuova va aggiunta alla guida nello stesso commit. La guida non deve mai modificare dati.
 
+- **Piani** (`/piani`): Gratuito, Mid, Pro e Unlimited a confronto, con i posti usati (`plan_usage`) e i tetti letti
+  da `plan_limits` (i numeri stanno solo nel database). L'acquisto di ogni piano è un link https in
+  `VITE_CHECKOUT_URL_MID` / `_PRO` / `_UNLIMITED` (facoltative): finché manca il pulsante resta «Presto
+  disponibile». Nessun incasso nel codice. Sotto la Guida compare «Passa a Pro» a chi è free o mid e «Più
+  atleti» al Pro con i posti quasi finiti (`upgradeHint` in `lib/plans.ts`); a tetto raggiunto l'invito di
+  nuovi atleti è spento con il rimando ai piani (il blocco vero è il trigger del database).
+- **Profilo, account**: Disattiva (reversibile: al posto dell'app si vede solo la schermata per riattivare o
+  uscire) ed Elimina (definitivo, con le conseguenze elencate e l'email da scrivere a mano; Edge Function
+  `delete-account`).
+
 ## Regole specifiche del web
 
 - Un mesociclo `active` con serie registrate si modifica solo nelle settimane senza dati (proposta da
