@@ -14,10 +14,10 @@ vi.mock('@tanstack/react-router', () => ({
   Link: ({ to, children }: { to: string; children: React.ReactNode }) => <a href={to}>{children}</a>,
 }))
 
-const setup = (limit: number | null) =>
+const setup = (limit: number | null, seats?: { used: number; limit: number | null; near: boolean }) =>
   render(
     <QueryClientProvider client={new QueryClient()}>
-      <InviteAthlete limit={limit} userId="u1" userEmail="Coach@Test.dev" />
+      <InviteAthlete limit={limit} userId="u1" userEmail="Coach@Test.dev" seats={seats} />
     </QueryClientProvider>,
   )
 
@@ -27,6 +27,21 @@ describe('InviteAthlete', () => {
   it('con posti liberi si può invitare', () => {
     setup(null)
     expect(screen.getByRole('button', { name: 'Invita atleta' })).toBeEnabled()
+  })
+
+  it('dice quanti posti sono usati, e rimanda ai piani solo quando restano pochi', () => {
+    const { unmount } = setup(null, { used: 12, limit: 20, near: false })
+    expect(screen.getByText('12 di 20 atleti')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Più posti' })).not.toBeInTheDocument()
+    unmount()
+    setup(null, { used: 17, limit: 20, near: true })
+    expect(screen.getByText(/17 di 20 atleti/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Più posti' })).toHaveAttribute('href', '/piani')
+  })
+
+  it('senza tetto (Unlimited) conta solo gli atleti', () => {
+    setup(null, { used: 130, limit: null, near: false })
+    expect(screen.getByText('130 atleti')).toBeInTheDocument()
   })
 
   it('a tetto raggiunto il pulsante è spento e rimanda ai piani', () => {
