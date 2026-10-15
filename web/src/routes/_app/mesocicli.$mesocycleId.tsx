@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Tabs } from 'radix-ui'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { MesocycleSummary } from '@/components/mesocycles/MesocycleSummary'
 import { SaveStatus } from '@/components/mesocycles/SaveStatus'
 import { SessionBlock } from '@/components/mesocycles/SessionBlock'
 import { MesocycleSettings } from '@/components/mesocycles/MesocycleSettings'
@@ -18,6 +19,9 @@ import { blocksQuery, lockedWeeksQuery, weeksQuery } from '@/lib/blocks'
 
 const m = messages.app.mesocycle
 const athleteMessages = messages.app.athleteDetail
+
+const viewTrigger =
+  'rounded px-3 py-1 text-sm font-medium text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm'
 
 export const Route = createFileRoute('/_app/mesocicli/$mesocycleId')({
   component: MesocyclePage,
@@ -123,59 +127,87 @@ function MesocyclePage() {
             />
           </div>
 
-          {sessions.isSuccess && list.length === 0 ? (
-            <div className="grid justify-items-start gap-3 rounded-lg border border-dashed p-5">
-              <CalendarBlankIcon size={20} className="text-muted-foreground" />
-              <div className="space-y-1">
-                <h2 className="text-sm font-semibold">{m.noSessions}</h2>
-                <p className="max-w-prose text-muted-foreground">{m.noSessionsHint}</p>
-              </div>
-              <Button onClick={addNewSession}>
-                <PlusIcon data-icon="inline-start" />
-                {m.addSession}
-              </Button>
-            </div>
-          ) : (
-            <Tabs.Root value={current?.id ?? ''} onValueChange={setSelected}>
-              <div className="flex items-center gap-2 border-b" data-tour="session-tabs">
-                <Tabs.List aria-label={m.sessions} className="flex min-w-0 gap-1 overflow-x-auto">
-                  {list.map((x) => (
-                    <Tabs.Trigger
-                      key={x.id}
-                      value={x.id}
-                      className="-mb-px max-w-48 truncate border-b-2 border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=active]:border-primary data-[state=active]:text-foreground"
-                    >
-                      {x.name}
-                    </Tabs.Trigger>
-                  ))}
-                </Tabs.List>
-                <Button variant="ghost" size="sm" className="mb-1 shrink-0" onClick={addNewSession}>
-                  <PlusIcon data-icon="inline-start" />
-                  {m.addSessionShort}
-                </Button>
-              </div>
-              {current && (
-                <Tabs.Content value={current.id} className="pt-4 outline-none">
-                  <SessionBlock
-                    key={current.id}
-                    coachId={user.id}
-                    mesocycleId={mesocycleId}
-                    session={current}
-                    groups={(groups.data ?? []).filter((g) => g.session_id === current.id)}
-                    slots={slots.data ?? []}
-                    blocks={blocks.data ?? []}
-                    weeks={weekRows.data ?? []}
-                    totalWeeks={data.weeks}
-                    deloadWeeks={data.deload_weeks}
-                    lockedWeeks={lockedWeeks}
-                    index={list.indexOf(current)}
-                    total={list.length}
-                    onMove={(direction) => moveSession(current.id, direction)}
-                  />
-                </Tabs.Content>
+          <Tabs.Root defaultValue="plan" className="grid gap-4">
+            <Tabs.List
+              aria-label={m.tabs.plan + ' / ' + m.tabs.summary}
+              className="inline-flex w-fit gap-0.5 rounded-md bg-muted p-0.5"
+              data-tour="meso-tabs"
+            >
+              <Tabs.Trigger value="plan" className={viewTrigger}>
+                {m.tabs.plan}
+              </Tabs.Trigger>
+              <Tabs.Trigger value="summary" className={viewTrigger}>
+                {m.tabs.summary}
+              </Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content value="plan" className="outline-none">
+              {sessions.isSuccess && list.length === 0 ? (
+                <div className="grid justify-items-start gap-3 rounded-lg border border-dashed p-5">
+                  <CalendarBlankIcon size={20} className="text-muted-foreground" />
+                  <div className="space-y-1">
+                    <h2 className="text-sm font-semibold">{m.noSessions}</h2>
+                    <p className="max-w-prose text-muted-foreground">{m.noSessionsHint}</p>
+                  </div>
+                  <Button onClick={addNewSession}>
+                    <PlusIcon data-icon="inline-start" />
+                    {m.addSession}
+                  </Button>
+                </div>
+              ) : (
+                <Tabs.Root value={current?.id ?? ''} onValueChange={setSelected}>
+                  <div className="flex items-center gap-2 border-b" data-tour="session-tabs">
+                    <Tabs.List aria-label={m.sessions} className="flex min-w-0 gap-1 overflow-x-auto">
+                      {list.map((x) => (
+                        <Tabs.Trigger
+                          key={x.id}
+                          value={x.id}
+                          className="-mb-px max-w-48 truncate border-b-2 border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=active]:border-primary data-[state=active]:text-foreground"
+                        >
+                          {x.name}
+                        </Tabs.Trigger>
+                      ))}
+                    </Tabs.List>
+                    <Button variant="ghost" size="sm" className="mb-1 shrink-0" onClick={addNewSession}>
+                      <PlusIcon data-icon="inline-start" />
+                      {m.addSessionShort}
+                    </Button>
+                  </div>
+                  {current && (
+                    <Tabs.Content value={current.id} className="pt-4 outline-none">
+                      <SessionBlock
+                        key={current.id}
+                        coachId={user.id}
+                        mesocycleId={mesocycleId}
+                        session={current}
+                        groups={(groups.data ?? []).filter((g) => g.session_id === current.id)}
+                        slots={slots.data ?? []}
+                        blocks={blocks.data ?? []}
+                        weeks={weekRows.data ?? []}
+                        totalWeeks={data.weeks}
+                        deloadWeeks={data.deload_weeks}
+                        lockedWeeks={lockedWeeks}
+                        index={list.indexOf(current)}
+                        total={list.length}
+                        onMove={(direction) => moveSession(current.id, direction)}
+                      />
+                    </Tabs.Content>
+                  )}
+                </Tabs.Root>
               )}
-            </Tabs.Root>
-          )}
+            </Tabs.Content>
+            <Tabs.Content value="summary" className="outline-none">
+              <MesocycleSummary
+                mesocycleId={mesocycleId}
+                totalWeeks={data.weeks}
+                deloadWeeks={data.deload_weeks}
+                sessions={list}
+                groups={groups.data ?? []}
+                slots={slots.data ?? []}
+                blocks={blocks.data ?? []}
+                weeks={weekRows.data ?? []}
+              />
+            </Tabs.Content>
+          </Tabs.Root>
         </>
       ) : (
         <div aria-hidden className="h-40 animate-pulse rounded-lg border bg-muted/40" />

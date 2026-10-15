@@ -54,6 +54,7 @@ export function buildTourPlan(args: {
         step(meso, t.grid, 'grid'),
         step(meso, t.fill, 'fill-help'),
         step(meso, t.save, 'save-status'),
+        step(meso, t.summary, 'meso-tabs'),
       )
     }
   }

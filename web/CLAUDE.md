@@ -95,10 +95,12 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   - sessioni, gruppi e slot riordinabili con drag and drop; tipo di gruppo con i suoi recuperi;
   - "copia questa settimana sulle successive", "applica regola di progressione";
   - settimana di scarico marcata; anteprima "come la vede l'atleta".
+  - scheda **Riepilogo** accanto alla programmazione: serie per seduta e settimana, volume per muscolo (funzione
+    SQL `weekly_muscle_volume`, riscaldamento escluso) con le serie già eseguite sotto.
 - **Libreria esercizi**: catalogo globale + esercizi del coach, video, note, pesi per muscolo 0..1.
 - **Monitoraggio seduta**: prescritto contro eseguito per serie, sforzo prescritto contro percepito.
 
-Fasi successive (non implementare senza richiesta): template, questionari, volume per muscolo, misure e
+Fasi successive (non implementare senza richiesta): template, questionari, misure e
 foto, PDF, confronto tra mesocicli, chat, appuntamenti.
 
 ## Cosa non fare
