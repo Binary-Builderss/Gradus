@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { messages } from '@/lib/messages'
 
 /** Tre gradini crescenti: la progressione settimana dopo settimana. L'ultimo è l'accento. */
-function Mark({ className }: { className?: string }) {
+export function Mark({ className }: { className?: string }) {
   return (
     <span aria-hidden className={cn('flex h-4 items-end gap-0.5', className)}>
       <span className="h-1.5 w-1 rounded-[1px] bg-foreground/25" />
