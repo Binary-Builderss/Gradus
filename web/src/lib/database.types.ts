@@ -870,6 +870,7 @@ export type Database = {
           workouts: number
         }[]
       }
+      backoff_target_load: { Args: { p_ref_pct: number; p_top_load_kg: number }; Returns: number }
       clone_mesocycle: {
         Args: { p_mesocycle_id: string; p_name?: string; p_start_date: string }
         Returns: string
@@ -910,6 +911,17 @@ export type Database = {
           reps_min: number
           sets: number
           week: number
+        }[]
+      }
+      previous_week_reference: {
+        Args: { p_session_id: string; p_week: number }
+        Returns: {
+          block_id: string
+          effort_scale: Database['public']['Enums']['effort_scale']
+          effort_value: number
+          ref_week: number
+          segments: Json
+          set_idx: number
         }[]
       }
       save_mesocycle_as_template: {
