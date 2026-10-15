@@ -16,6 +16,7 @@ import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppEserciziRouteImport } from './routes/_app/esercizi'
 import { Route as AppImpostazioniRouteImport } from './routes/_app/impostazioni'
+import { Route as AppProfiloRouteImport } from './routes/_app/profilo'
 import { Route as AppAtletiAthleteIdRouteImport } from './routes/_app/atleti.$athleteId'
 import { Route as AppMesocicliMesocycleIdRouteImport } from './routes/_app/mesocicli.$mesocycleId'
 
@@ -53,6 +54,11 @@ const AppImpostazioniRoute = AppImpostazioniRouteImport.update({
   path: '/impostazioni',
   getParentRoute: () => AppRoute,
 } as any)
+const AppProfiloRoute = AppProfiloRouteImport.update({
+  id: '/profilo',
+  path: '/profilo',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAtletiAthleteIdRoute = AppAtletiAthleteIdRouteImport.update({
   id: '/atleti/$athleteId',
   path: '/atleti/$athleteId',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/recupero-password': typeof RecuperoPasswordRoute
   '/esercizi': typeof AppEserciziRoute
   '/impostazioni': typeof AppImpostazioniRoute
+  '/profilo': typeof AppProfiloRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/recupero-password': typeof RecuperoPasswordRoute
   '/esercizi': typeof AppEserciziRoute
   '/impostazioni': typeof AppImpostazioniRoute
+  '/profilo': typeof AppProfiloRoute
   '/': typeof AppIndexRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/recupero-password': typeof RecuperoPasswordRoute
   '/_app/esercizi': typeof AppEserciziRoute
   '/_app/impostazioni': typeof AppImpostazioniRoute
+  '/_app/profilo': typeof AppProfiloRoute
   '/_app/': typeof AppIndexRoute
   '/_app/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/_app/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/recupero-password'
     | '/esercizi'
     | '/impostazioni'
+    | '/profilo'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
   fileRoutesByTo: FileRoutesByTo
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
     | '/recupero-password'
     | '/esercizi'
     | '/impostazioni'
+    | '/profilo'
     | '/'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/recupero-password'
     | '/_app/esercizi'
     | '/_app/impostazioni'
+    | '/_app/profilo'
     | '/_app/'
     | '/_app/atleti/$athleteId'
     | '/_app/mesocicli/$mesocycleId'
@@ -188,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppImpostazioniRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/profilo': {
+      id: '/_app/profilo'
+      path: '/profilo'
+      fullPath: '/profilo'
+      preLoaderRoute: typeof AppProfiloRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/atleti/$athleteId': {
       id: '/_app/atleti/$athleteId'
       path: '/atleti/$athleteId'
@@ -208,6 +227,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppEserciziRoute: typeof AppEserciziRoute
   AppImpostazioniRoute: typeof AppImpostazioniRoute
+  AppProfiloRoute: typeof AppProfiloRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAtletiAthleteIdRoute: typeof AppAtletiAthleteIdRoute
   AppMesocicliMesocycleIdRoute: typeof AppMesocicliMesocycleIdRoute
@@ -216,6 +236,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppEserciziRoute: AppEserciziRoute,
   AppImpostazioniRoute: AppImpostazioniRoute,
+  AppProfiloRoute: AppProfiloRoute,
   AppIndexRoute: AppIndexRoute,
   AppAtletiAthleteIdRoute: AppAtletiAthleteIdRoute,
   AppMesocicliMesocycleIdRoute: AppMesocicliMesocycleIdRoute,

@@ -7,9 +7,16 @@ import { Sidebar } from './Sidebar'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))
 vi.mock('@tanstack/react-router', () => ({
-  Link: ({ to, children, className }: { to: string; children: unknown; className?: string }) => (
-    <a href={to} className={className}>
-      {typeof children === 'function' ? children({ isActive: to === '/' }) : (children as React.ReactNode)}
+  Link: ({
+    to,
+    children,
+    ...props
+  }: { to: string; children: React.ReactNode | ((state: { isActive: boolean }) => React.ReactNode) } & Omit<
+    React.ComponentProps<'a'>,
+    'children'
+  >) => (
+    <a href={to} {...props}>
+      {typeof children === 'function' ? children({ isActive: to === '/' }) : children}
     </a>
   ),
 }))
@@ -23,6 +30,7 @@ function Harness({ onSignOut = () => {}, onStartTour = () => {} }) {
         onToggle={toggle}
         name="Marco Bianchi"
         email="marco@test.dev"
+        pro={true}
         onStartTour={onStartTour}
         onSignOut={onSignOut}
       />
@@ -30,27 +38,45 @@ function Harness({ onSignOut = () => {}, onStartTour = () => {} }) {
   )
 }
 
-beforeEach(() => localStorage.clear())
+beforeEach(() => {
+  localStorage.clear()
+  // jsdom non ha queste funzioni, che il menu di Radix usa.
+  Element.prototype.hasPointerCapture ??= () => false
+  Element.prototype.releasePointerCapture ??= () => {}
+  Element.prototype.scrollIntoView ??= () => {}
+})
 
 describe('Sidebar', () => {
-  it('esteso: sezioni di lavoro, guida, impostazioni, nome ed email', () => {
+  it('esteso: sezioni di lavoro, guida e la riga dell’account con nome ed email', () => {
     render(<Harness />)
     const nav = screen.getByRole('navigation', { name: 'Menu principale' })
     expect(nav).toHaveTextContent('Atleti')
     expect(nav).toHaveTextContent('Esercizi')
-    expect(screen.getByRole('link', { name: 'Impostazioni' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Guida' })).toBeInTheDocument()
     expect(screen.getByText('Marco Bianchi')).toBeInTheDocument()
     expect(screen.getByText('marco@test.dev')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Comprimi il menu' })).toHaveAttribute('aria-expanded', 'true')
   })
 
+  it('profilo, impostazioni ed esci stanno nel menu dell’account, non nella barra', async () => {
+    const onSignOut = vi.fn()
+    render(<Harness onSignOut={onSignOut} />)
+    expect(screen.queryByRole('link', { name: 'Impostazioni' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Esci' })).not.toBeInTheDocument()
+    await userEvent.click(screen.getByText('Marco Bianchi'))
+    expect(await screen.findByRole('menuitem', { name: 'Profilo' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: 'Impostazioni' })).toBeInTheDocument()
+    expect(screen.getByText('Piano Pro')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Esci' }))
+    expect(onSignOut).toHaveBeenCalled()
+  })
+
   it('compresso: restano le voci con il nome accessibile e il pulsante per riaprire', async () => {
     render(<Harness />)
     await userEvent.click(screen.getByRole('button', { name: 'Comprimi il menu' }))
     expect(screen.getByRole('link', { name: 'Atleti' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Impostazioni' })).toBeInTheDocument()
     expect(screen.queryByText('marco@test.dev')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Menu dell’account: Marco Bianchi' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Espandi il menu' })).toHaveAttribute('aria-expanded', 'false')
   })
 
@@ -72,14 +98,11 @@ describe('Sidebar', () => {
     vi.restoreAllMocks()
   })
 
-  it('guida ed esci chiamano le azioni, anche da compresso', async () => {
-    const onSignOut = vi.fn()
+  it('la guida parte anche da compresso', async () => {
     const onStartTour = vi.fn()
-    render(<Harness onSignOut={onSignOut} onStartTour={onStartTour} />)
+    render(<Harness onStartTour={onStartTour} />)
     await userEvent.click(screen.getByRole('button', { name: 'Comprimi il menu' }))
     await userEvent.click(screen.getByRole('button', { name: 'Guida' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Esci' }))
     expect(onStartTour).toHaveBeenCalled()
-    expect(onSignOut).toHaveBeenCalled()
   })
 })

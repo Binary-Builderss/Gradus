@@ -73,9 +73,12 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 - Icone: solo Phosphor (`@phosphor-icons/react`). Componenti shadcn/ui in `src/components/ui`, mai lasciati
   allo stato di default.
 - Menu laterale (`components/layout/Sidebar.tsx`): in alto il marchio, al centro le sezioni di lavoro (Atleti,
-  Esercizi), in basso Guida, Impostazioni e l'utente. Si comprime a una barra di sole icone che tiene il
-  marchio di Gradus (scelta ricordata in localStorage); da compresso ogni voce ha l'etichetta al passaggio del
-  mouse e il nome accessibile. Una sezione di lavoro nuova va nel blocco centrale, non in basso.
+  Esercizi), in basso la Guida e **il menu dell'account** (`AccountMenu`: nome ed email, Profilo, Impostazioni,
+  Esci, dal piano). Profilo e Impostazioni sono pagine diverse: il Profilo è la persona (nome, email),
+  le Impostazioni sono dello strumento (piano, marchio) e non stanno nella barra. Si comprime a una barra di
+  sole icone che tiene il marchio (scelta in localStorage); da compresso ogni voce ha l'etichetta al passaggio
+  del mouse e il nome accessibile. Su telefono lo stesso menu è l'avatar nell'header. Una sezione di lavoro
+  nuova va nel blocco centrale. Le righe con testo lungo (nome, email) vanno sempre con `min-w-0` + `truncate`.
 - Ogni stringa visibile sta in `src/lib/messages.ts`.
 - Semplicità prima della densità: un dato ha **una sola vista** (la griglia della seduta, non anche un
   elenco degli stessi esercizi); le opzioni avanzate stanno in `Collapsible` (`<details>`, chiusi di
@@ -113,7 +116,7 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   Stile Gradus per tutti; con piano Pro usa colori, logo e nome del marchio e un logo-filigrana sbiadito
   (`lib/pdfModel.ts` costruisce i dati, `lib/programPdf.ts` li disegna). Non serve una Edge Function: non ci sono
   privilegi in gioco, i dati sono già visibili al coach per RLS.
-- **Impostazioni → profilo**: nome e cognome del coach (`profiles.full_name`, scritto solo da lui: ogni dato ha un
+- **Profilo** (pagina `/profilo`, dal menu dell'account): nome e cognome del coach (`profiles.full_name`, scritto solo da lui: ogni dato ha un
   solo autore). Compare nella barra laterale, nel PDF (se non c'è un nome del marchio) e nella lista atleti del
   coach; senza nome si vede l'email. L'invito può portare un nome facoltativo, che entra nel profilo solo se
   l'atleta è nuovo; poi lo cambia lui dall'app.

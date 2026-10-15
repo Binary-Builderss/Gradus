@@ -3,17 +3,15 @@ import {
   CaretLeftIcon,
   CaretRightIcon,
   CompassIcon,
-  GearSixIcon,
-  SignOutIcon,
   UsersThreeIcon,
   type Icon,
 } from '@phosphor-icons/react'
 import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { Mark, Wordmark } from '@/components/brand'
+import { AccountMenu } from '@/components/layout/AccountMenu'
 import { Button } from '@/components/ui/button'
 import { Tip } from '@/components/ui/tooltip'
-import { initials } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
 
@@ -33,7 +31,7 @@ function NavItem({
   collapsed,
   tour,
 }: {
-  to: '/' | '/esercizi' | '/impostazioni'
+  to: '/' | '/esercizi'
   exact?: boolean
   icon: Icon
   label: string
@@ -84,12 +82,13 @@ function ActionItem({
   )
 }
 
-/** Menu laterale: in alto il marchio, al centro le sezioni di lavoro, in basso guida, impostazioni e utente. */
+/** Menu laterale: in alto il marchio, al centro le sezioni di lavoro, in basso la guida e il menu dell'account. */
 export function Sidebar({
   collapsed,
   onToggle,
   name,
   email,
+  pro,
   onStartTour,
   onSignOut,
 }: {
@@ -97,6 +96,7 @@ export function Sidebar({
   onToggle: () => void
   name: string
   email: string | undefined
+  pro: boolean | undefined
   onStartTour: () => void
   onSignOut: () => void
 }): ReactNode {
@@ -142,49 +142,16 @@ export function Sidebar({
         <NavItem to="/esercizi" icon={BarbellIcon} label={m.nav.exercises} collapsed={collapsed} />
       </nav>
 
-      <div className="mt-auto grid gap-0.5 border-t px-2 py-2">
+      <div className="mt-auto grid gap-1 border-t px-2 py-2">
         <ActionItem icon={CompassIcon} label={m.tour.open} collapsed={collapsed} onClick={onStartTour} />
-        <NavItem
-          to="/impostazioni"
-          icon={GearSixIcon}
-          label={m.nav.settings}
+        <AccountMenu
+          variant="sidebar"
           collapsed={collapsed}
-          tour="nav-settings"
+          name={name}
+          email={email}
+          pro={pro}
+          onSignOut={onSignOut}
         />
-        <div
-          className={cn(
-            'mt-1 flex items-center gap-2.5 border-t pt-3',
-            collapsed ? 'flex-col px-0' : 'px-1.5',
-          )}
-        >
-          <Tip label={name} disabled={!collapsed}>
-            <span
-              aria-hidden
-              className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-xs font-semibold text-accent-foreground"
-            >
-              {initials(name)}
-            </span>
-          </Tip>
-          {collapsed ? (
-            <span className="sr-only">{name}</span>
-          ) : (
-            <div className="min-w-0 flex-1" title={email}>
-              <p className="truncate text-sm font-medium">{name}</p>
-              {email && email !== name && <p className="truncate text-xs text-muted-foreground">{email}</p>}
-            </div>
-          )}
-          <Tip label={m.signOut} disabled={!collapsed}>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={m.signOut}
-              className="text-muted-foreground"
-              onClick={onSignOut}
-            >
-              <SignOutIcon />
-            </Button>
-          </Tip>
-        </div>
       </div>
     </aside>
   )
