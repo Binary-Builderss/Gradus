@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Tabs } from 'radix-ui'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { DownloadPdfButton } from '@/components/mesocycles/DownloadPdfButton'
 import { MesocycleSummary } from '@/components/mesocycles/MesocycleSummary'
 import { SaveStatus } from '@/components/mesocycles/SaveStatus'
 import { SessionBlock } from '@/components/mesocycles/SessionBlock'
@@ -95,8 +96,23 @@ function MesocyclePage() {
         ) : (
           <span />
         )}
-        <div data-tour="save-status">
-          <SaveStatus />
+        <div className="flex items-center gap-4">
+          {data && (
+            <DownloadPdfButton
+              coachId={user.id}
+              program={{
+                mesocycle: data,
+                sessions: list,
+                groups: groups.data ?? [],
+                slots: slots.data ?? [],
+                blocks: blocks.data ?? [],
+                weeks: weekRows.data ?? [],
+              }}
+            />
+          )}
+          <div data-tour="save-status">
+            <SaveStatus />
+          </div>
         </div>
       </div>
 

@@ -100,6 +100,11 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
     SQL `weekly_muscle_volume`, riscaldamento escluso) con le serie già eseguite sotto.
   - nella pagina dell'atleta, sopra l'elenco dei mesocicli, il colpo d'occhio sul mesociclo attivo: settimana
     in corso, sedute eseguite su previste, ultima seduta.
+- **PDF della programmazione** (pulsante «Scarica PDF» nella pagina del mesociclo): generato nel browser con
+  jsPDF + autotable, caricati solo al clic. Una pagina A4 orizzontale per seduta, una colonna per settimana.
+  Stile Gradus per tutti; con piano Pro usa colori, logo e nome del marchio e un logo-filigrana sbiadito
+  (`lib/pdfModel.ts` costruisce i dati, `lib/programPdf.ts` li disegna). Non serve una Edge Function: non ci sono
+  privilegi in gioco, i dati sono già visibili al coach per RLS.
 - **Impostazioni → marchio** (piano pro, `coach_branding`): nome, logo (ridimensionato nel browser e salvato come
   PNG base64) e sette colori liberi con anteprima; i colori non cambiati restano quelli standard
   (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi non è pro vede la

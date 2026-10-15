@@ -19,6 +19,7 @@ describe('buildTourPlan', () => {
       '/mesocicli/$mesocycleId',
       '/mesocicli/$mesocycleId',
       '/mesocicli/$mesocycleId',
+      '/mesocicli/$mesocycleId',
       '/esercizi',
       '/impostazioni',
       '/impostazioni',
