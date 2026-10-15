@@ -100,6 +100,10 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
     SQL `weekly_muscle_volume`, riscaldamento escluso) con le serie già eseguite sotto.
   - nella pagina dell'atleta, sopra l'elenco dei mesocicli, il colpo d'occhio sul mesociclo attivo: settimana
     in corso, sedute eseguite su previste, ultima seduta.
+- **Impostazioni → marchio** (piano pro, `coach_branding`): nome, logo (ridimensionato nel browser e salvato come
+  PNG base64) e sette colori liberi con anteprima; i colori non cambiati restano quelli standard
+  (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi non è pro vede la
+  pagina bloccata. Il sito del coach non cambia colori: il marchio vale per PDF e app atleta.
 - **Libreria esercizi**: catalogo globale + esercizi del coach, video, note, pesi per muscolo 0..1.
 - **Monitoraggio seduta**: prescritto contro eseguito per serie, sforzo prescritto contro percepito.
 

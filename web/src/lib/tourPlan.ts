@@ -5,6 +5,7 @@ const t = messages.app.tour.steps
 export type TourRoute =
   | { to: '/' }
   | { to: '/esercizi' }
+  | { to: '/impostazioni' }
   | { to: '/atleti/$athleteId'; params: { athleteId: string } }
   | { to: '/mesocicli/$mesocycleId'; params: { mesocycleId: string } }
 
@@ -63,6 +64,11 @@ export function buildTourPlan(args: {
   }
 
   const library: TourRoute = { to: '/esercizi' }
-  plan.push(step(library, t.exercises, 'exercise-new'), step(library, t.finish))
+  const settings: TourRoute = { to: '/impostazioni' }
+  plan.push(
+    step(library, t.exercises, 'exercise-new'),
+    step(settings, t.brand, 'brand-form'),
+    step(settings, t.finish),
+  )
   return plan
 }

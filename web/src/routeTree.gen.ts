@@ -15,6 +15,7 @@ import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
 import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppEserciziRouteImport } from './routes/_app/esercizi'
+import { Route as AppImpostazioniRouteImport } from './routes/_app/impostazioni'
 import { Route as AppAtletiAthleteIdRouteImport } from './routes/_app/atleti.$athleteId'
 import { Route as AppMesocicliMesocycleIdRouteImport } from './routes/_app/mesocicli.$mesocycleId'
 
@@ -47,6 +48,11 @@ const AppEserciziRoute = AppEserciziRouteImport.update({
   path: '/esercizi',
   getParentRoute: () => AppRoute,
 } as any)
+const AppImpostazioniRoute = AppImpostazioniRouteImport.update({
+  id: '/impostazioni',
+  path: '/impostazioni',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAtletiAthleteIdRoute = AppAtletiAthleteIdRouteImport.update({
   id: '/atleti/$athleteId',
   path: '/atleti/$athleteId',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/esercizi': typeof AppEserciziRoute
+  '/impostazioni': typeof AppImpostazioniRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/esercizi': typeof AppEserciziRoute
+  '/impostazioni': typeof AppImpostazioniRoute
   '/': typeof AppIndexRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
   '/_app/esercizi': typeof AppEserciziRoute
+  '/_app/impostazioni': typeof AppImpostazioniRoute
   '/_app/': typeof AppIndexRoute
   '/_app/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/_app/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
     | '/nuova-password'
     | '/recupero-password'
     | '/esercizi'
+    | '/impostazioni'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
   fileRoutesByTo: FileRoutesByTo
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
     | '/nuova-password'
     | '/recupero-password'
     | '/esercizi'
+    | '/impostazioni'
     | '/'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '/nuova-password'
     | '/recupero-password'
     | '/_app/esercizi'
+    | '/_app/impostazioni'
     | '/_app/'
     | '/_app/atleti/$athleteId'
     | '/_app/mesocicli/$mesocycleId'
@@ -169,6 +181,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEserciziRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/impostazioni': {
+      id: '/_app/impostazioni'
+      path: '/impostazioni'
+      fullPath: '/impostazioni'
+      preLoaderRoute: typeof AppImpostazioniRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/atleti/$athleteId': {
       id: '/_app/atleti/$athleteId'
       path: '/atleti/$athleteId'
@@ -188,6 +207,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppEserciziRoute: typeof AppEserciziRoute
+  AppImpostazioniRoute: typeof AppImpostazioniRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAtletiAthleteIdRoute: typeof AppAtletiAthleteIdRoute
   AppMesocicliMesocycleIdRoute: typeof AppMesocicliMesocycleIdRoute
@@ -195,6 +215,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppEserciziRoute: AppEserciziRoute,
+  AppImpostazioniRoute: AppImpostazioniRoute,
   AppIndexRoute: AppIndexRoute,
   AppAtletiAthleteIdRoute: AppAtletiAthleteIdRoute,
   AppMesocicliMesocycleIdRoute: AppMesocicliMesocycleIdRoute,

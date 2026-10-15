@@ -20,7 +20,8 @@ describe('buildTourPlan', () => {
       '/mesocicli/$mesocycleId',
       '/mesocicli/$mesocycleId',
       '/esercizi',
-      '/esercizi',
+      '/impostazioni',
+      '/impostazioni',
     ])
   })
 
@@ -31,7 +32,15 @@ describe('buildTourPlan', () => {
       hasActiveMesocycle: false,
       sidebar: true,
     })
-    expect(plan.map((s) => s.route.to)).toEqual(['/', '/', '/', '/', '/esercizi', '/esercizi'])
+    expect(plan.map((s) => s.route.to)).toEqual([
+      '/',
+      '/',
+      '/',
+      '/',
+      '/esercizi',
+      '/impostazioni',
+      '/impostazioni',
+    ])
     expect(plan[3]!.target).toBeUndefined()
   })
 
