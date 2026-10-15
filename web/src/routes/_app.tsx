@@ -1,9 +1,11 @@
 import { BarbellIcon, CompassIcon, GearSixIcon, SignOutIcon, UsersThreeIcon } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
 import { Wordmark } from '@/components/brand'
 import { Button } from '@/components/ui/button'
 import { useGuidedTour } from '@/components/tour/useGuidedTour'
 import { messages } from '@/lib/messages'
+import { displayName, profileQuery } from '@/lib/profile'
 import { supabase } from '@/lib/supabase'
 
 const m = messages.app
@@ -27,6 +29,8 @@ function AppLayout() {
   // L'uscita la gestisce il listener in main.tsx (SIGNED_OUT → /login).
   const signOut = () => void supabase.auth.signOut()
   const startTour = useGuidedTour(user.id)
+  const profile = useQuery(profileQuery(user.id))
+  const name = displayName(profile.data, user.email)
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[13.5rem_1fr]">
@@ -48,7 +52,7 @@ function AppLayout() {
         </nav>
         <div className="mt-auto grid gap-0.5 border-t p-2.5">
           <p className="truncate px-2.5 py-1 text-xs text-muted-foreground" title={user.email}>
-            {user.email}
+            {name}
           </p>
           <Button
             variant="ghost"

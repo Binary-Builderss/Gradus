@@ -43,18 +43,3 @@ export async function saveBranding(coachId: string, branding: Branding) {
   )
   if (error) throw error
 }
-
-/** Nome con cui il coach firma il PDF se non ha scelto un nome del marchio. */
-export const coachNameQuery = (coachId: string) =>
-  queryOptions({
-    queryKey: ['coach-name', coachId],
-    queryFn: async (): Promise<string> => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('full_name, email')
-        .eq('id', coachId)
-        .maybeSingle()
-      if (error) throw error
-      return data?.full_name?.trim() || data?.email || ''
-    },
-  })

@@ -105,6 +105,10 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   Stile Gradus per tutti; con piano Pro usa colori, logo e nome del marchio e un logo-filigrana sbiadito
   (`lib/pdfModel.ts` costruisce i dati, `lib/programPdf.ts` li disegna). Non serve una Edge Function: non ci sono
   privilegi in gioco, i dati sono già visibili al coach per RLS.
+- **Impostazioni → profilo**: nome e cognome del coach (`profiles.full_name`, scritto solo da lui: ogni dato ha un
+  solo autore). Compare nella barra laterale, nel PDF (se non c'è un nome del marchio) e nella lista atleti del
+  coach; senza nome si vede l'email. L'invito può portare un nome facoltativo, che entra nel profilo solo se
+  l'atleta è nuovo; poi lo cambia lui dall'app.
 - **Impostazioni → marchio** (piano pro, `coach_branding`): nome, logo (ridimensionato nel browser e salvato come
   PNG base64) e sette colori liberi con anteprima; i colori non cambiati restano quelli standard
   (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi non è pro vede la
