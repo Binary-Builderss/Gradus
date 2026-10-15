@@ -34,6 +34,7 @@ describe('buildTourPlan', () => {
       .map((s) => s.target)
     expect(inMeso).toEqual([
       'meso-settings',
+      'meso-status',
       'session-tabs',
       'session-header',
       'add-exercise',

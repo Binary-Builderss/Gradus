@@ -64,6 +64,7 @@ export function buildTourPlan(args: {
       plan.push(
         step(athlete, t.mesocycleList, 'mesocycle-list'),
         step(meso, t.settings, 'meso-settings'),
+        step(meso, t.status, 'meso-status'),
         step(meso, t.sessions, 'session-tabs'),
         step(meso, t.sessionHeader, 'session-header'),
         step(meso, t.addExercise, 'add-exercise'),

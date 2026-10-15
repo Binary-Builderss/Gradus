@@ -105,6 +105,10 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   collegamento con sé stesso (`coach_id = athlete_id`, `active`), che compare come «Tu», non occupa un posto del
   piano e porta i suoi programmi nell'app atleta con lo stesso login.
 
+- **Stato del mesociclo** (intestazione della pagina, `MesocycleStatus`): una bozza si **attiva** (da quel momento l'atleta la
+  vede nell'app) o si elimina dal menu; un mesociclo attivo si **conclude** o, se l'atleta non ha registrato nulla, si
+  riporta in bozza. Ogni passaggio chiede conferma e spiega le conseguenze; i rifiuti del database (mesociclo vuoto,
+  atleta con un altro mesociclo attivo, sedute già registrate) arrivano con un messaggio chiaro.
 - **Piani** (`/piani`): Gratuito, Mid, Pro e Unlimited a confronto, con i posti usati (`plan_usage`) e i tetti letti
   da `plan_limits` (i numeri stanno solo nel database). L'acquisto di ogni piano è un link https in
   `VITE_CHECKOUT_URL_MID` / `_PRO` / `_UNLIMITED` (facoltative): finché manca il pulsante resta «Presto

@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { Tabs } from 'radix-ui'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { DownloadPdfButton } from '@/components/mesocycles/DownloadPdfButton'
+import { MesocycleStatus } from '@/components/mesocycles/MesocycleStatus'
 import { MesocycleSummary } from '@/components/mesocycles/MesocycleSummary'
 import { SaveStatus } from '@/components/mesocycles/SaveStatus'
 import { SessionBlock } from '@/components/mesocycles/SessionBlock'
@@ -131,9 +132,7 @@ function MesocyclePage() {
                 }}
                 className="h-auto w-auto min-w-0 flex-1 border-transparent bg-transparent px-1 py-0.5 text-xl font-semibold tracking-tight shadow-none hover:border-input focus-visible:border-ring md:text-xl"
               />
-              <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
-                {athleteMessages.status[data.status]}
-              </span>
+              <MesocycleStatus mesocycle={data} />
             </div>
             <MesocycleSettings
               weeks={data.weeks}
