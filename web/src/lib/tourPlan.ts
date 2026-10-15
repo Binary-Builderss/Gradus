@@ -29,6 +29,8 @@ const step = (route: TourRoute, text: { title: string; body: string }, target?: 
 export function buildTourPlan(args: {
   athleteId: string | null
   mesocycleId: string | null
+  /** L'atleta ha un mesociclo attivo: solo allora la pagina mostra la panoramica. */
+  hasActiveMesocycle: boolean
   /** La barra laterale esiste solo da schermo largo. */
   sidebar: boolean
 }): TourStep[] {
@@ -41,6 +43,7 @@ export function buildTourPlan(args: {
     plan.push(step(home, t.noAthlete))
   } else {
     const athlete: TourRoute = { to: '/atleti/$athleteId', params: { athleteId: args.athleteId } }
+    if (args.hasActiveMesocycle) plan.push(step(athlete, t.overview, 'athlete-overview'))
     plan.push(step(athlete, t.newMesocycle, 'new-mesocycle'))
     if (!args.mesocycleId) {
       plan.push(step(athlete, t.noMesocycle))

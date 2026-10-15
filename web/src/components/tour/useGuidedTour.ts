@@ -23,11 +23,16 @@ async function findExamples(queryClient: QueryClient, coachId: string) {
     const linked = athletes.filter((a) => a.status === 'active').slice(0, 5)
     for (const a of linked) {
       const list = await queryClient.ensureQueryData(mesocyclesQuery(a.id))
-      if (list[0]) return { athleteId: a.id, mesocycleId: list[0].id }
+      if (list[0])
+        return {
+          athleteId: a.id,
+          mesocycleId: list[0].id,
+          hasActiveMesocycle: list.some((x) => x.status === 'active'),
+        }
     }
-    return { athleteId: linked[0]?.id ?? null, mesocycleId: null }
+    return { athleteId: linked[0]?.id ?? null, mesocycleId: null, hasActiveMesocycle: false }
   } catch {
-    return { athleteId: null, mesocycleId: null }
+    return { athleteId: null, mesocycleId: null, hasActiveMesocycle: false }
   }
 }
 
