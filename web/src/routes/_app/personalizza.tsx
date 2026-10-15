@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { BrandForm } from '@/components/brand/BrandForm'
 import { brandingQuery, proPlanQuery } from '@/lib/branding'
 import { messages } from '@/lib/messages'
 import { displayName, profileQuery } from '@/lib/profile'
 
-const m = messages.app.settings
+const m = messages.app.customize
 
-export const Route = createFileRoute('/_app/impostazioni')({
+export const Route = createFileRoute('/_app/personalizza')({
   component: SettingsPage,
 })
 
@@ -26,6 +26,14 @@ function SettingsPage() {
           <span className="rounded-md border px-2 py-0.5 text-xs font-medium text-muted-foreground">
             {pro.data ? m.plan.pro : m.plan.free}
           </span>
+        )}
+        {pro.isSuccess && !pro.data && (
+          <Link
+            to="/piani"
+            className="inline-flex h-8 items-center rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            {m.upgrade}
+          </Link>
         )}
       </div>
       <div className="grid gap-1">

@@ -20,7 +20,7 @@ beforeEach(() => saveBranding.mockClear())
 describe('BrandForm', () => {
   it('senza piano pro è bloccato e lo dice', () => {
     setup(false)
-    expect(screen.getByText(/Disponibile con il piano Pro/)).toBeInTheDocument()
+    expect(screen.getByText(/funzione del piano Pro/)).toBeInTheDocument()
     expect(screen.getByLabelText('Nome del marchio')).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Salva' })).toBeDisabled()
   })

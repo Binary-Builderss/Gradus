@@ -3,6 +3,7 @@ import {
   CaretLeftIcon,
   CaretRightIcon,
   CompassIcon,
+  CrownSimpleIcon,
   UsersThreeIcon,
   type Icon,
 } from '@phosphor-icons/react'
@@ -82,6 +83,33 @@ function ActionItem({
   )
 }
 
+/** Invito al piano Pro per chi non lo ha: sotto la Guida, porta alla pagina dei piani. */
+function UpgradeCta({ collapsed }: { collapsed: boolean }) {
+  const label = m.plans.upsellTitle
+  return (
+    <Tip label={label} disabled={!collapsed}>
+      <Link
+        to="/piani"
+        data-tour="upgrade"
+        className={cn(
+          'flex items-center gap-3 rounded-md bg-accent px-2.5 py-2 text-accent-foreground transition-colors outline-none hover:bg-accent/70 focus-visible:ring-2 focus-visible:ring-ring',
+          collapsed && 'h-9 justify-center px-0 py-0',
+        )}
+      >
+        <CrownSimpleIcon size={20} weight="fill" className="shrink-0 text-primary" />
+        {collapsed ? (
+          <span className="sr-only">{label}</span>
+        ) : (
+          <span className="grid min-w-0">
+            <span className="truncate text-sm font-semibold">{label}</span>
+            <span className="truncate text-xs opacity-80">{m.plans.upsellBody}</span>
+          </span>
+        )}
+      </Link>
+    </Tip>
+  )
+}
+
 /** Menu laterale: in alto il marchio, al centro le sezioni di lavoro, in basso la guida e il menu dell'account. */
 export function Sidebar({
   collapsed,
@@ -144,6 +172,7 @@ export function Sidebar({
 
       <div className="mt-auto grid gap-1 border-t px-2 py-2">
         <ActionItem icon={CompassIcon} label={m.tour.open} collapsed={collapsed} onClick={onStartTour} />
+        {pro === false && <UpgradeCta collapsed={collapsed} />}
         <AccountMenu
           variant="sidebar"
           collapsed={collapsed}

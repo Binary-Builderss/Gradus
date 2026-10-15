@@ -51,8 +51,9 @@ export const messages = {
     nav: {
       athletes: 'Atleti',
       exercises: 'Esercizi',
-      settings: 'Impostazioni',
+      customize: 'Personalizza',
       profile: 'Profilo',
+      plans: 'Piano e abbonamento',
       account: 'Menu dell’account',
       menu: 'Menu principale',
       collapse: 'Comprimi il menu',
@@ -143,14 +144,14 @@ export const messages = {
         },
         account: {
           title: 'Il tuo account',
-          body: 'In basso a sinistra c’è il tuo nome: cliccalo per aprire il Profilo, le Impostazioni (il marchio) o per uscire.',
+          body: 'In basso a sinistra c’è il tuo nome: cliccalo per aprire il Profilo (nome, password), Personalizza (logo e colori, piano Pro) o per uscire.',
         },
         profile: {
           title: 'Il tuo profilo',
-          body: 'Metti il tuo nome: lo vedono i tuoi atleti e compare nel PDF. Senza nome, al suo posto si vede l’email.',
+          body: 'Metti il tuo nome: lo vedono i tuoi atleti e compare nel PDF. Qui puoi anche cambiare la password.',
         },
         brand: {
-          title: 'Il tuo marchio',
+          title: 'Personalizza',
           body: 'Qui scegli logo e colori che compaiono nel PDF della scheda e, più avanti, nell’app dei tuoi atleti. Parti dai colori di Gradus e cambiali come vuoi. È una funzione del piano Pro.',
         },
         finish: {
@@ -188,10 +189,7 @@ export const messages = {
       emptySession: 'Nessun esercizio in questa seduta.',
       file: (mesocycle: string, athlete: string) => `${mesocycle} - ${athlete}`,
     },
-    settings: {
-      title: 'Impostazioni',
-      loadError: 'Non riesco a caricare le impostazioni.',
-      plan: { free: 'Piano gratuito', pro: 'Piano Pro' },
+    account: {
       profile: {
         title: 'Profilo',
         intro:
@@ -205,12 +203,61 @@ export const messages = {
         saved: 'Salvato',
         saveError: 'Non riesco a salvare. Riprova.',
       },
+      security: {
+        title: 'Accesso e sicurezza',
+        passwordTitle: 'Password',
+        passwordBody: 'Per cambiarla ti scriviamo un’email con un link: aprilo e scegli la nuova password.',
+        passwordButton: 'Cambia password',
+        passwordSending: 'Invio in corso',
+        passwordSent: 'Email inviata. Controlla la posta, anche nello spam.',
+        passwordError: 'Non riesco a inviare l’email. Riprova tra poco.',
+      },
+      loadError: 'Non riesco a caricare il profilo. Riprova tra poco.',
+    },
+    plans: {
+      title: 'Il tuo piano',
+      current: 'Il tuo piano',
+      loadError: 'Non riesco a caricare il piano. Riprova tra poco.',
+      free: {
+        name: 'Gratuito',
+        tagline: 'Tutto per programmare e seguire i tuoi atleti.',
+        features: [
+          'Atleti e mesocicli senza limiti',
+          'Libreria esercizi e progressione automatica',
+          'Riepilogo, volume per muscolo e progressi',
+          'PDF della scheda in stile Gradus',
+        ],
+      },
+      pro: {
+        name: 'Pro',
+        tagline: 'La tua identità sulle schede dei tuoi atleti.',
+        features: [
+          'Tutto il piano gratuito',
+          'Personalizza: il tuo logo, il tuo nome e i tuoi colori',
+          'PDF col tuo marchio e il tuo logo come filigrana',
+          'L’app dei tuoi atleti nei tuoi colori (in arrivo)',
+        ],
+      },
+      billing: 'Abbonamento, si disdice quando vuoi.',
+      cta: 'Passa a Pro',
+      ctaSoon: 'Presto disponibile',
+      ctaSoonHint: 'L’acquisto dell’abbonamento arriva a breve. Ti avvisiamo appena è attivo.',
+      active: 'Il tuo piano attuale',
+      activeBody: 'Hai tutte le funzioni, compreso Personalizza.',
+      upsellTitle: 'Passa a Pro',
+      upsellBody: 'Logo e colori su PDF e app',
+    },
+    customize: {
+      title: 'Personalizza',
+      loadError: 'Non riesco a caricare la pagina. Riprova tra poco.',
+      plan: { free: 'Piano gratuito', pro: 'Piano Pro' },
+      upgrade: 'Passa a Pro',
       brand: {
         title: 'Il tuo marchio',
         intro:
           'Logo e colori compaiono nel PDF della scheda e, più avanti, nell’app dei tuoi atleti. Parti dai colori di Gradus e cambiali come vuoi.',
         locked:
-          'Disponibile con il piano Pro. Finché non è attivo, PDF e app usano lo stile standard di Gradus.',
+          'Personalizza è una funzione del piano Pro. Finché non è attivo, PDF e app usano lo stile standard di Gradus.',
         name: 'Nome del marchio',
         namePlaceholder: 'Il tuo nome o quello del tuo studio',
         nameHint: 'Se lo lasci vuoto compare il tuo nome.',

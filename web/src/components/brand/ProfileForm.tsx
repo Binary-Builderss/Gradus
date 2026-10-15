@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { messages } from '@/lib/messages'
 import { type Profile, saveProfileName } from '@/lib/profile'
 
-const m = messages.app.settings.profile
+const m = messages.app.account.profile
 
 export function ProfileForm({ userId, profile }: { userId: string; profile: Profile }) {
   const queryClient = useQueryClient()

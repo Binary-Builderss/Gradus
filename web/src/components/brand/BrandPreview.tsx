@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import type { BrandColors } from '@/lib/brand'
 import { messages } from '@/lib/messages'
 
-const m = messages.app.settings.brand
+const m = messages.app.customize.brand
 
 /** Mini scheda dell'atleta con i colori scelti: lo stesso stile che useranno app e PDF. */
 export function BrandPreview({

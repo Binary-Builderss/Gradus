@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { normalizeHex } from '@/lib/brand'
 import { messages } from '@/lib/messages'
 
-const m = messages.app.settings.brand
+const m = messages.app.customize.brand
 
 export function ColorField({
   name,

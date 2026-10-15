@@ -6,7 +6,8 @@ export type TourRoute =
   | { to: '/' }
   | { to: '/esercizi' }
   | { to: '/profilo' }
-  | { to: '/impostazioni' }
+  | { to: '/personalizza' }
+  | { to: '/piani' }
   | { to: '/atleti/$athleteId'; params: { athleteId: string } }
   | { to: '/mesocicli/$mesocycleId'; params: { mesocycleId: string } }
 
@@ -67,13 +68,13 @@ export function buildTourPlan(args: {
 
   const library: TourRoute = { to: '/esercizi' }
   const profile: TourRoute = { to: '/profilo' }
-  const settings: TourRoute = { to: '/impostazioni' }
+  const customize: TourRoute = { to: '/personalizza' }
   plan.push(
     step(library, t.exercises, 'exercise-new'),
     step(profile, t.account, 'account-menu'),
     step(profile, t.profile, 'profile-form'),
-    step(settings, t.brand, 'brand-form'),
-    step(settings, t.finish),
+    step(customize, t.brand, 'brand-form'),
+    step(customize, t.finish),
   )
   return plan
 }

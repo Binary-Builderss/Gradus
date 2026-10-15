@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { PasswordReset } from '@/components/brand/PasswordReset'
 import { ProfileForm } from '@/components/brand/ProfileForm'
 import { messages } from '@/lib/messages'
 import { profileQuery } from '@/lib/profile'
 
-const m = messages.app.settings
+const m = messages.app.account
 
 export const Route = createFileRoute('/_app/profilo')({
   component: ProfilePage,
@@ -21,7 +22,14 @@ function ProfilePage() {
         <p className="max-w-prose text-muted-foreground">{m.profile.intro}</p>
       </div>
       {profile.isSuccess ? (
-        <ProfileForm userId={user.id} profile={profile.data} />
+        <>
+          <ProfileForm userId={user.id} profile={profile.data} />
+          {profile.data.email && (
+            <div className="max-w-md border-t pt-6">
+              <PasswordReset email={profile.data.email} />
+            </div>
+          )}
+        </>
       ) : profile.isError ? (
         <p role="alert" className="text-destructive">
           {m.loadError}

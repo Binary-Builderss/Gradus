@@ -21,7 +21,7 @@ vi.mock('@tanstack/react-router', () => ({
   ),
 }))
 
-function Harness({ onSignOut = () => {}, onStartTour = () => {} }) {
+function Harness({ onSignOut = () => {}, onStartTour = () => {}, pro = true as boolean | undefined }) {
   const [collapsed, toggle] = useSidebarCollapsed()
   return (
     <TooltipProvider>
@@ -30,7 +30,7 @@ function Harness({ onSignOut = () => {}, onStartTour = () => {} }) {
         onToggle={toggle}
         name="Marco Bianchi"
         email="marco@test.dev"
-        pro={true}
+        pro={pro}
         onStartTour={onStartTour}
         onSignOut={onSignOut}
       />
@@ -58,14 +58,15 @@ describe('Sidebar', () => {
     expect(screen.getByRole('button', { name: 'Comprimi il menu' })).toHaveAttribute('aria-expanded', 'true')
   })
 
-  it('profilo, impostazioni ed esci stanno nel menu dell’account, non nella barra', async () => {
+  it('profilo, personalizza, piano ed esci stanno nel menu dell’account, non nella barra', async () => {
     const onSignOut = vi.fn()
     render(<Harness onSignOut={onSignOut} />)
-    expect(screen.queryByRole('link', { name: 'Impostazioni' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Personalizza' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Esci' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByText('Marco Bianchi'))
     expect(await screen.findByRole('menuitem', { name: 'Profilo' })).toBeInTheDocument()
-    expect(screen.getByRole('menuitem', { name: 'Impostazioni' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: 'Personalizza' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: 'Piano e abbonamento' })).toBeInTheDocument()
     expect(screen.getByText('Piano Pro')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('menuitem', { name: 'Esci' }))
     expect(onSignOut).toHaveBeenCalled()
@@ -96,6 +97,19 @@ describe('Sidebar', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Comprimi il menu' }))
     expect(screen.getByRole('button', { name: 'Espandi il menu' })).toBeInTheDocument()
     vi.restoreAllMocks()
+  })
+
+  it('senza piano Pro sotto la guida c’è il link per passarci, con il Pro no', () => {
+    const { unmount } = render(<Harness pro={false} />)
+    expect(screen.getByRole('link', { name: /Passa a Pro/ })).toHaveAttribute('href', '/piani')
+    unmount()
+    render(<Harness pro={true} />)
+    expect(screen.queryByRole('link', { name: /Passa a Pro/ })).not.toBeInTheDocument()
+  })
+
+  it('finché non si sa il piano non mostra inviti', () => {
+    render(<Harness pro={undefined} />)
+    expect(screen.queryByRole('link', { name: /Passa a Pro/ })).not.toBeInTheDocument()
   })
 
   it('la guida parte anche da compresso', async () => {
