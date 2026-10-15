@@ -4,6 +4,7 @@ import {
   CaretRightIcon,
   CompassIcon,
   CrownSimpleIcon,
+  StackIcon,
   UsersThreeIcon,
   type Icon,
 } from '@phosphor-icons/react'
@@ -33,7 +34,7 @@ function NavItem({
   collapsed,
   tour,
 }: {
-  to: '/' | '/esercizi'
+  to: '/' | '/esercizi' | '/template'
   exact?: boolean
   icon: Icon
   label: string
@@ -171,6 +172,7 @@ export function Sidebar({
           tour="nav-athletes"
         />
         <NavItem to="/esercizi" icon={BarbellIcon} label={m.nav.exercises} collapsed={collapsed} />
+        <NavItem to="/template" icon={StackIcon} label={m.nav.templates} collapsed={collapsed} />
       </nav>
 
       <div className="mt-auto grid gap-1 border-t px-2 py-2">

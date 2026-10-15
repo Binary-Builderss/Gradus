@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { athleteQuery, mesocyclesQuery } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
+import { BestSets } from '@/components/athletes/BestSets'
 import { CloseLink } from '@/components/athletes/CloseLink'
 import { usePageTitle } from '@/lib/pageTitle'
 
@@ -52,6 +53,8 @@ function AthletePage() {
         <AthleteOverview coachId={user.id} athleteId={athleteId} mesocycle={activeMesocycle} />
       )}
 
+      <BestSets coachId={user.id} athleteId={athleteId} />
+
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-sm font-semibold">{m.mesocycles}</h2>
         {!creating && (
@@ -62,7 +65,9 @@ function AthletePage() {
         )}
       </div>
 
-      {creating && <NewMesocycleForm athleteId={athleteId} onCancel={() => setCreating(false)} />}
+      {creating && (
+        <NewMesocycleForm coachId={user.id} athleteId={athleteId} onCancel={() => setCreating(false)} />
+      )}
 
       {mesocycles.isPending ? (
         <div aria-hidden className="h-14 animate-pulse rounded-lg border bg-muted/40" />

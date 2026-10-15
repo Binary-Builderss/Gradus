@@ -46,6 +46,20 @@ export async function createMesocycle(
   return data.id
 }
 
+/** Duplica un mesociclo come nuova bozza dello stesso atleta (funzione SQL `clone_mesocycle`). Ritorna l'id della copia. */
+export async function cloneMesocycle(
+  mesocycleId: string,
+  values: { start_date: string; name: string },
+): Promise<string> {
+  const { data, error } = await supabase.rpc('clone_mesocycle', {
+    p_mesocycle_id: mesocycleId,
+    p_start_date: values.start_date,
+    p_name: values.name || undefined,
+  })
+  if (error) throw error
+  return data
+}
+
 export const mesocycleQuery = (mesocycleId: string) =>
   queryOptions({
     queryKey: ['mesocycle', mesocycleId],

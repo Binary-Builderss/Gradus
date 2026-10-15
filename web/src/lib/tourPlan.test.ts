@@ -15,13 +15,14 @@ const targets = (over: Partial<Args> = {}) => plan(over).map((s) => s.target)
 const routes = (over: Partial<Args> = {}) => plan(over).map((s) => s.route.to)
 
 describe('buildTourPlan', () => {
-  it('segue il lavoro: atleti, atleta, mesociclo, libreria, piano, profilo, personalizza', () => {
+  it('segue il lavoro: atleti, atleta, mesociclo, libreria, template, piano, profilo, personalizza', () => {
     const order = routes().filter((to, i, all) => to !== all[i - 1])
     expect(order).toEqual([
       '/',
       '/atleti/$athleteId',
       '/mesocicli/$mesocycleId',
       '/esercizi',
+      '/template',
       '/piani',
       '/profilo',
       '/personalizza',

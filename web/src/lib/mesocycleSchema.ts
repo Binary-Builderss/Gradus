@@ -25,3 +25,24 @@ export function clampDeload(deload: readonly number[], weeks: number): number[] 
 export function nextPosition(items: readonly { position: number }[]): number {
   return items.reduce((max, i) => Math.max(max, i.position + 1), 0)
 }
+
+const copy = messages.app.mesocycle.status.copy.errors
+
+/** Duplicare un mesociclo: data di inizio e, se si vuole, un nome (vuoto = «Copia di …»). */
+export const duplicateMesocycleSchema = z.object({
+  start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, copy.dateRequired),
+  name: z.string().trim().max(120, copy.nameTooLong),
+})
+
+/** Salvare un mesociclo come template: nome obbligatorio, descrizione facoltativa. */
+export const saveTemplateSchema = z.object({
+  name: z.string().trim().min(1, copy.nameRequired).max(120, copy.nameTooLong),
+  description: z
+    .string()
+    .trim()
+    .max(500, copy.descriptionTooLong)
+    .transform((v) => (v === '' ? null : v)),
+})
+
+/** Nuovo mesociclo da un template: data di inizio e nome facoltativo (vuoto = il nome del template). */
+export const fromTemplateSchema = duplicateMesocycleSchema

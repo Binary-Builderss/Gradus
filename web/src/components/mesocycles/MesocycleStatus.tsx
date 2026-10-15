@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Menu, MenuContent, MenuItem, MenuTrigger } from '@/components/ui/dropdown-menu'
 import { deleteDraftMesocycle, type MesocycleStatus as Status, setMesocycleStatus } from '@/lib/mesocycles'
 import { statusErrorMessage } from '@/lib/mesocycleStatus'
+import { DuplicateMesocycle, SaveAsTemplate } from '@/components/mesocycles/MesocycleCopy'
 import { messages } from '@/lib/messages'
 
 const m = messages.app.mesocycle.status
@@ -27,12 +28,15 @@ type Action = 'activate' | 'complete' | 'unpublish' | 'remove'
  */
 export function MesocycleStatus({
   mesocycle,
+  coachId,
 }: {
   mesocycle: { id: string; name: string; status: Status; athlete_id: string }
+  coachId: string
 }) {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const [pending, setPending] = useState<Action | null>(null)
+  const [copying, setCopying] = useState<'duplicate' | 'template' | null>(null)
 
   const run = useMutation({
     mutationFn: async (action: Action) => {
@@ -76,22 +80,30 @@ export function MesocycleStatus({
           {m.complete}
         </Button>
       )}
-      {status !== 'completed' && (
-        <Menu>
-          <MenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label={m.more}>
-              <DotsThreeIcon weight="bold" />
-            </Button>
-          </MenuTrigger>
-          <MenuContent align="end" className="min-w-52">
-            {status === 'active' ? (
-              <MenuItem onSelect={() => open('unpublish')}>{m.unpublish}</MenuItem>
-            ) : (
-              <MenuItem onSelect={() => open('remove')}>{m.remove}</MenuItem>
-            )}
-          </MenuContent>
-        </Menu>
-      )}
+      <Menu>
+        <MenuTrigger asChild>
+          <Button variant="ghost" size="icon" aria-label={m.more}>
+            <DotsThreeIcon weight="bold" />
+          </Button>
+        </MenuTrigger>
+        <MenuContent align="end" className="min-w-52">
+          <MenuItem onSelect={() => setCopying('duplicate')}>{m.duplicate}</MenuItem>
+          <MenuItem onSelect={() => setCopying('template')}>{m.saveTemplate}</MenuItem>
+          {status === 'active' && <MenuItem onSelect={() => open('unpublish')}>{m.unpublish}</MenuItem>}
+          {status === 'draft' && <MenuItem onSelect={() => open('remove')}>{m.remove}</MenuItem>}
+        </MenuContent>
+      </Menu>
+      <DuplicateMesocycle
+        mesocycle={mesocycle}
+        open={copying === 'duplicate'}
+        onOpenChange={(next) => !next && setCopying(null)}
+      />
+      <SaveAsTemplate
+        mesocycle={mesocycle}
+        coachId={coachId}
+        open={copying === 'template'}
+        onOpenChange={(next) => !next && setCopying(null)}
+      />
 
       <Dialog open={pending !== null} onOpenChange={(next) => !next && setPending(null)}>
         {pending && (

@@ -50,12 +50,17 @@ Dopo una migrazione: rigenera i tipi e indica nel commit quali modelli Swift van
 
 ## Funzioni SQL da mantenere
 
-- `instantiate_template(template_id, athlete_id, start_date)`, `clone_mesocycle(mesocycle_id, start_date)` — copia profonda
+- `clone_mesocycle(mesocycle_id, start_date, name?)` — nuova bozza dello stesso atleta con sedute, gruppi, esercizi, serie, TUT,
+  recuperi, prescrizioni settimanali e back-off ricollegati; mai le sedute registrate. Scarta le righe eliminate
+- `save_mesocycle_as_template(mesocycle_id, name, description?)` e `instantiate_template(template_id, athlete_id, start_date, name?)` —
+  il template è una **fotografia jsonb** (`private.mesocycle_snapshot`) in `mesocycle_templates`, del coach e solo suo; copia, mai un
+  riferimento. Clone e template passano per la stessa `private.build_mesocycle`: un solo posto che costruisce un mesociclo
+- `athlete_best_sets(athlete_id)` e `top_set_history(athlete_id, exercise_id)` — la miglior serie di ogni esercizio e lo storico per
+  seduta, tra tutti i mesocicli (e1RM di Epley come `weekly_exercise_progress`, riscaldamento escluso). Solo per il coach dell'atleta
 - `generate_progression(block_id, rule jsonb)` — riempie `block_weeks` (es. BUF da 3 a 0, +1 serie a settimana)
 - `preview_progression(block_id, rule jsonb)` — stesso calcolo (`private.progression_plan`), non scrive: alimenta l'anteprima settimana per settimana
 - `weekly_muscle_volume(mesocycle_id)` — prescritto ed eseguito
 - `previous_week_reference(workout_id)` — stessi casi di `/fixtures/previous_week_cases.json`
-- `top_set_history(athlete_id, exercise_id)` — e1RM, attraversa i mesocicli (solo per il coach)
 
 Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scarico a metà, superset.
 
@@ -177,6 +182,11 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   la regola è il jsonb di `generate_progression`, validato dal database (`private.valid_progression_rule`). Per riusarli su
   mesocicli di durata diversa si lasciano vuote le settimane. Nessuna logica di calcolo nuova: restano `preview_progression`
   e `generate_progression`.
+- **Copia, template e serie migliori**: dal menu «…» accanto allo stato di ogni mesociclo (anche concluso) «Duplica…» (data di
+  inizio e nome facoltativo: nasce una bozza e ci si entra) e «Salva come template…». I template stanno nella sezione **Template** del
+  menu (rinomina, elimina con conferma) e si usano da «Nuovo mesociclo» → «Parti da» nella scheda dell'atleta (la durata è
+  quella del template). Nella scheda dell'atleta, sopra i mesocicli, **Serie migliori** (`BestSets`): una riga per esercizio con
+  miglior serie e massimale stimato; il clic apre lo storico seduta per seduta. Compare man mano che l'app iOS registra serie.
 - **Video degli esercizi** (`exercise_videos`, `ExerciseVideos`): nessun video di default (nessuna fonte con diritti a posto: il
   catalogo non ne ha). Ogni coach aggiunge i propri link, più d'uno per esercizio e anche sugli esercizi del catalogo senza
   duplicarli; solo https, il link senza schema prende https://. Li vede il coach che li ha messi e i suoi atleti. La

@@ -18,6 +18,7 @@ import { Route as AppEserciziRouteImport } from './routes/_app/esercizi'
 import { Route as AppPersonalizzaRouteImport } from './routes/_app/personalizza'
 import { Route as AppPianiRouteImport } from './routes/_app/piani'
 import { Route as AppProfiloRouteImport } from './routes/_app/profilo'
+import { Route as AppTemplateRouteImport } from './routes/_app/template'
 import { Route as AppAtletiAthleteIdRouteImport } from './routes/_app/atleti.$athleteId'
 import { Route as AppMesocicliMesocycleIdRouteImport } from './routes/_app/mesocicli.$mesocycleId'
 
@@ -65,6 +66,11 @@ const AppProfiloRoute = AppProfiloRouteImport.update({
   path: '/profilo',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTemplateRoute = AppTemplateRouteImport.update({
+  id: '/template',
+  path: '/template',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAtletiAthleteIdRoute = AppAtletiAthleteIdRouteImport.update({
   id: '/atleti/$athleteId',
   path: '/atleti/$athleteId',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/personalizza': typeof AppPersonalizzaRoute
   '/piani': typeof AppPianiRoute
   '/profilo': typeof AppProfiloRoute
+  '/template': typeof AppTemplateRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/personalizza': typeof AppPersonalizzaRoute
   '/piani': typeof AppPianiRoute
   '/profilo': typeof AppProfiloRoute
+  '/template': typeof AppTemplateRoute
   '/': typeof AppIndexRoute
   '/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/_app/personalizza': typeof AppPersonalizzaRoute
   '/_app/piani': typeof AppPianiRoute
   '/_app/profilo': typeof AppProfiloRoute
+  '/_app/template': typeof AppTemplateRoute
   '/_app/': typeof AppIndexRoute
   '/_app/atleti/$athleteId': typeof AppAtletiAthleteIdRoute
   '/_app/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/personalizza'
     | '/piani'
     | '/profilo'
+    | '/template'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
   fileRoutesByTo: FileRoutesByTo
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/personalizza'
     | '/piani'
     | '/profilo'
+    | '/template'
     | '/'
     | '/atleti/$athleteId'
     | '/mesocicli/$mesocycleId'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_app/personalizza'
     | '/_app/piani'
     | '/_app/profilo'
+    | '/_app/template'
     | '/_app/'
     | '/_app/atleti/$athleteId'
     | '/_app/mesocicli/$mesocycleId'
@@ -226,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfiloRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/template': {
+      id: '/_app/template'
+      path: '/template'
+      fullPath: '/template'
+      preLoaderRoute: typeof AppTemplateRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/atleti/$athleteId': {
       id: '/_app/atleti/$athleteId'
       path: '/atleti/$athleteId'
@@ -248,6 +267,7 @@ interface AppRouteChildren {
   AppPersonalizzaRoute: typeof AppPersonalizzaRoute
   AppPianiRoute: typeof AppPianiRoute
   AppProfiloRoute: typeof AppProfiloRoute
+  AppTemplateRoute: typeof AppTemplateRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAtletiAthleteIdRoute: typeof AppAtletiAthleteIdRoute
   AppMesocicliMesocycleIdRoute: typeof AppMesocicliMesocycleIdRoute
@@ -258,6 +278,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPersonalizzaRoute: AppPersonalizzaRoute,
   AppPianiRoute: AppPianiRoute,
   AppProfiloRoute: AppProfiloRoute,
+  AppTemplateRoute: AppTemplateRoute,
   AppIndexRoute: AppIndexRoute,
   AppAtletiAthleteIdRoute: AppAtletiAthleteIdRoute,
   AppMesocicliMesocycleIdRoute: AppMesocicliMesocycleIdRoute,
