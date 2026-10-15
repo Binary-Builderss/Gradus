@@ -321,6 +321,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          disabled_at: string | null
           email: string | null
           full_name: string | null
           id: string
@@ -329,6 +330,7 @@ export type Database = {
         ComputedFields: never
         Insert: {
           created_at?: string
+          disabled_at?: string | null
           email?: string | null
           full_name?: string | null
           id: string
@@ -336,6 +338,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          disabled_at?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
@@ -726,6 +729,16 @@ export type Database = {
     Functions: {
       generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
       has_pro_plan: { Args: Record<PropertyKey, never>; Returns: boolean }
+      plan_usage: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          athlete_limit: number
+          athletes: number
+          can_customize: boolean
+          plan: Database['public']['Enums']['coach_plan']
+        }[]
+      }
+      prepare_account_deletion: { Args: { p_user_id: string }; Returns: undefined }
       weekly_exercise_progress: {
         Args: { p_mesocycle_id: string }
         Returns: {
@@ -751,7 +764,7 @@ export type Database = {
     }
     Enums: {
       block_role: 'warmup' | 'top' | 'backoff' | 'working'
-      coach_plan: 'free' | 'pro'
+      coach_plan: 'free' | 'mid' | 'pro' | 'unlimited'
       effort_scale: 'BUF' | 'RPE'
       group_kind: 'single' | 'superset' | 'giant' | 'circuit' | 'jumpset'
       intensity_method: 'BUF' | 'RPE' | 'RM' | 'PCT_1RM' | 'LOAD'
@@ -891,7 +904,7 @@ export const Constants = {
   public: {
     Enums: {
       block_role: ['warmup', 'top', 'backoff', 'working'],
-      coach_plan: ['free', 'pro'],
+      coach_plan: ['free', 'mid', 'pro', 'unlimited'],
       effort_scale: ['BUF', 'RPE'],
       group_kind: ['single', 'superset', 'giant', 'circuit', 'jumpset'],
       intensity_method: ['BUF', 'RPE', 'RM', 'PCT_1RM', 'LOAD'],
