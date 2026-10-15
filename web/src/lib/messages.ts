@@ -92,6 +92,10 @@ export const messages = {
           title: 'Nessun mesociclo per questo atleta',
           body: 'Creane uno con “Nuovo mesociclo”. Riavvia la guida dopo: ti accompagna dentro l’editor.',
         },
+        summary: {
+          title: 'Riepilogo',
+          body: 'Qui trovi il quadro d’insieme: serie per seduta e settimana, e quante serie fai fare a ogni muscolo. Quando l’atleta si allena compaiono anche le serie eseguite.',
+        },
         settings: {
           title: 'Durata e scarico',
           body: 'In una riga vedi quante settimane dura il programma e quali sono di scarico. “Modifica” apre i controlli.',
@@ -295,6 +299,25 @@ export const messages = {
           ]
             .filter(Boolean)
             .join(', '),
+      },
+      tabs: { plan: 'Programmazione', summary: 'Riepilogo' },
+      summary: {
+        sessionsTitle: 'Serie per seduta',
+        sessionsHint:
+          'Quante serie prescrivi in ogni seduta, settimana per settimana. La spunta indica una seduta già eseguita dall’atleta.',
+        noSessions: 'Aggiungi una seduta in “Programmazione” e qui compare il riepilogo.',
+        session: 'Seduta',
+        weekTotal: 'Totale della settimana',
+        executed: 'Eseguita',
+        volumeTitle: 'Volume per muscolo',
+        volumeHint:
+          'Serie a settimana per muscolo, calcolate dal programma: ogni serie conta per i muscoli dell’esercizio in base ai pesi della libreria (esempio: panca = petto 1, tricipiti 0,5). Il riscaldamento non conta. Sotto, le serie già eseguite.',
+        noVolume:
+          'Ancora nessuna serie prescritta: aggiungi esercizi e scrivi le serie, il volume compare qui.',
+        volumeError: 'Non riesco a calcolare il volume. Riprova tra poco.',
+        muscle: 'Muscolo',
+        total: 'Totale',
+        executedSets: (n: string) => `fatte ${n}`,
       },
       block: {
         role: 'Tipo di serie',

@@ -656,6 +656,15 @@ export type Database = {
     }
     Functions: {
       generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
+      weekly_muscle_volume: {
+        Args: { p_mesocycle_id: string }
+        Returns: {
+          executed: number
+          muscle: Database['public']['Enums']['muscle']
+          prescribed: number
+          week: number
+        }[]
+      }
     }
     Enums: {
       block_role: 'warmup' | 'top' | 'backoff' | 'working'
