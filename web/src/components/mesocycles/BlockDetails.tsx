@@ -2,12 +2,14 @@ import { TrashIcon } from '@phosphor-icons/react'
 import { useEditorMutation } from '@/components/mesocycles/useEditorMutation'
 import { ProgressionForm } from '@/components/mesocycles/ProgressionForm'
 import { Button } from '@/components/ui/button'
+import { Collapsible } from '@/components/ui/collapsible'
 import { Input } from '@/components/ui/input'
 import { type BlockPatch, deleteBlock, ROLES, TECHNIQUES, updateBlock } from '@/lib/blocks'
 import type { BlockData, BlockRole, Technique } from '@/lib/gridModel'
 import { messages } from '@/lib/messages'
 
 const m = messages.app.mesocycle.block
+const progression = messages.app.mesocycle.progression
 
 const selectClass = 'h-9 rounded-md border bg-background px-2 text-sm dark:bg-input/30'
 
@@ -78,43 +80,47 @@ export function BlockDetails({
       </div>
       {block.ref_block_id && <p className="text-xs text-muted-foreground">{m.refHint}</p>}
 
-      <fieldset className="flex flex-wrap items-end gap-4">
-        <legend className="mb-2 text-sm font-medium">{m.tut}</legend>
-        <Seconds
-          label={m.eccentric}
-          value={block.tut_eccentric_s}
-          onCommit={(v) => patch.mutate({ tut_eccentric_s: v })}
-        />
-        <Seconds
-          label={m.bottomPause}
-          value={block.tut_bottom_pause_s}
-          onCommit={(v) => patch.mutate({ tut_bottom_pause_s: v })}
-        />
-        <Seconds
-          label={m.concentric}
-          value={block.tut_concentric_s}
-          onCommit={(v) => patch.mutate({ tut_concentric_s: v })}
-        />
-        <Seconds
-          label={m.topPause}
-          value={block.tut_top_pause_s}
-          onCommit={(v) => patch.mutate({ tut_top_pause_s: v })}
-        />
-        <Seconds
-          label={m.rest}
-          value={block.rest_s}
-          max={3600}
-          onCommit={(v) => patch.mutate({ rest_s: v })}
-        />
-        <Seconds
-          label={m.prep}
-          value={block.prep_s}
-          max={3600}
-          onCommit={(v) => patch.mutate({ prep_s: v })}
-        />
-      </fieldset>
+      <Collapsible title={m.timing} className="border-t pt-3">
+        <p className="text-xs text-muted-foreground">{m.timingHint}</p>
+        <div className="flex flex-wrap items-end gap-4">
+          <Seconds
+            label={m.eccentric}
+            value={block.tut_eccentric_s}
+            onCommit={(v) => patch.mutate({ tut_eccentric_s: v })}
+          />
+          <Seconds
+            label={m.bottomPause}
+            value={block.tut_bottom_pause_s}
+            onCommit={(v) => patch.mutate({ tut_bottom_pause_s: v })}
+          />
+          <Seconds
+            label={m.concentric}
+            value={block.tut_concentric_s}
+            onCommit={(v) => patch.mutate({ tut_concentric_s: v })}
+          />
+          <Seconds
+            label={m.topPause}
+            value={block.tut_top_pause_s}
+            onCommit={(v) => patch.mutate({ tut_top_pause_s: v })}
+          />
+          <Seconds
+            label={m.rest}
+            value={block.rest_s}
+            max={3600}
+            onCommit={(v) => patch.mutate({ rest_s: v })}
+          />
+          <Seconds
+            label={m.prep}
+            value={block.prep_s}
+            max={3600}
+            onCommit={(v) => patch.mutate({ prep_s: v })}
+          />
+        </div>
+      </Collapsible>
 
-      <ProgressionForm mesocycleId={mesocycleId} blockId={block.id} />
+      <Collapsible title={progression.title} className="border-t pt-3">
+        <ProgressionForm mesocycleId={mesocycleId} blockId={block.id} />
+      </Collapsible>
     </div>
   )
 }

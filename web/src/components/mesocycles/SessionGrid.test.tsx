@@ -150,4 +150,17 @@ describe('SessionGrid', () => {
     const ops = (writeCells.mock.calls[0] as unknown[])[1] as { blockId: string; week: number }[]
     expect(ops.map((o) => `${o.blockId}:${o.week}`)).toEqual(['b1:2', 'b1:3'])
   })
+
+  it('la barra sopra la griglia dice quale cella stai modificando', () => {
+    const at = setup()
+    expect(screen.getByText('Seleziona una cella per modificarla.')).toBeInTheDocument()
+    act(() => at('Panca', 1).focus())
+    expect(screen.getByText('Panca › Lavoro › Settimana 1')).toBeInTheDocument()
+  })
+
+  it('mostra le serie totali per settimana', () => {
+    setup()
+    const footer = screen.getByRole('row', { name: /Serie totali della seduta/ })
+    expect(footer).toHaveTextContent('3')
+  })
 })

@@ -65,6 +65,13 @@ export function buildGridRows(
   return rows
 }
 
+/** Serie prescritte per settimana (indice 0 = settimana 1), sommando tutti i blocchi della seduta. */
+export function weekSetTotals(rows: readonly GridRow[], totalWeeks: number): number[] {
+  return Array.from({ length: totalWeeks }, (_, i) =>
+    rows.reduce((sum, row) => sum + (row.cells.get(i + 1)?.sets ?? 0), 0),
+  )
+}
+
 /** Copia la settimana `from` sulle successive (blocchi con prescrizione), saltando le settimane bloccate. */
 export function copyForwardOps(
   rows: readonly GridRow[],

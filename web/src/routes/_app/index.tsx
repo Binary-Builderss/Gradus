@@ -2,6 +2,8 @@ import { UsersThreeIcon, WarningCircleIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { InviteAthlete } from '@/components/athletes/InviteAthlete'
+import { TourBanner } from '@/components/tour/TourBanner'
+import { useGuidedTour } from '@/components/tour/useGuidedTour'
 import { Button } from '@/components/ui/button'
 import { type AthleteRow, athletesQuery } from '@/lib/athletes'
 import { daysSince, initials } from '@/lib/athleteStats'
@@ -23,6 +25,7 @@ function lastWorkoutLabel(iso: string | null) {
 function AthletesPage() {
   const { user } = Route.useRouteContext()
   const { data, isPending, isError, refetch } = useQuery(athletesQuery(user.id))
+  const startTour = useGuidedTour(user.id)
 
   return (
     <section className="space-y-6">
@@ -30,6 +33,7 @@ function AthletesPage() {
         <h1 className="text-xl font-semibold tracking-tight">{m.title}</h1>
         <InviteAthlete />
       </div>
+      <TourBanner onStart={() => void startTour()} />
       {isPending ? (
         <ListSkeleton />
       ) : isError ? (
@@ -37,7 +41,7 @@ function AthletesPage() {
       ) : data.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="overflow-hidden rounded-lg border bg-card">
+        <div className="overflow-hidden rounded-lg border bg-card" data-tour="athlete-list">
           <div className="hidden grid-cols-[1fr_9rem_9rem] gap-4 border-b bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground sm:grid">
             <span>{m.title}</span>
             <span>{m.lastWorkout}</span>

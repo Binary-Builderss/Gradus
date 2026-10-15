@@ -29,8 +29,7 @@ export function ProgressionForm({ mesocycleId, blockId }: { mesocycleId: string;
   }
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-3 border-t pt-4">
-      <h4 className="text-sm font-medium">{m.title}</h4>
+    <form noValidate onSubmit={submit} className="grid gap-3">
       <p className="text-xs text-muted-foreground">{m.hint}</p>
       <div className="flex flex-wrap items-start gap-3">
         <Num name="setsStart" label={m.setsStart} error={errors.setsStart} />

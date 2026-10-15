@@ -47,7 +47,7 @@ export function InviteAthlete() {
 
   if (!open) {
     return (
-      <Button onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} data-tour="invite">
         <UserPlusIcon data-icon="inline-start" />
         {m.open}
       </Button>

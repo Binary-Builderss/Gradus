@@ -50,6 +50,82 @@ export const messages = {
   app: {
     nav: { athletes: 'Atleti', exercises: 'Esercizi' },
     signOut: 'Esci',
+    tour: {
+      open: 'Guida',
+      next: 'Avanti',
+      prev: 'Indietro',
+      done: 'Fine',
+      close: 'Chiudi la guida',
+      progress: '{{current}} di {{total}}',
+      banner: {
+        title: 'Prima volta su Gradus?',
+        body: 'Un giro guidato di pochi minuti ti mostra dove fare ogni cosa, dall’invito dell’atleta alla scheda.',
+        start: 'Avvia la guida',
+        dismiss: 'Non ora',
+      },
+      steps: {
+        navAthletes: {
+          title: 'Atleti',
+          body: 'Da qui si parte: l’elenco delle persone che alleni. Cliccando un nome apri i suoi programmi.',
+        },
+        invite: {
+          title: 'Invita un atleta',
+          body: 'Scrivi la sua email: riceve un invito per collegarsi a te. Finché non accetta, resta “invito in attesa”.',
+        },
+        athleteList: {
+          title: 'Elenco atleti',
+          body: 'Per ogni atleta vedi quando ha fatto l’ultima seduta e quante ne ha fatte negli ultimi 7 giorni.',
+        },
+        noAthlete: {
+          title: 'Ancora nessun atleta collegato',
+          body: 'Quando un atleta accetta l’invito potrai creargli un programma. Riavvia la guida da qui: ti mostrerà anche quella parte.',
+        },
+        newMesocycle: {
+          title: 'Nuovo mesociclo',
+          body: 'Un mesociclo è un programma di alcune settimane. Scegli nome, data di inizio e durata. Nasce come bozza: l’atleta non vede le bozze.',
+        },
+        mesocycleList: {
+          title: 'I mesocicli dell’atleta',
+          body: 'Apri un mesociclo per scrivere o rivedere il programma.',
+        },
+        noMesocycle: {
+          title: 'Nessun mesociclo per questo atleta',
+          body: 'Creane uno con “Nuovo mesociclo”. Riavvia la guida dopo: ti accompagna dentro l’editor.',
+        },
+        settings: {
+          title: 'Durata e scarico',
+          body: 'In una riga vedi quante settimane dura il programma e quali sono di scarico. “Modifica” apre i controlli.',
+        },
+        sessions: {
+          title: 'Le sedute',
+          body: 'Una seduta è un giorno di allenamento. Le schede ne mostrano una alla volta; con “Seduta” ne aggiungi altre.',
+        },
+        addExercise: {
+          title: 'Aggiungi un esercizio',
+          body: 'Scegli dalla libreria. Subito compare la sua riga, con una prescrizione per ogni settimana.',
+        },
+        grid: {
+          title: 'La griglia delle settimane',
+          body: 'Una riga per esercizio, una colonna per settimana. Clicca una cella e scrivi, per esempio 3x8-10 BUF 2. Frecce, Invio e copia-incolla funzionano come in un foglio di calcolo.',
+        },
+        syntax: {
+          title: 'Non ricordi come si scrive?',
+          body: 'Sotto la griglia trovi gli esempi: serie, ripetizioni, sforzo o carico.',
+        },
+        save: {
+          title: 'Si salva da solo',
+          body: 'Non c’è un pulsante Salva: questo indicatore dice se tutto è stato salvato.',
+        },
+        exercises: {
+          title: 'Libreria esercizi',
+          body: 'Gli esercizi che scegli nelle sedute vengono da qui. Il catalogo è comune; aggiungi i tuoi con “Nuovo esercizio”.',
+        },
+        finish: {
+          title: 'È tutto',
+          body: 'Puoi riavviare la guida quando vuoi dal pulsante “Guida” nella barra a sinistra.',
+        },
+      },
+    },
     exercises: {
       title: 'Esercizi',
       search: 'Cerca esercizio',
@@ -111,6 +187,8 @@ export const messages = {
       notFound: 'Atleta non trovato tra i tuoi collegamenti.',
       mesocycles: 'Mesocicli',
       noMesocycles: 'Nessun mesociclo per questo atleta.',
+      noMesocyclesHint:
+        'Un mesociclo è il programma di allenamento di alcune settimane. Crealo, riempilo di sedute ed esercizi e attivalo quando è pronto.',
       newMesocycle: 'Nuovo mesociclo',
       weeksCount: (n: number) => (n === 1 ? '1 settimana' : `${n} settimane`),
       status: { draft: 'Bozza', active: 'Attivo', completed: 'Concluso' },
@@ -126,18 +204,36 @@ export const messages = {
       deload: 'Settimane di scarico',
       deloadHint: 'Tocca una settimana per marcarla come scarico.',
       weekShort: (n: number) => `S${n}`,
+      settings: {
+        summary: (weeks: number, deload: readonly number[]) =>
+          `${weeks === 1 ? '1 settimana' : `${weeks} settimane`} · ${
+            deload.length === 0 ? 'nessuno scarico' : `scarico: ${deload.map((w) => `S${w}`).join(', ')}`
+          }`,
+        edit: 'Modifica',
+        close: 'Chiudi',
+      },
       sessions: 'Sedute',
-      noSessions: 'Nessuna seduta. Aggiungine una per iniziare.',
+      noSessions: 'Nessuna seduta.',
+      noSessionsHint: 'Una seduta è un giorno di allenamento. Inizia aggiungendo la prima.',
       addSession: 'Aggiungi seduta',
+      addSessionShort: 'Seduta',
+      sessionMenu: 'Opzioni seduta',
+      moveSessionLeft: 'Sposta prima',
+      moveSessionRight: 'Sposta dopo',
       sessionName: 'Nome seduta',
       defaultSessionName: (n: number) => `Seduta ${n}`,
       removeSession: 'Elimina seduta',
       drag: 'Trascina per riordinare',
-      noExercises: 'Nessun esercizio in questa seduta.',
+      noExercises: 'Questa seduta è vuota.',
+      noExercisesHint: 'Scegli un esercizio dalla libreria: la riga delle serie compare subito sotto.',
+      addFirstExercise: 'Aggiungi il primo esercizio',
       addExercise: 'Aggiungi esercizio',
-      addToGroup: 'Aggiungi al gruppo',
+      structure: 'Ordine e superset',
+      structureHint:
+        'Cambia l’ordine degli esercizi o eseguili in coppia (superset, circuito) con i recuperi tra uno e l’altro.',
+      addToGroup: 'Abbina un altro esercizio',
       removeExercise: "Rimuovi l'esercizio",
-      groupKind: 'Tipo di gruppo',
+      groupKind: 'Come si eseguono',
       kinds: {
         single: 'Singolo',
         superset: 'Superset',
@@ -150,15 +246,30 @@ export const messages = {
       seconds: 's',
       grid: {
         title: 'Programmazione',
-        syntax:
-          'Formato cella: 3x8-10 BUF 2, 4x6 RPE 8, 5x5 80%1RM, 3x8 60kg, 2x8 85%ref (back-off). Vuoto = nessuna prescrizione.',
+        syntaxTitle: 'Come si scrive una cella',
+        syntaxIntro:
+          'Serie x ripetizioni, poi (facoltativo) lo sforzo o il carico. Vuoto = nessuna prescrizione.',
+        syntaxExamples: [
+          { code: '3x10', text: '3 serie da 10 ripetizioni' },
+          { code: '3x8-10 BUF 2', text: '3 serie da 8-10, con 2 ripetizioni di riserva' },
+          { code: '4x6 RPE 8', text: '4 serie da 6 a sforzo 8 su 10' },
+          { code: '5x5 80%1RM', text: '5 serie da 5 all’80% del massimale' },
+          { code: '3x8 60kg', text: '3 serie da 8 con 60 kg' },
+          { code: '2x8 85%ref', text: 'back-off: 85% del carico della serie collegata' },
+        ],
+        cellPlaceholder: '3x8 BUF 2',
         exercise: 'Esercizio',
+        weekState: { locked: 'Eseguita', deload: 'Scarico' },
+        totals: 'Serie totali della seduta',
+        pickCell: 'Seleziona una cella per modificarla.',
+        activeCell: (exercise: string, role: string, week: number) =>
+          `${exercise} › ${role} › Settimana ${week}`,
         cell: (exercise: string, week: number) => `${exercise}, settimana ${week}`,
         invalid: 'Formato non valido',
         locked: 'Settimana già eseguita: non modificabile',
         copyForward: (week: number) => `Copia la settimana ${week} sulle successive`,
-        addBlock: 'Aggiungi blocco',
-        details: 'Dettagli del blocco',
+        addBlock: 'Aggiungi altre serie (es. back-off)',
+        details: 'Opzioni di queste serie',
         pasteReport: (invalid: number, skipped: number) =>
           [
             invalid > 0 && `${invalid} celle non valide`,
@@ -168,7 +279,7 @@ export const messages = {
             .join(', '),
       },
       block: {
-        role: 'Ruolo',
+        role: 'Tipo di serie',
         roles: { warmup: 'Riscaldamento', top: 'Top set', backoff: 'Back-off', working: 'Lavoro' },
         technique: 'Tecnica',
         techniques: {
@@ -178,6 +289,8 @@ export const messages = {
           myo: 'Myo-reps',
           cluster: 'Cluster',
         },
+        timing: 'Tempi e recuperi',
+        timingHint: 'Facoltativi: se li lasci vuoti l’atleta vede solo serie e ripetizioni.',
         tut: 'Tempo sotto tensione (s)',
         eccentric: 'Eccentrica',
         bottomPause: 'Pausa in basso',
@@ -185,13 +298,13 @@ export const messages = {
         topPause: 'Pausa in alto',
         rest: 'Recupero (s)',
         prep: 'Preparazione (s)',
-        refBlock: 'Collegato a',
+        refBlock: 'Calcola il carico da',
         refNone: 'Nessuno',
         refHint: 'La percentuale si scrive nella cella: 85%ref.',
-        remove: 'Elimina blocco',
+        remove: 'Elimina queste serie',
       },
       progression: {
-        title: 'Progressione',
+        title: 'Compila le settimane in automatico',
         hint: 'Compila la prima settimana e di quanto cambia ogni settimana. Scarichi saltati, settimane già eseguite intatte.',
         apply: 'Applica',
         applying: 'Applicazione in corso',

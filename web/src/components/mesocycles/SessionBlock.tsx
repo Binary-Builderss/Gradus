@@ -1,10 +1,11 @@
-import { PlusIcon, TrashIcon } from '@phosphor-icons/react'
+import { BarbellIcon, CaretLeftIcon, CaretRightIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { ExercisePicker } from '@/components/mesocycles/ExercisePicker'
 import { GroupCard } from '@/components/mesocycles/GroupCard'
 import { SortableItem, SortableList } from '@/components/mesocycles/Sortable'
 import { useEditorMutation } from '@/components/mesocycles/useEditorMutation'
 import { Button } from '@/components/ui/button'
+import { Collapsible } from '@/components/ui/collapsible'
 import { SessionGrid } from '@/components/mesocycles/SessionGrid'
 import { Input } from '@/components/ui/input'
 import { messages } from '@/lib/messages'
@@ -13,7 +14,6 @@ import { deleteSession, renameSession } from '@/lib/mesocycles'
 import { buildGridRows, type BlockData, type WeekData } from '@/lib/gridModel'
 import { positionChanges } from '@/lib/slotRules'
 import { addExerciseGroup, type GroupRow, reorder, type SlotRow } from '@/lib/slots'
-import type { ReactNode } from 'react'
 
 const m = messages.app.mesocycle
 
@@ -28,7 +28,9 @@ export function SessionBlock({
   totalWeeks,
   deloadWeeks,
   lockedWeeks,
-  handle,
+  index,
+  total,
+  onMove,
 }: {
   coachId: string
   mesocycleId: string
@@ -40,7 +42,9 @@ export function SessionBlock({
   totalWeeks: number
   deloadWeeks: readonly number[]
   lockedWeeks: ReadonlySet<number>
-  handle: ReactNode
+  index: number
+  total: number
+  onMove: (direction: -1 | 1) => void
 }) {
   const [adding, setAdding] = useState(false)
   const rename = useEditorMutation(
@@ -64,13 +68,20 @@ export function SessionBlock({
 
   const gridRows = buildGridRows(session.id, groups, slots, blocks, weeks)
 
+  const picker = adding ? (
+    <ExercisePicker
+      coachId={coachId}
+      onPick={(id) => {
+        addGroup.mutate(id)
+        setAdding(false)
+      }}
+      onClose={() => setAdding(false)}
+    />
+  ) : null
+
   return (
     <div className="rounded-lg border bg-card">
-      <div className="flex items-center gap-2 border-b px-3 py-2">
-        {handle}
-        <span className="w-5 text-center font-mono text-xs text-muted-foreground">
-          {session.position + 1}
-        </span>
+      <div className="flex items-center gap-1 border-b px-3 py-2">
         <Input
           key={session.name}
           aria-label={m.sessionName}
@@ -82,59 +93,96 @@ export function SessionBlock({
           }}
           className="h-8 flex-1 border-transparent bg-transparent px-1.5 text-sm font-medium shadow-none hover:border-input focus-visible:border-ring"
         />
-        <Button variant="ghost" size="icon" aria-label={m.removeSession} onClick={() => remove.mutate()}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={m.moveSessionLeft}
+          title={m.moveSessionLeft}
+          disabled={index === 0}
+          onClick={() => onMove(-1)}
+        >
+          <CaretLeftIcon />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={m.moveSessionRight}
+          title={m.moveSessionRight}
+          disabled={index === total - 1}
+          onClick={() => onMove(1)}
+        >
+          <CaretRightIcon />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={m.removeSession}
+          title={m.removeSession}
+          onClick={() => remove.mutate()}
+        >
           <TrashIcon />
         </Button>
       </div>
 
       <div className="grid gap-4 p-3">
-        {groups.length === 0 && !adding && <p className="text-sm text-muted-foreground">{m.noExercises}</p>}
-
-        <SortableList ids={groups.map((g) => g.id)} onReorder={(ordered) => moveGroups.mutate(ordered)}>
-          <ul className="grid gap-3">
-            {groups.map((g) => (
-              <SortableItem key={g.id} id={g.id}>
-                {(groupHandle) => (
-                  <GroupCard
-                    coachId={coachId}
-                    mesocycleId={mesocycleId}
-                    group={g}
-                    slots={slots.filter((s) => s.group_id === g.id)}
-                    handle={groupHandle}
-                  />
-                )}
-              </SortableItem>
-            ))}
-          </ul>
-        </SortableList>
-
-        {gridRows.length > 0 && (
-          <div className="grid gap-2">
-            <h3 className="text-sm font-semibold">{m.grid.title}</h3>
-            <SessionGrid
-              mesocycleId={mesocycleId}
-              rows={gridRows}
-              totalWeeks={totalWeeks}
-              deloadWeeks={deloadWeeks}
-              lockedWeeks={lockedWeeks}
-            />
+        {groups.length === 0 ? (
+          <div className="grid justify-items-start gap-3 rounded-lg border border-dashed p-5">
+            <BarbellIcon size={20} className="text-muted-foreground" />
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold">{m.noExercises}</h3>
+              <p className="max-w-prose text-muted-foreground">{m.noExercisesHint}</p>
+            </div>
+            {picker ?? (
+              <Button onClick={() => setAdding(true)} data-tour="add-exercise">
+                <PlusIcon data-icon="inline-start" />
+                {m.addFirstExercise}
+              </Button>
+            )}
           </div>
-        )}
-
-        {adding ? (
-          <ExercisePicker
-            coachId={coachId}
-            onPick={(id) => {
-              addGroup.mutate(id)
-              setAdding(false)
-            }}
-            onClose={() => setAdding(false)}
-          />
         ) : (
-          <Button variant="outline" className="justify-self-start" onClick={() => setAdding(true)}>
-            <PlusIcon data-icon="inline-start" />
-            {m.addExercise}
-          </Button>
+          <>
+            {gridRows.length > 0 && (
+              <SessionGrid
+                mesocycleId={mesocycleId}
+                rows={gridRows}
+                totalWeeks={totalWeeks}
+                deloadWeeks={deloadWeeks}
+                lockedWeeks={lockedWeeks}
+              />
+            )}
+
+            {picker ?? (
+              <Button
+                className="h-9 w-full bg-foreground text-background hover:bg-foreground/85"
+                onClick={() => setAdding(true)}
+                data-tour="add-exercise"
+              >
+                <PlusIcon data-icon="inline-start" />
+                {m.addExercise}
+              </Button>
+            )}
+
+            <Collapsible title={m.structure} className="border-t pt-3">
+              <p className="max-w-prose text-xs text-muted-foreground">{m.structureHint}</p>
+              <SortableList ids={groups.map((g) => g.id)} onReorder={(ordered) => moveGroups.mutate(ordered)}>
+                <ul className="grid gap-3">
+                  {groups.map((g) => (
+                    <SortableItem key={g.id} id={g.id}>
+                      {(groupHandle) => (
+                        <GroupCard
+                          coachId={coachId}
+                          mesocycleId={mesocycleId}
+                          group={g}
+                          slots={slots.filter((s) => s.group_id === g.id)}
+                          handle={groupHandle}
+                        />
+                      )}
+                    </SortableItem>
+                  ))}
+                </ul>
+              </SortableList>
+            </Collapsible>
+          </>
         )}
       </div>
     </div>
