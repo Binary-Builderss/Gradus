@@ -26,8 +26,9 @@ Lo schema in `/supabase` è gestito da questa parte del progetto.
   Gli indirizzi sono assoluti con il dominio di produzione: se cambia, si cambia in `index.html` (canonical, `og:url`,
   immagini). `src/seo.test.ts` controlla che i tag ci siano e coerenti.
 - Deploy: Cloudflare Pages (progetto `gradus`, ramo `prod`, cartella `web`, comando `npm run build`, uscita `dist`;
-  variabili `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` nelle impostazioni del progetto). Il fallback SPA su
-  `index.html` lo fa Pages da solo (non aggiungere un `404.html`); le intestazioni di sicurezza stanno in
+  variabili `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` nelle impostazioni del progetto). I collegamenti diretti (`/piani`,
+  `/nuova-password`, la ricarica) funzionano perché la build copia `index.html` in `404.html` (plugin `spaFallback` in
+  `vite.config.ts`): vale sia su Pages sia su Workers con asset statici, che non fanno il fallback da soli; le intestazioni di sicurezza stanno in
   `web/public/_headers`.
 - Codice in inglese; testi dell'interfaccia in italiano, in un unico file di messaggi.
 
