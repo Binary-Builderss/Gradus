@@ -51,6 +51,7 @@ export const messages = {
     nav: {
       athletes: 'Atleti',
       exercises: 'Esercizi',
+      templates: 'Template',
       customize: 'Personalizza',
       profile: 'Profilo',
       plans: 'Piano e abbonamento',
@@ -104,7 +105,7 @@ export const messages = {
         },
         newMesocycle: {
           title: 'Nuovo mesociclo',
-          body: 'Un mesociclo è un programma di alcune settimane. Scegli nome, data di inizio e durata. Nasce come bozza: l’atleta non vede le bozze.',
+          body: 'Un mesociclo è un programma di alcune settimane. Scegli nome, data di inizio e durata, oppure “Parti da” un tuo template. Nasce come bozza: l’atleta non vede le bozze.',
         },
         mesocycleList: {
           title: 'I mesocicli dell’atleta',
@@ -168,7 +169,7 @@ export const messages = {
         },
         status: {
           title: 'Attiva il mesociclo',
-          body: 'Nasce in bozza e l’atleta non lo vede. Quando è pronto lo attivi da qui: da quel momento lo vede nell’app. A fine ciclo lo concludi per attivare il successivo.',
+          body: 'Nasce in bozza e l’atleta non lo vede. Quando è pronto lo attivi da qui: da quel momento lo vede nell’app. A fine ciclo lo concludi per attivare il successivo. Dai tre puntini lo duplichi per il ciclo dopo o lo salvi come template.',
         },
         sessions: {
           title: 'Le sedute',
@@ -189,6 +190,14 @@ export const messages = {
         save: {
           title: 'Si salva da solo',
           body: 'Non c’è un pulsante Salva: questo indicatore dice se tutto è stato salvato.',
+        },
+        templates: {
+          title: 'Template',
+          body: 'Qui ritrovi i programmi che hai salvato come template. Per crearne uno apri un mesociclo e scegli “Salva come template”; per usarne uno, dalla scheda di un atleta scegli “Nuovo mesociclo” e “Parti da”. Il template resta com’è.',
+        },
+        bestSets: {
+          title: 'Le sue serie migliori',
+          body: 'Per ogni esercizio, la miglior serie dell’atleta tra tutti i mesocicli e il massimale stimato. Cliccando un esercizio vedi lo storico, seduta per seduta. Compare man mano che l’atleta registra le serie dall’app.',
         },
         exercises: {
           title: 'Libreria esercizi',
@@ -530,6 +539,30 @@ export const messages = {
       },
       create: 'Crea bozza',
       creating: 'Creazione in corso',
+      fromTemplate: 'Parti da',
+      scratch: 'Da zero',
+      templateWeeks: (weeks: number) => `${weeks} settimane, come il template`,
+      bestSets: {
+        title: 'Serie migliori',
+        hint: 'La miglior serie di ogni esercizio, tra tutti i mesocicli. Il massimale stimato è carico × (1 + ripetizioni ÷ 30); il riscaldamento non conta.',
+        empty:
+          'Ancora nessuna serie registrata: quando l’atleta si allena dall’app compaiono qui le sue serie migliori.',
+        loadError: 'Non riesco a caricare le serie migliori.',
+        exercise: 'Esercizio',
+        best: 'Miglior serie',
+        e1rm: 'Massimale stimato',
+        workouts: 'Sedute',
+        last: 'Ultima',
+        set: (load: string, reps: number) => `${load} kg × ${reps}`,
+        kg: (v: string) => `${v} kg`,
+        workoutsCount: (n: number) => (n === 1 ? '1 seduta' : `${n} sedute`),
+        show: (name: string) => `Mostra lo storico di ${name}`,
+        hide: (name: string) => `Nascondi lo storico di ${name}`,
+        historyTitle: (name: string) => `Storico di ${name}`,
+        historyEmpty: 'Nessuna serie registrata per questo esercizio.',
+        historyError: 'Non riesco a caricare lo storico.',
+        week: (n: number) => `sett. ${n}`,
+      },
       name: 'Nome',
       startDate: 'Inizio',
       weeks: 'Settimane',
@@ -643,6 +676,8 @@ export const messages = {
         more: 'Altre azioni',
         unpublish: 'Riporta in bozza…',
         remove: 'Elimina bozza…',
+        duplicate: 'Duplica…',
+        saveTemplate: 'Salva come template…',
         cancel: 'Annulla',
         working: 'Un momento',
         activateTitle: (name: string) => `Attivare «${name}»?`,
@@ -666,6 +701,36 @@ export const messages = {
           'Cancella per sempre il mesociclo con le sue sedute ed esercizi.',
           'Non si può annullare.',
         ],
+        copy: {
+          duplicateTitle: (name: string) => `Duplicare «${name}»?`,
+          duplicateBody: [
+            'Crea una bozza nuova per lo stesso atleta, con le stesse sedute, esercizi e prescrizioni.',
+            'Le sedute già registrate non si copiano. L’atleta non la vede finché non la attivi.',
+          ],
+          startDate: 'Data di inizio',
+          name: 'Nome (facoltativo)',
+          namePlaceholder: (name: string) => `Copia di ${name}`,
+          confirmDuplicate: 'Duplica',
+          templateTitle: (name: string) => `Salvare «${name}» come template?`,
+          templateBody: [
+            'Il template è una copia della programmazione di adesso: se poi cambi questo mesociclo, il template non cambia.',
+            'Lo usi per creare un mesociclo per qualunque tuo atleta: dalla sua scheda, con “Nuovo mesociclo”.',
+          ],
+          templateName: 'Nome del template',
+          templateDescription: 'Descrizione (facoltativa)',
+          confirmTemplate: 'Salva template',
+          templateSaved: (name: string) => `Template «${name}» salvato. Lo trovi nella sezione Template.`,
+          working: 'Un momento',
+          close: 'Chiudi',
+          errors: {
+            dateRequired: 'Scegli la data di inizio.',
+            nameRequired: 'Dai un nome al template.',
+            nameTooLong: 'Il nome è troppo lungo (massimo 120 caratteri).',
+            descriptionTooLong: 'La descrizione è troppo lunga (massimo 500 caratteri).',
+            duplicateName: 'Hai già un template con questo nome.',
+            generic: 'Non è andata a buon fine. Riprova tra poco.',
+          },
+        },
         errors: {
           empty:
             'Prima di attivarlo aggiungi almeno una seduta con un esercizio e le sue prescrizioni: un mesociclo vuoto non si pubblica.',
@@ -884,6 +949,36 @@ export const messages = {
         dateRequired: 'Scegli la data di inizio.',
         weeksRange: 'Le settimane vanno da 1 a 52.',
         generic: 'Qualcosa non ha funzionato. Riprova.',
+      },
+    },
+    templates: {
+      title: 'Template',
+      intro:
+        'I template sono programmi già pronti, copiati da un tuo mesociclo. Per usarne uno apri la scheda di un atleta e scegli “Nuovo mesociclo”: parte una bozza che puoi modificare, e il template resta com’è.',
+      howToSave:
+        'Per crearne uno apri un mesociclo e scegli “Salva come template” dal menu accanto allo stato.',
+      empty: 'Nessun template. Aprendo un mesociclo puoi salvarlo come template dal menu accanto allo stato.',
+      loadError: 'Non riesco a caricare i template.',
+      weeks: (n: number) => (n === 1 ? '1 settimana' : `${n} settimane`),
+      sessions: (n: number) => (n === 1 ? '1 seduta' : `${n} sedute`),
+      created: (date: string) => `salvato il ${date}`,
+      rename: 'Rinomina',
+      renameLabel: 'Nuovo nome',
+      save: 'Salva',
+      cancel: 'Annulla',
+      remove: 'Elimina',
+      removeTitle: (name: string) => `Eliminare il template «${name}»?`,
+      removeBody: [
+        'Non cancella i mesocicli già creati da questo template né quello da cui l’hai salvato.',
+        'Non si può annullare.',
+      ],
+      removeConfirm: 'Elimina template',
+      working: 'Un momento',
+      errors: {
+        nameRequired: 'Dai un nome al template.',
+        nameTooLong: 'Il nome è troppo lungo (massimo 120 caratteri).',
+        duplicateName: 'Hai già un template con questo nome.',
+        generic: 'Non è andata a buon fine. Riprova tra poco.',
       },
     },
     athletes: {

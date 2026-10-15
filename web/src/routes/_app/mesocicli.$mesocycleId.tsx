@@ -134,7 +134,7 @@ function MesocyclePage() {
                 }}
                 className="h-auto w-auto min-w-0 flex-1 border-transparent bg-transparent px-1 py-0.5 text-xl font-semibold tracking-tight shadow-none hover:border-input focus-visible:border-ring md:text-xl"
               />
-              <MesocycleStatus mesocycle={data} />
+              <MesocycleStatus mesocycle={data} coachId={user.id} />
             </div>
             <MesocycleSettings
               weeks={data.weeks}

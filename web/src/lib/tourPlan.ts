@@ -5,6 +5,7 @@ const t = messages.app.tour.steps
 export type TourRoute =
   | { to: '/' }
   | { to: '/esercizi' }
+  | { to: '/template' }
   | { to: '/profilo' }
   | { to: '/personalizza' }
   | { to: '/piani' }
@@ -56,7 +57,7 @@ export function buildTourPlan(args: {
   } else {
     const athlete: TourRoute = { to: '/atleti/$athleteId', params: { athleteId: args.athleteId } }
     if (args.hasActiveMesocycle) plan.push(step(athlete, t.overview, 'athlete-overview'))
-    plan.push(step(athlete, t.newMesocycle, 'new-mesocycle'))
+    plan.push(step(athlete, t.bestSets, 'best-sets'), step(athlete, t.newMesocycle, 'new-mesocycle'))
     if (!args.mesocycleId) {
       plan.push(step(athlete, t.noMesocycle))
     } else {
@@ -88,6 +89,7 @@ export function buildTourPlan(args: {
   plan.push(
     step(library, t.exercises, 'exercise-new'),
     step(library, t.exerciseList, 'exercise-list'),
+    step({ to: '/template' }, t.templates, 'template-list'),
     step(plans, t.plans, 'plans'),
   )
   if (args.hasSubscription) plan.push(step(plans, t.subscription, 'subscription'))

@@ -319,6 +319,51 @@ export type Database = {
           },
         ]
       }
+      mesocycle_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          owner_id: string
+          sessions: number
+          structure: NonNullable<Json>
+          updated_at: string
+          weeks: number
+        }
+        ComputedFields: never
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          sessions: number
+          structure: NonNullable<Json>
+          updated_at?: string
+          weeks: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          sessions?: number
+          structure?: NonNullable<Json>
+          updated_at?: string
+          weeks?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'mesocycle_templates_owner_id_fkey'
+            columns: ['owner_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       mesocycles: {
         Row: {
           athlete_id: string
@@ -812,8 +857,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      athlete_best_sets: {
+        Args: { p_athlete_id: string }
+        Returns: {
+          best_e1rm: number
+          best_load_kg: number
+          best_on: string
+          best_reps: number
+          exercise_id: string
+          exercise_name: string
+          last_on: string
+          workouts: number
+        }[]
+      }
+      clone_mesocycle: {
+        Args: { p_mesocycle_id: string; p_name?: string; p_start_date: string }
+        Returns: string
+      }
       generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
       has_pro_plan: { Args: Record<PropertyKey, never>; Returns: boolean }
+      instantiate_template: {
+        Args: { p_athlete_id: string; p_name?: string; p_start_date: string; p_template_id: string }
+        Returns: string
+      }
       plan_limits: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -844,6 +910,23 @@ export type Database = {
           reps_min: number
           sets: number
           week: number
+        }[]
+      }
+      save_mesocycle_as_template: {
+        Args: { p_description?: string; p_mesocycle_id: string; p_name: string }
+        Returns: string
+      }
+      top_set_history: {
+        Args: { p_athlete_id: string; p_exercise_id: string }
+        Returns: {
+          e1rm: number
+          load_kg: number
+          mesocycle_id: string
+          mesocycle_name: string
+          performed_on: string
+          reps: number
+          week: number
+          workout_id: string
         }[]
       }
       weekly_exercise_progress: {
