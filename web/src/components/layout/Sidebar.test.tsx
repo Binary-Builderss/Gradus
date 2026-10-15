@@ -27,6 +27,9 @@ const usage = (plan: PlanUsage['plan'], athletes = 5): PlanUsage => ({
   athleteLimit: plan === 'free' ? 20 : plan === 'mid' ? 60 : plan === 'pro' ? 100 : null,
   athletes,
   canCustomize: plan === 'pro' || plan === 'unlimited',
+  renewsUntil: null,
+  cancelAtPeriodEnd: false,
+  hasSubscription: false,
 })
 
 function Harness({

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import {
   Dialog,
@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { deleteAccount, setAccountDisabled } from '@/lib/account'
+import { AccountError, deleteAccount, setAccountDisabled } from '@/lib/account'
 import { messages } from '@/lib/messages'
 import { supabase } from '@/lib/supabase'
 
@@ -121,8 +121,17 @@ export function DangerZone({ userId, email }: { userId: string; email: string })
               />
             </div>
             {remove.isError && (
-              <p role="alert" className="text-sm text-destructive">
-                {m.error}
+              <p role="alert" className="grid gap-1 text-sm text-destructive">
+                {remove.error instanceof AccountError && remove.error.code === 'subscription_active' ? (
+                  <>
+                    <span>{m.subscriptionActive}</span>
+                    <Link to="/piani" className="w-fit underline underline-offset-4">
+                      {m.subscriptionLink}
+                    </Link>
+                  </>
+                ) : (
+                  m.error
+                )}
               </p>
             )}
             <div className="flex justify-end gap-2">
