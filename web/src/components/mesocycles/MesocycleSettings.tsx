@@ -23,7 +23,10 @@ export function MesocycleSettings({
   const [open, setOpen] = useState(false)
   return (
     <div className="grid gap-3">
-      <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+      <div
+        className="flex w-fit flex-wrap items-center gap-2 text-sm text-muted-foreground"
+        data-tour="meso-settings"
+      >
         <span>{m.settings.summary(weeks, deloadWeeks)}</span>
         <Button
           variant="ghost"

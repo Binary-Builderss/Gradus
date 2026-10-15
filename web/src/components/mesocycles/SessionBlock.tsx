@@ -133,7 +133,7 @@ export function SessionBlock({
               <p className="max-w-prose text-muted-foreground">{m.noExercisesHint}</p>
             </div>
             {picker ?? (
-              <Button onClick={() => setAdding(true)}>
+              <Button onClick={() => setAdding(true)} data-tour="add-exercise">
                 <PlusIcon data-icon="inline-start" />
                 {m.addFirstExercise}
               </Button>
@@ -155,6 +155,7 @@ export function SessionBlock({
               <Button
                 className="h-9 w-full bg-foreground text-background hover:bg-foreground/85"
                 onClick={() => setAdding(true)}
+                data-tour="add-exercise"
               >
                 <PlusIcon data-icon="inline-start" />
                 {m.addExercise}

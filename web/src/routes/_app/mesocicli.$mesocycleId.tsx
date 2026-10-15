@@ -91,7 +91,9 @@ function MesocyclePage() {
         ) : (
           <span />
         )}
-        <SaveStatus />
+        <div data-tour="save-status">
+          <SaveStatus />
+        </div>
       </div>
 
       {data ? (
@@ -135,7 +137,7 @@ function MesocyclePage() {
             </div>
           ) : (
             <Tabs.Root value={current?.id ?? ''} onValueChange={setSelected}>
-              <div className="flex items-center gap-2 border-b">
+              <div className="flex items-center gap-2 border-b" data-tour="session-tabs">
                 <Tabs.List aria-label={m.sessions} className="flex min-w-0 gap-1 overflow-x-auto">
                   {list.map((x) => (
                     <Tabs.Trigger

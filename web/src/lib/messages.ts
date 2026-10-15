@@ -50,6 +50,82 @@ export const messages = {
   app: {
     nav: { athletes: 'Atleti', exercises: 'Esercizi' },
     signOut: 'Esci',
+    tour: {
+      open: 'Guida',
+      next: 'Avanti',
+      prev: 'Indietro',
+      done: 'Fine',
+      close: 'Chiudi la guida',
+      progress: '{{current}} di {{total}}',
+      banner: {
+        title: 'Prima volta su Gradus?',
+        body: 'Un giro guidato di pochi minuti ti mostra dove fare ogni cosa, dall’invito dell’atleta alla scheda.',
+        start: 'Avvia la guida',
+        dismiss: 'Non ora',
+      },
+      steps: {
+        navAthletes: {
+          title: 'Atleti',
+          body: 'Da qui si parte: l’elenco delle persone che alleni. Cliccando un nome apri i suoi programmi.',
+        },
+        invite: {
+          title: 'Invita un atleta',
+          body: 'Scrivi la sua email: riceve un invito per collegarsi a te. Finché non accetta, resta “invito in attesa”.',
+        },
+        athleteList: {
+          title: 'Elenco atleti',
+          body: 'Per ogni atleta vedi quando ha fatto l’ultima seduta e quante ne ha fatte negli ultimi 7 giorni.',
+        },
+        noAthlete: {
+          title: 'Ancora nessun atleta collegato',
+          body: 'Quando un atleta accetta l’invito potrai creargli un programma. Riavvia la guida da qui: ti mostrerà anche quella parte.',
+        },
+        newMesocycle: {
+          title: 'Nuovo mesociclo',
+          body: 'Un mesociclo è un programma di alcune settimane. Scegli nome, data di inizio e durata. Nasce come bozza: l’atleta non vede le bozze.',
+        },
+        mesocycleList: {
+          title: 'I mesocicli dell’atleta',
+          body: 'Apri un mesociclo per scrivere o rivedere il programma.',
+        },
+        noMesocycle: {
+          title: 'Nessun mesociclo per questo atleta',
+          body: 'Creane uno con “Nuovo mesociclo”. Riavvia la guida dopo: ti accompagna dentro l’editor.',
+        },
+        settings: {
+          title: 'Durata e scarico',
+          body: 'In una riga vedi quante settimane dura il programma e quali sono di scarico. “Modifica” apre i controlli.',
+        },
+        sessions: {
+          title: 'Le sedute',
+          body: 'Una seduta è un giorno di allenamento. Le schede ne mostrano una alla volta; con “Seduta” ne aggiungi altre.',
+        },
+        addExercise: {
+          title: 'Aggiungi un esercizio',
+          body: 'Scegli dalla libreria. Subito compare la sua riga, con una prescrizione per ogni settimana.',
+        },
+        grid: {
+          title: 'La griglia delle settimane',
+          body: 'Una riga per esercizio, una colonna per settimana. Clicca una cella e scrivi, per esempio 3x8-10 BUF 2. Frecce, Invio e copia-incolla funzionano come in un foglio di calcolo.',
+        },
+        syntax: {
+          title: 'Non ricordi come si scrive?',
+          body: 'Sotto la griglia trovi gli esempi: serie, ripetizioni, sforzo o carico.',
+        },
+        save: {
+          title: 'Si salva da solo',
+          body: 'Non c’è un pulsante Salva: questo indicatore dice se tutto è stato salvato.',
+        },
+        exercises: {
+          title: 'Libreria esercizi',
+          body: 'Gli esercizi che scegli nelle sedute vengono da qui. Il catalogo è comune; aggiungi i tuoi con “Nuovo esercizio”.',
+        },
+        finish: {
+          title: 'È tutto',
+          body: 'Puoi riavviare la guida quando vuoi dal pulsante “Guida” nella barra a sinistra.',
+        },
+      },
+    },
     exercises: {
       title: 'Esercizi',
       search: 'Cerca esercizio',

@@ -50,7 +50,7 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 
 ## Interfaccia
 
-- Linguaggio **strumento di lavoro, denso e chiaro** (riferimenti: Linear, Notion): il coach usa la griglia
+- Linguaggio **strumento di lavoro, chiaro prima che denso** (riferimenti: Linear, Notion): il coach usa la griglia
   per ore. Prima di ogni lavoro di UI carica la skill `design-taste-frontend` (tasteskill).
 - Colori solo dai token in `src/index.css`: grigi neutri e **un solo accento** blu cobalto (`primary`),
   usato per azioni e stato attivo. Il tema segue il sistema (chiaro / scuro): ogni schermata va controllata
@@ -66,6 +66,14 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 - Icone: solo Phosphor (`@phosphor-icons/react`). Componenti shadcn/ui in `src/components/ui`, mai lasciati
   allo stato di default.
 - Ogni stringa visibile sta in `src/lib/messages.ts`.
+- Semplicità prima della densità: un dato ha **una sola vista** (la griglia della seduta, non anche un
+  elenco degli stessi esercizi); le opzioni avanzate stanno in `Collapsible` (`<details>`, chiusi di
+  default); una seduta alla volta (schede); ogni schermata vuota spiega cosa fare e offre l'azione.
+- Vocabolario da coach: nell'interfaccia non compaiono i nomi del modello dati (gruppo, slot, blocco).
+  Si dice "serie", "tipo di serie", "ordine e superset".
+- **Guida a passi** (driver.js, pulsante "Guida" nella barra laterale): il percorso è in `src/lib/tourPlan.ts`,
+  i testi in `messages.app.tour`, gli elementi evidenziati hanno `data-tour="..."`. Una pagina o un'azione
+  principale nuova va aggiunta alla guida nello stesso commit. La guida non deve mai modificare dati.
 
 ## Regole specifiche del web
 

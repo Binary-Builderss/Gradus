@@ -41,7 +41,7 @@ function AthletePage() {
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-sm font-semibold">{m.mesocycles}</h2>
         {!creating && (
-          <Button onClick={() => setCreating(true)}>
+          <Button onClick={() => setCreating(true)} data-tour="new-mesocycle">
             <PlusIcon data-icon="inline-start" />
             {m.newMesocycle}
           </Button>
@@ -58,7 +58,7 @@ function AthletePage() {
           <p className="max-w-prose text-muted-foreground">{m.noMesocyclesHint}</p>
         </div>
       ) : (
-        <ul className="divide-y overflow-hidden rounded-lg border bg-card">
+        <ul className="divide-y overflow-hidden rounded-lg border bg-card" data-tour="mesocycle-list">
           {mesocycles.data?.map((x) => (
             <li key={x.id}>
               <Link
