@@ -86,6 +86,17 @@ final class ExerciseModel {
 
     // MARK: Modifiche (ognuna programma il salvataggio)
 
+    /// Il testo di un campo, da legare a un `TextField` con `$model[load: key, segment: i]`.
+    subscript(load key: SetKey, segment index: Int) -> String {
+        get { drafts[key]?.segments[safe: index]?.load ?? "" }
+        set { setLoad(key, segment: index, newValue) }
+    }
+
+    subscript(reps key: SetKey, segment index: Int) -> String {
+        get { drafts[key]?.segments[safe: index]?.reps ?? "" }
+        set { setReps(key, segment: index, newValue) }
+    }
+
     func setLoad(_ key: SetKey, segment: Int, _ text: String) {
         guard drafts[key]?.segments.indices.contains(segment) == true else { return }
         drafts[key]?.segments[segment].load = text

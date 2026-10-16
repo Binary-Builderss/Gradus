@@ -89,7 +89,7 @@ struct WorkoutHomeView: View {
             .padding(Theme.Space.m)
         }
         .safeAreaInset(edge: .top, spacing: 0) {
-            WeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: Binding(get: { selected }, set: { week = $0 }))
+            WeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: selected, onSelect: { week = $0 })
                 .tourTarget("home-weeks")
                 .padding(.horizontal, Theme.Space.m)
                 .padding(.bottom, Theme.Space.s)
@@ -112,7 +112,8 @@ struct WorkoutHomeView: View {
 private struct WeekPicker: View {
     let weeks: Int
     let deload: Set<Int>
-    @Binding var selected: Int
+    let selected: Int
+    let onSelect: (Int) -> Void
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -136,7 +137,7 @@ private struct WeekPicker: View {
     private func chip(_ w: Int) -> some View {
         let isSelected = w == selected
         return Button {
-            selected = w
+            onSelect(w)
         } label: {
             Text(deload.contains(w) ? "S\(w) ↓" : "S\(w)")
                 .font(.subheadline.weight(.semibold))
