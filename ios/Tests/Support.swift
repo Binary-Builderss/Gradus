@@ -37,6 +37,16 @@ final class FakeRemote: RemoteAPI, @unchecked Sendable {
         }
     }
 
+    private(set) var names: [UUID: String] = [:]
+    var failOnName: Error?
+
+    func updateName(userID: UUID, name: String) async throws {
+        try lock.withLock {
+            if let failOnName { throw failOnName }
+            names[userID] = name
+        }
+    }
+
     func reactivateAccount(userID: UUID) async throws {
         lock.withLock { reactivated.append(userID) }
     }

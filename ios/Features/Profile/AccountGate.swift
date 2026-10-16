@@ -1,18 +1,25 @@
+import Domain
 import GRDB
 import SwiftUI
 
-/// Se il profilo dell'utente (nel database locale) risulta disattivato.
+/// Il profilo dell'utente (nel database locale): disattivato? manca il nome?
 @MainActor
 @Observable
 final class AccountStatus {
     private(set) var disabled = false
+    /// Il nome si chiede quando il profilo è già arrivato sul telefono e il nome è vuoto (l'invito del coach non lo aveva).
+    private(set) var needsName = false
 
     func watch(database: AppDatabase, userID: UUID) async {
-        let observation = ValueObservation.tracking { db in
-            try ProfileRecord.fetchOne(db, key: userID)?.disabledAt != nil
+        let observation = ValueObservation.tracking { db -> (Bool, Bool) in
+            guard let profile = try ProfileRecord.fetchOne(db, key: userID) else { return (false, false) }
+            return (profile.disabledAt != nil, ProfileName.normalized(profile.fullName ?? "") == nil)
         }
         do {
-            for try await value in observation.values(in: database.writer) { disabled = value }
+            for try await (isDisabled, noName) in observation.values(in: database.writer) {
+                disabled = isDisabled
+                needsName = noName
+            }
         } catch {}
     }
 }
@@ -23,11 +30,14 @@ struct AccountGate<Content: View>: View {
     let userID: UUID
     @ViewBuilder var content: Content
     @State private var status = AccountStatus()
+    @State private var postponedName = false
 
     var body: some View {
         Group {
             if status.disabled {
                 DisabledAccountView(environment: environment, userID: userID)
+            } else if status.needsName && !postponedName {
+                NamePromptView(environment: environment, userID: userID, initial: "", canSkip: true) { postponedName = true }
             } else {
                 content
             }

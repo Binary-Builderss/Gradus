@@ -52,3 +52,14 @@ public enum NumberInput {
     /// Il numero come lo scrive l'atleta: 82.5 → «82,5», 100 → «100».
     public static func text(_ value: Double) -> String { Format.number(value) }
 }
+
+/// Il nome con cui il coach vede l'atleta: tolti gli spazi in eccesso, mai vuoto, al massimo 80 caratteri.
+public enum ProfileName {
+    public static let maxLength = 80
+
+    public static func normalized(_ text: String) -> String? {
+        let words = text.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        guard !words.isEmpty else { return nil }
+        return String(words.prefix(maxLength))
+    }
+}

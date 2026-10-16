@@ -2,4 +2,5 @@
 SUPABASE_URL =
 SUPABASE_ANON_KEY =
 SITE_URL = https:/$()/gradus-trainer.binarybuilders.dev
+DEVELOPMENT_TEAM =
 #include? "Secrets.xcconfig"

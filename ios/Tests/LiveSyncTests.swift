@@ -134,4 +134,55 @@ struct LiveSyncTests {
                 segments: [Segment(loadKg: 50, reps: 5)], effort: nil))
         await #expect(throws: (any Error).self) { try await engine.push() }  // il server rifiuta (RLS / chiavi esterne)
     }
+
+    // MARK: Account demo per la revisione di Apple (Scripts/seed_review.py)
+
+    /// Si lancia con `TEST_RUNNER_GRADUS_DEMO_PASSWORD=<la REVIEW_PASSWORD usata nello script>` sul Supabase locale.
+    private static let demoPassword = ProcessInfo.processInfo.environment["GRADUS_DEMO_PASSWORD"]
+
+    @Test("l'account demo vede il programma, il riferimento alla settimana 1 e il back-off; le sue serie coincidono con quelle dell'app", .enabled(if: key != nil && demoPassword != nil))
+    @MainActor
+    func demoAccount() async throws {
+        let client = SupabaseClient(
+            supabaseURL: Self.url, supabaseKey: Self.key!,
+            options: SupabaseClientOptions(auth: .init(storage: MemoryStorage(), emitLocalSessionAsInitialSession: true)))
+        let user = try await SupabaseAuthClient(client: client, resetRedirect: Self.url)
+            .signIn(email: "demo.atleta@binarybuilders.dev", password: Self.demoPassword!)
+        let database = try AppDatabase.inMemory()
+        let engine = SyncEngine(remote: SupabaseRemote(client: client), database: database)
+        _ = try await engine.sync()
+
+        let home = try await database.writer.read { try ProgramQueries.home($0, athleteID: user) }
+        #expect(home.mesocycle?.name == "Ipertrofia · blocco 1")
+        #expect(home.mesocycle?.weeks == 8)
+        #expect(home.athleteName == "Marco Rossi")
+        #expect(home.sessions.map(\.name) == ["Spinta", "Tirata", "Gambe"])
+
+        // Settimana 2 di «Spinta»: il riferimento è la settimana 1 registrata, il back-off ha un target.
+        let spinta = try #require(home.sessions.first)
+        let week = MesocycleCalendar.currentWeek(startDate: home.mesocycle!.startDate, weeks: 8, today: .now)
+        #expect(week == 2)
+        let content = try #require(try await database.writer.read { try ProgramQueries.session($0, id: spinta.id, week: 2) })
+        let panca = try #require(content.groups.flatMap(\.slots).first { $0.exerciseName == "Panca piana" })
+        let model = ExerciseModel(session: content, slot: panca, week: 2, store: ExecutionStore(database: database))
+        await model.load()
+        let top = try #require(panca.blocks.first { $0.role == "top" })
+        #expect(model.references[SetKey(block: top.id, idx: 0)] == "Sett. 1: 90 × 5 · BUF 3")
+        model.setLoad(SetKey(block: top.id, idx: 0), segment: 0, "90")
+        #expect(model.backoffTarget(for: try #require(panca.blocks.first { $0.role == "backoff" })) == "≈ 77,5 kg")
+        await model.flush()
+
+        // Gli id dello script e quelli dell'app sono gli stessi: riscrivere una serie di settimana 1 aggiorna la riga
+        // del server (con id diversi darebbe un conflitto sulla chiave naturale).
+        let store = ExecutionStore(database: database)
+        func edit(_ load: Double) -> SetEdit {
+            SetEdit(
+                athleteID: user, mesocycleID: home.mesocycle!.id, sessionID: spinta.id, week: 1, blockID: top.id, setIdx: 0,
+                segments: [Segment(loadKg: load, reps: 5)], effort: Effort(value: 3, scale: .buf))
+        }
+        try await store.save(edit(92.5))
+        #expect(try await engine.push() >= 1)
+        try await store.save(edit(90))
+        #expect(try await engine.push() >= 1)
+    }
 }

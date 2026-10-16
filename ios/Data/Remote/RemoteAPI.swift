@@ -34,6 +34,8 @@ protocol RemoteAPI: Sendable {
     /// Upsert idempotente sulla chiave primaria: `rows` è un array JSON di righe con tutte le colonne tranne
     /// `updated_at` (lo scrive il server). Reinviare le stesse righe non crea duplicati.
     func upsert(table: SyncTable, rows: Data) async throws
+    /// Il proprio nome (`profiles.full_name`): è il nome con cui il coach vede l'atleta.
+    func updateName(userID: UUID, name: String) async throws
     /// Riattiva il proprio account (`profiles.disabled_at = null`).
     func reactivateAccount(userID: UUID) async throws
 }

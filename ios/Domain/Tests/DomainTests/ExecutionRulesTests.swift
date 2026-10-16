@@ -59,3 +59,14 @@ struct ExecutionRulesTests {
         #expect(NumberInput.text(82.5) == "82,5")
     }
 }
+
+struct ProfileNameTests {
+    @Test("il nome si ripulisce: spazi in eccesso via, vuoto non valido, tetto di lunghezza")
+    func normalized() {
+        #expect(ProfileName.normalized("  Marco   Rossi ") == "Marco Rossi")
+        #expect(ProfileName.normalized("Anna\nMaria") == "Anna Maria")
+        #expect(ProfileName.normalized("   ") == nil)
+        #expect(ProfileName.normalized("") == nil)
+        #expect(ProfileName.normalized(String(repeating: "a", count: 200))?.count == 80)
+    }
+}
