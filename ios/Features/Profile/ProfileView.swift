@@ -75,6 +75,9 @@ struct ProfileView: View {
                         .disabled(checkingSignOut)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Theme.background)
+            .listRowBackground(Theme.surface)
             .navigationTitle("Profilo")
             .confirmationDialog(
                 unsentAtSignOut > 0

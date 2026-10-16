@@ -32,6 +32,21 @@ quando un task tocca anche `/supabase` o `/fixtures`.
   `TEST_RUNNER_GRADUS_LIVE_KEY=<PUBLISHABLE_KEY di supabase status -o env>`. Senza firma il portachiavi del simulatore
   non c'è: la prova usa un archivio in memoria.
 
+## Design
+
+- **Direzione**: strumento di lavoro chiaro. Fondo `Background` (#F7F8FA, scuro #0F1318), schede `Surface` con un filo
+  `Hairline`, testo `Ink`, un solo colore forte (`AccentColor`, #0D54F3) per azioni e selezione. SF Pro; numeri
+  tabulari (`monospacedDigit`) per carichi, ripetizioni, timer e kcal. Colori, griglia da 8 pt e raggi stanno in
+  `App/Theme.swift` e nel catalogo (con variante scura): non scrivere colori o misure a mano nelle View.
+- **Liquid Glass (iOS 26+) solo sui controlli che galleggiano** sopra i contenuti (selettore delle settimane, etichetta
+  della settimana, timer, tab bar e barra di navigazione di sistema), mai sulle schede dei contenuti. Si usano i
+  helper `glass(_:)`, `GlassContainer`, `ProminentActionStyle`, `SecondaryActionStyle`, che sotto iOS 26 ripiegano su un
+  materiale sfocato o su `bordered`: il target resta iOS 17. Il timer è `tabViewBottomAccessory` da iOS 26.1.
+- Aree di tocco ≥ 44 pt; testi non sotto `.footnote`.
+- Ogni cambio di UI si controlla a occhio con `UITests/TourWalkthroughUITests` (`testScreenshots` per le schermate
+  pulite, `testGuideWalkthrough` per la guida) su un simulatore iOS 26 **e** su uno iOS 18, in chiaro e in scuro
+  (`GRADUS_UI_DARK=1`).
+
 ## Architettura
 
 ```

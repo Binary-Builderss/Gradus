@@ -21,6 +21,8 @@ struct MacroView: View {
                     ProgressView()
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Theme.background)
             .navigationTitle("Macro")
             .refreshable { await environment.sync.sync() }
             .sheet(item: $editing) { entry in
@@ -65,7 +67,7 @@ struct MacroView: View {
             if let plan = snapshot.today {
                 let t = plan.targets
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("\(t.kcal) kcal").font(.title2.bold())
+                    Text("\(t.kcal) kcal").font(.largeTitle.monospacedDigit().bold())
                     HStack(spacing: 16) {
                         stat("Proteine", t.proteinG)
                         stat("Carboidrati", t.carbsG)
@@ -83,6 +85,7 @@ struct MacroView: View {
         } header: {
             Text("Obiettivo di oggi")
         }
+        .listRowBackground(Theme.surface)
     }
 
     private func stat(_ name: String, _ grams: Int) -> some View {
@@ -98,10 +101,11 @@ struct MacroView: View {
                 Text("Condividi i tuoi macro con il coach").font(.headline)
                 Text("Per registrare come vanno i tuoi macro serve il tuo consenso: sono dati sulla tua salute e li vede anche il tuo coach.")
                     .font(.subheadline).foregroundStyle(.secondary)
-                Button("Continua") { consenting = true }.buttonStyle(.borderedProminent)
+                Button("Continua") { consenting = true }.modifier(ProminentActionStyle())
             }
             .padding(.vertical, 4)
         }
+        .listRowBackground(Theme.surface)
     }
 
     private func daysSection(_ snapshot: NutritionSnapshot) -> some View {
@@ -116,6 +120,7 @@ struct MacroView: View {
                 .buttonStyle(.plain)
             }
         }
+        .listRowBackground(Theme.surface)
     }
 }
 

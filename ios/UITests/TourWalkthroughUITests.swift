@@ -49,6 +49,79 @@ final class TourWalkthroughUITests: XCTestCase {
         XCTAssertFalse(app.buttons["Avanti"].exists)
     }
 
+    /// Le schermate principali senza la guida sopra, una per file: serve a confrontare il «prima» e il «dopo» del design.
+    func testScreenshots() throws {
+        let user = try XCTUnwrap(env["GRADUS_UI_USER"].flatMap { $0.isEmpty ? nil : $0 }, "senza credenziali di prova la prova si salta")
+        let password = try XCTUnwrap(env["GRADUS_UI_PASSWORD"], "manca GRADUS_UI_PASSWORD")
+        let out = env["GRADUS_UI_OUT"] ?? "/tmp/schermate"
+        try? FileManager.default.createDirectory(atPath: out, withIntermediateDirectories: true)
+
+        let app = XCUIApplication()
+        app.launchArguments = ["-tourSeen", "YES"]
+        if env["GRADUS_UI_DARK"] == "1" { app.launchArguments += ["-AppleInterfaceStyle", "Dark"] }
+        app.launch()
+
+        let email = app.textFields.firstMatch
+        if email.waitForExistence(timeout: 15) {
+            save(app, "\(out)/01-accesso.png")
+            email.tap()
+            email.typeText(user)
+            let secure = app.secureTextFields.firstMatch
+            secure.tap()
+            secure.typeText(password)
+            app.buttons["Accedi"].firstMatch.tap()
+            // Da iOS 26 il sistema propone di salvare la password: si rimanda.
+            let notNow = app.buttons["Not Now"].firstMatch
+            if notNow.waitForExistence(timeout: 8) { notNow.tap() }
+        }
+
+        let tabs = app.tabBars.firstMatch
+        XCTAssertTrue(tabs.waitForExistence(timeout: 30), "l'accesso non è riuscito")
+        // Aspetta che arrivi il programma (la prima sincronizzazione).
+        let session = app.buttons.matching(NSPredicate(format: "label CONTAINS 'esercizi'")).firstMatch
+        _ = session.waitForExistence(timeout: 30)
+        Thread.sleep(forTimeInterval: 1)
+        save(app, "\(out)/02-allenamento.png")
+
+        if session.exists {
+            session.tap()
+            Thread.sleep(forTimeInterval: 1)
+            save(app, "\(out)/03-seduta.png")
+            let exercise = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Top set' OR label CONTAINS 'Serie'")).firstMatch
+            if exercise.waitForExistence(timeout: 5) {
+                exercise.tap()
+                Thread.sleep(forTimeInterval: 1)
+                save(app, "\(out)/04-esercizio.png")
+                // Nel superset il recupero è sull'ultimo esercizio del giro: si apre il secondo.
+                app.navigationBars.buttons.firstMatch.tap()
+                Thread.sleep(forTimeInterval: 1)
+                save(app, "\(out)/04-indietro.png")
+                let second = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Croci'")).firstMatch
+                if second.waitForExistence(timeout: 5) {
+                    second.tap()
+                    Thread.sleep(forTimeInterval: 1)
+                    save(app, "\(out)/04a-secondo.png")
+                    let timer = app.buttons["Avvia timer"].firstMatch
+                    if timer.waitForExistence(timeout: 5) {
+                        timer.tap()
+                        // Il sistema chiede il permesso delle notifiche (il recupero in background): si nega.
+                        let deny = app.buttons["Don’t Allow"].firstMatch
+                        if deny.waitForExistence(timeout: 5) { deny.tap() }
+                        Thread.sleep(forTimeInterval: 1)
+                        save(app, "\(out)/04b-timer.png")
+                    }
+                }
+            }
+        }
+
+        tabs.buttons["Macro"].tap()
+        Thread.sleep(forTimeInterval: 1)
+        save(app, "\(out)/05-macro.png")
+        tabs.buttons["Profilo"].tap()
+        Thread.sleep(forTimeInterval: 1)
+        save(app, "\(out)/06-profilo.png")
+    }
+
     private func save(_ app: XCUIApplication, _ path: String) {
         let data = app.screenshot().pngRepresentation
         try? data.write(to: URL(fileURLWithPath: path))

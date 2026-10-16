@@ -19,37 +19,28 @@ struct SessionDetailView: View {
     }
 
     var body: some View {
-        List {
+        ScrollView {
             if let content {
-                if let notes = content.coachNotes, !notes.isEmpty {
-                    Section { Text(notes).font(.callout).foregroundStyle(.secondary) }
-                }
-                ForEach(content.groups) { group in
-                    Section {
-                        ForEach(group.slots) { slot in
-                            let isFirst = slot.id == content.groups.first?.slots.first?.id
-                            Button {
-                                open = OpenSlot(slotID: slot.id, setIdx: nil)
-                            } label: {
-                                HStack {
-                                    SlotRow(slot: slot, completion: content.completion(of: slot))
-                                    Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            .tourTarget("session-exercise", if: isFirst)
-                        }
-                    } header: {
-                        Text(groupHeader(group))
+                VStack(alignment: .leading, spacing: Theme.Space.m) {
+                    if let notes = content.coachNotes, !notes.isEmpty {
+                        Text(notes).font(.callout).foregroundStyle(.secondary).padding(.horizontal, Theme.Space.xs)
+                    }
+                    ForEach(content.groups) { group in
+                        GroupCard(
+                            group: group, header: groupHeader(group), content: content,
+                            firstSlotID: content.groups.first?.slots.first?.id,
+                            onOpen: { open = OpenSlot(slotID: $0, setIdx: nil) })
+                    }
+                    if content.groups.isEmpty {
+                        Text("Questa seduta non ha ancora esercizi.").foregroundStyle(.secondary)
                     }
                 }
-                if content.groups.isEmpty {
-                    Text("Questa seduta non ha ancora esercizi.").foregroundStyle(.secondary)
-                }
+                .padding(Theme.Space.m)
             } else {
-                ProgressView()
+                ProgressView().frame(maxWidth: .infinity).padding(.top, Theme.Space.xl)
             }
         }
+        .background(Theme.background)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $open) { target in
@@ -63,9 +54,11 @@ struct SessionDetailView: View {
         }
         .safeAreaInset(edge: .top, spacing: 0) {
             Text("Settimana \(week)")
-                .font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 20).padding(.vertical, 6)
-                .background(.bar)
+                .font(.footnote.weight(.semibold)).foregroundStyle(Theme.ink)
+                .padding(.horizontal, Theme.Space.m).frame(minHeight: 32)
+                .glass(.capsule)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, Theme.Space.m).padding(.bottom, Theme.Space.xs)
         }
         .onChange(of: environment.tour.current?.screen) { _, _ in followTour() }
         .task {
@@ -96,6 +89,47 @@ struct SessionDetailView: View {
         guard group.slots.count > 1 || kind != nil else { return "" }
         let rest = group.restAfterRoundS > 0 ? "recupero a fine giro \(RestText.format(seconds: group.restAfterRoundS))" : nil
         return [kind, rest].compactMap { $0 }.joined(separator: " · ")
+    }
+}
+
+/// Un gruppo di esercizi (un esercizio solo, o un superset): una scheda con una riga per esercizio.
+private struct GroupCard: View {
+    let group: GroupContent
+    let header: String
+    let content: SessionContent
+    let firstSlotID: UUID?
+    let onOpen: (UUID) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Space.s) {
+            if !header.isEmpty {
+                Text(header).font(.footnote.weight(.semibold)).foregroundStyle(.secondary).textCase(.uppercase)
+                    .padding(.horizontal, Theme.Space.xs)
+            }
+            VStack(spacing: 0) {
+                ForEach(group.slots) { slot in
+                    if slot.id != group.slots.first?.id { Divider() }
+                    row(slot)
+                }
+            }
+            .card()
+        }
+    }
+
+    private func row(_ slot: SlotContent) -> some View {
+        Button {
+            onOpen(slot.id)
+        } label: {
+            HStack(alignment: .top) {
+                SlotRow(slot: slot, completion: content.completion(of: slot))
+                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                    .padding(.top, Theme.Space.s)
+            }
+            .padding(.vertical, Theme.Space.s)
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .tourTarget("session-exercise", if: slot.id == firstSlotID)
     }
 }
 
