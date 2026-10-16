@@ -9,6 +9,7 @@ import { athleteQuery, mesocyclesQuery } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
 import { BestSets } from '@/components/athletes/BestSets'
+import { MacroSection } from '@/components/nutrition/MacroSection'
 import { CloseLink } from '@/components/athletes/CloseLink'
 import { usePageTitle } from '@/lib/pageTitle'
 
@@ -52,6 +53,8 @@ function AthletePage() {
       {activeMesocycle && (
         <AthleteOverview coachId={user.id} athleteId={athleteId} mesocycle={activeMesocycle} />
       )}
+
+      <MacroSection coachId={user.id} athleteId={athleteId} />
 
       <BestSets coachId={user.id} athleteId={athleteId} />
 

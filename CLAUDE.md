@@ -145,13 +145,23 @@ costruita, ma i dati sono già predisposti perché arrivi senza rifare niente.
 
 - **Chi scrive cosa**: gli obiettivi li scrive il coach (o il professionista verificato) dal web; l'aderenza e i macro
   assunti li scrive l'atleta dall'app. Un solo autore per dato, come sempre.
-- **Modello (da realizzare con una migrazione, non ancora scritta)**:
-  - `nutrition_plans`: atleta, autore, `kind` (`macros` | `diet`), periodo di validità, tolleranza in %, dichiarazione
-    (vedi sotto); con le righe per tipo di giorno (`nutrition_plan_days`: kcal, proteine, carboidrati, grassi, fibre).
-    Per ora un solo obiettivo per giorno; giorni di allenamento e di riposo diversi sono una decisione aperta.
-  - `nutrition_days`: per atleta e data, stato (`respected` | `not_respected`), fonte (`confirm` | `healthkit` |
-    `manual`) e macro assunti (null se non inseriti). Chiave naturale `(athlete_id, date)`, upsert idempotente con id
-    derivato (stessa regola delle serie). Nessuna riga = «non registrato».
+- **Modello (migrazione `20261016130000_nutrition_macros.sql`)**:
+  - `nutrition_plans`: atleta, autore (il coach collegato; `on delete set null`), `kind` (`macros` | `diet`),
+    `valid_from` (vale da quel giorno finché non ne arriva uno più recente; un solo piano per atleta, tipo e giorno tra i
+    non eliminati), `tolerance_pct` (0–50, default 10), `declared_at` e `declaration_version` obbligatori (la
+    dichiarazione), `deleted_at`. Le righe di obiettivo sono in `nutrition_plan_days` (kcal, proteine, carboidrati,
+    grassi, fibre facoltative). Per ora un solo obiettivo per giorno (`day_type = 'all'`, vincolo da togliere quando si
+    decide su allenamento / riposo). Solo l'autore modifica; l'atleta e i coach collegati leggono.
+  - `nutrition_days`: per atleta e data (`unique (athlete_id, day)`), stato (`respected` | `not_respected`), fonte
+    (`confirm` | `healthkit` | `manual`) e macro assunti (numerici, null se solo confermato; da Apple Salute o a mano
+    serve almeno un numero). Nessuna riga = «non registrato». Id derivato dall'app (come per le serie): upsert
+    idempotente. Li scrive solo l'atleta e solo con il consenso; niente cancellazioni fisiche dal client.
+  - Consenso: `profiles.nutrition_consent_at` / `nutrition_consent_version` (lo scrive l'atleta sul suo profilo). Senza
+    consenso l'atleta non scrive e il coach non legge i giorni; `withdraw_nutrition_consent()` cancella i giorni e
+    azzera il consenso. Le righe dell'atleta vanno via con l'account (cascade).
+  - Funzioni per i client: `nutrition_target_on(atleta, giorno)` (l'obiettivo in vigore) e
+    `nutrition_overview(atleta, da, a)` (un giorno per riga con obiettivo e registrato, al massimo un anno). Il trigger
+    `reject_unavailable_kind` rifiuta `kind = 'diet'` finché non esiste la verifica del professionista.
   - Per la dieta futura: tabelle di alimenti, pasti e voci collegate a un `nutrition_plans` con `kind = 'diet'`.
 - **Verifica del professionista** (`professional_verifications`): professione (`physician` | `biologist_nutritionist`
   sezione A | `dietitian`), numero e ordine di iscrizione, certificato (storage privato), stato `pending` → `verified` /
