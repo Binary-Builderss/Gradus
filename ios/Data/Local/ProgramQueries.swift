@@ -25,7 +25,13 @@ struct BlockContent: Equatable, Identifiable, Sendable {
     var technique: String
     var restS: Int?
     var tut: [Int?]
+    var refBlockId: UUID?
     var prescription: Prescription?
+
+    /// Serie da fare in questa settimana (0 se il coach non ha scritto la prescrizione).
+    var prescribedSets: Int { prescription?.sets ?? 0 }
+    /// Le tecniche a segmenti hanno una riga carico × ripetizioni per segmento.
+    var hasSegments: Bool { technique != "none" }
 }
 
 struct SlotContent: Equatable, Identifiable, Sendable {
@@ -44,9 +50,40 @@ struct GroupContent: Equatable, Identifiable, Sendable {
 }
 
 struct SessionContent: Equatable, Sendable {
+    var sessionID: UUID
+    var mesocycleID: UUID
+    var athleteID: UUID
+    var deloadWeeks: [Int]
     var name: String
     var coachNotes: String?
     var groups: [GroupContent]
+    /// Serie registrate per blocco nella settimana mostrata.
+    var loggedCounts: [UUID: Int]
+
+    /// Tutti i blocchi della seduta, nell'ordine in cui compaiono.
+    var blockOrder: [UUID] { groups.flatMap(\.slots).flatMap(\.blocks).map(\.id) }
+}
+
+extension BlockContent {
+    func completion(logged: [UUID: Int]) -> Completion {
+        Completion(logged: logged[id] ?? 0, prescribed: prescribedSets)
+    }
+}
+
+extension SlotContent {
+    /// Vuoto, parziale o completo, confrontando serie registrate e prescritte (solo i blocchi con prescrizione).
+    func completion(logged: [UUID: Int]) -> Completion {
+        .combined(blocks.filter { $0.prescribedSets > 0 }.map { $0.completion(logged: logged) })
+    }
+}
+
+extension SessionContent {
+    func completion(of slot: SlotContent) -> Completion { slot.completion(logged: loggedCounts) }
+
+    /// La seduta inizia alla prima serie e finisce con l'ultima: nessun «termina allenamento».
+    var completion: Completion {
+        .combined(groups.flatMap(\.slots).map { $0.completion(logged: loggedCounts) })
+    }
 }
 
 enum ProgramQueries {
@@ -103,10 +140,12 @@ enum ProgramQueries {
             BlockContent(
                 id: block.id, role: block.role, technique: block.technique, restS: block.restS,
                 tut: [block.tutEccentricS, block.tutBottomPauseS, block.tutConcentricS, block.tutTopPauseS],
-                prescription: weekByBlock[block.id].map(prescription))
+                refBlockId: block.refBlockId, prescription: weekByBlock[block.id].map(prescription))
         }
+        let mesocycle = try MesocycleRecord.fetchOne(db, key: session.mesocycleId)
         return SessionContent(
-            name: session.name, coachNotes: session.coachNotes,
+            sessionID: id, mesocycleID: session.mesocycleId, athleteID: mesocycle?.athleteId ?? UUID(),
+            deloadWeeks: mesocycle?.deloadWeeks ?? [], name: session.name, coachNotes: session.coachNotes,
             groups: groups.map { group in
                 GroupContent(
                     id: group.id, kind: group.kind, restBetweenS: group.restBetweenS,
@@ -116,7 +155,16 @@ enum ProgramQueries {
                             id: slot.id, exerciseName: names[slot.exerciseId] ?? "Esercizio", coachNotes: slot.coachNotes,
                             blocks: blocks.filter { $0.slotId == slot.id }.map(content))
                     })
-            })
+            },
+            loggedCounts: try ExecutionStore.loggedCounts(db, sessionID: id, week: week))
+    }
+
+    /// Lo stato di ogni seduta del mesociclo in una settimana (per l'elenco della home).
+    static func sessionStates(_ db: Database, mesocycleID: UUID, week: Int) throws -> [UUID: Completion] {
+        let sessions = try SessionRecord.filter(Column("mesocycle_id") == mesocycleID && Column("deleted_at") == nil).fetchAll(db)
+        var states: [UUID: Completion] = [:]
+        for session in sessions { states[session.id] = try Self.session(db, id: session.id, week: week)?.completion ?? .empty }
+        return states
     }
 
     private static func prescription(_ week: BlockWeekRecord) -> Prescription {

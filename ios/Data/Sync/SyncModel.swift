@@ -39,6 +39,21 @@ final class SyncModel {
         }
     }
 
+    private var requested = false
+
+    /// Chiede una sincronizzazione senza aspettarla (dopo un salvataggio): si accorpano le richieste ravvicinate e,
+    /// se ne è in corso una, ne parte un'altra appena finisce, così l'ultima modifica va sempre via.
+    func requestSync() {
+        guard !requested else { return }
+        requested = true
+        Task {
+            try? await Task.sleep(for: .seconds(2))
+            requested = false
+            while state == .syncing { try? await Task.sleep(for: .milliseconds(300)) }
+            await sync()
+        }
+    }
+
     /// All'uscita dall'account la data dell'ultima sincronizzazione non vale più.
     func reset() {
         lastSync = nil

@@ -19,7 +19,13 @@ struct SessionDetailView: View {
                 }
                 ForEach(content.groups) { group in
                     Section {
-                        ForEach(group.slots) { slot in SlotRow(slot: slot) }
+                        ForEach(group.slots) { slot in
+                            NavigationLink {
+                                ExerciseView(environment: environment, session: content, slot: slot, week: week)
+                            } label: {
+                                SlotRow(slot: slot, completion: content.completion(of: slot))
+                            }
+                        }
                     } header: {
                         Text(groupHeader(group))
                     }
@@ -58,10 +64,19 @@ struct SessionDetailView: View {
 
 private struct SlotRow: View {
     let slot: SlotContent
+    let completion: Completion
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(slot.exerciseName).font(.headline)
+            HStack {
+                Text(slot.exerciseName).font(.headline)
+                Spacer()
+                switch completion {
+                case .complete: Label("Completo", systemImage: "checkmark.circle.fill").labelStyle(.iconOnly).foregroundStyle(.green)
+                case .partial: Text("In corso").font(.footnote).foregroundStyle(.orange)
+                case .empty: EmptyView()
+                }
+            }
             if let notes = slot.coachNotes, !notes.isEmpty {
                 Text(notes).font(.subheadline).foregroundStyle(.secondary)
             }
