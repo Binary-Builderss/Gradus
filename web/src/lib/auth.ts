@@ -10,12 +10,23 @@ export const credentialsSchema = z.object({
 
 export const emailSchema = credentialsSchema.pick({ email: true })
 
+const passwordFields = {
+  password: z.string().min(8, e.passwordTooShort),
+  confirm: z.string(),
+}
+const samePasswords = { message: e.passwordMismatch, path: ['confirm'] }
+
 export const newPasswordSchema = z
+  .object(passwordFields)
+  .refine((v) => v.password === v.confirm, samePasswords)
+
+export const signupSchema = z
   .object({
-    password: z.string().min(8, e.passwordTooShort),
-    confirm: z.string(),
+    full_name: z.string().trim().min(1, e.nameRequired),
+    email: z.email(e.emailInvalid),
+    ...passwordFields,
   })
-  .refine((v) => v.password === v.confirm, { message: e.passwordMismatch, path: ['confirm'] })
+  .refine((v) => v.password === v.confirm, samePasswords)
 
 /** Errori dei form: primo messaggio per campo. */
 export function fieldErrors<T extends string>(error: z.ZodError): Partial<Record<T, string>> {
@@ -42,6 +53,11 @@ export function mapAuthError(error: AuthErrorLike): string {
       return e.passwordTooShort
     case 'same_password':
       return e.samePassword
+    case 'user_already_exists':
+    case 'email_exists':
+      return e.emailTaken
+    case 'signup_disabled':
+      return messages.auth.signup.closed
   }
   return error.status === 429 ? e.rateLimit : e.generic
 }

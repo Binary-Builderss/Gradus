@@ -4,7 +4,7 @@ import type { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { credentialsSchema, emailSchema, fieldErrors, newPasswordSchema } from '@/lib/auth'
+import { credentialsSchema, emailSchema, fieldErrors, newPasswordSchema, signupSchema } from '@/lib/auth'
 import { messages } from '@/lib/messages'
 
 const m = messages.auth
@@ -184,6 +184,38 @@ export function NewPasswordForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof 
       />
       <FormError message={formError} />
       <SubmitButton pending={pending} label={m.newPassword.submit} pendingLabel={m.newPassword.submitting} />
+    </form>
+  )
+}
+
+export function SignupForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof signupSchema>> }) {
+  const { errors, formError, pending, submit } = useAuthForm(signupSchema, onSubmit)
+  return (
+    <form noValidate onSubmit={submit} className="grid gap-4">
+      <TextField
+        name="full_name"
+        label={m.signup.name}
+        autoComplete="name"
+        autoFocus
+        error={errors.full_name}
+      />
+      <TextField name="email" type="email" label={m.email} autoComplete="email" error={errors.email} />
+      <TextField
+        name="password"
+        type="password"
+        label={m.password}
+        autoComplete="new-password"
+        error={errors.password}
+      />
+      <TextField
+        name="confirm"
+        type="password"
+        label={m.newPassword.confirm}
+        autoComplete="new-password"
+        error={errors.confirm}
+      />
+      <FormError message={formError} />
+      <SubmitButton pending={pending} label={m.signup.submit} pendingLabel={m.signup.submitting} />
     </form>
   )
 }

@@ -20,6 +20,19 @@ export const messages = {
       submit: 'Entra',
       submitting: 'Accesso in corso…',
       forgot: 'Password dimenticata?',
+      noAccount: 'Non hai un account?',
+      signUp: 'Registrati',
+    },
+    signup: {
+      title: 'Crea il tuo spazio coach',
+      subtitle: 'Ti bastano nome, email e password.',
+      name: 'Nome e cognome',
+      submit: 'Crea account',
+      submitting: 'Creazione in corso…',
+      sentTitle: 'Controlla la posta',
+      sent: 'Ti abbiamo scritto: apri il link nell’email per attivare l’account, poi accedi.',
+      hasAccount: 'Hai già un account?',
+      closed: 'Le registrazioni sono chiuse al momento.',
     },
     recovery: {
       title: 'Recupera la password',
@@ -42,6 +55,8 @@ export const messages = {
     },
     errors: {
       emailInvalid: 'Inserisci un indirizzo email valido.',
+      nameRequired: 'Inserisci il tuo nome.',
+      emailTaken: 'Esiste già un account con questa email. Prova ad accedere.',
       passwordRequired: 'Inserisci la password.',
       passwordTooShort: 'La password deve avere almeno 8 caratteri.',
       passwordMismatch: 'Le due password non coincidono.',

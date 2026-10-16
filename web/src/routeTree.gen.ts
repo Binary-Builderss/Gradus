@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
 import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password'
+import { Route as RegistratiRouteImport } from './routes/registrati'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppEserciziRouteImport } from './routes/_app/esercizi'
 import { Route as AppPersonalizzaRouteImport } from './routes/_app/personalizza'
@@ -39,6 +40,11 @@ const NuovaPasswordRoute = NuovaPasswordRouteImport.update({
 const RecuperoPasswordRoute = RecuperoPasswordRouteImport.update({
   id: '/recupero-password',
   path: '/recupero-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistratiRoute = RegistratiRouteImport.update({
+  id: '/registrati',
+  path: '/registrati',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/registrati': typeof RegistratiRoute
   '/esercizi': typeof AppEserciziRoute
   '/personalizza': typeof AppPersonalizzaRoute
   '/piani': typeof AppPianiRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/registrati': typeof RegistratiRoute
   '/esercizi': typeof AppEserciziRoute
   '/personalizza': typeof AppPersonalizzaRoute
   '/piani': typeof AppPianiRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/registrati': typeof RegistratiRoute
   '/_app/esercizi': typeof AppEserciziRoute
   '/_app/personalizza': typeof AppPersonalizzaRoute
   '/_app/piani': typeof AppPianiRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/nuova-password'
     | '/recupero-password'
+    | '/registrati'
     | '/esercizi'
     | '/personalizza'
     | '/piani'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/nuova-password'
     | '/recupero-password'
+    | '/registrati'
     | '/esercizi'
     | '/personalizza'
     | '/piani'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/nuova-password'
     | '/recupero-password'
+    | '/registrati'
     | '/_app/esercizi'
     | '/_app/personalizza'
     | '/_app/piani'
@@ -171,6 +183,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   NuovaPasswordRoute: typeof NuovaPasswordRoute
   RecuperoPasswordRoute: typeof RecuperoPasswordRoute
+  RegistratiRoute: typeof RegistratiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -201,6 +214,13 @@ declare module '@tanstack/react-router' {
       path: '/recupero-password'
       fullPath: '/recupero-password'
       preLoaderRoute: typeof RecuperoPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registrati': {
+      id: '/registrati'
+      path: '/registrati'
+      fullPath: '/registrati'
+      preLoaderRoute: typeof RegistratiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -291,6 +311,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   NuovaPasswordRoute: NuovaPasswordRoute,
   RecuperoPasswordRoute: RecuperoPasswordRoute,
+  RegistratiRoute: RegistratiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
