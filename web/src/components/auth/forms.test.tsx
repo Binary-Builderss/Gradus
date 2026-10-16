@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { messages } from '@/lib/messages'
-import { LoginForm } from './forms'
+import { LoginForm, SignupForm } from './forms'
 
 const m = messages.auth
 
@@ -35,5 +35,41 @@ describe('LoginForm', () => {
     expect(input).toHaveAttribute('type', 'password')
     fireEvent.click(screen.getByRole('button', { name: m.showPassword }))
     expect(input).toHaveAttribute('type', 'text')
+  })
+})
+
+describe('SignupForm', () => {
+  it('non parte con campi vuoti e dice cosa manca', async () => {
+    const onSubmit = vi.fn()
+    render(<SignupForm onSubmit={onSubmit} />)
+    fireEvent.click(screen.getByRole('button', { name: m.signup.submit }))
+    expect(await screen.findByText(m.errors.nameRequired)).toBeInTheDocument()
+    expect(screen.getByText(m.errors.emailInvalid)).toBeInTheDocument()
+    expect(screen.getByText(m.errors.passwordTooShort)).toBeInTheDocument()
+    expect(screen.getByText(m.errors.acceptRequired)).toBeInTheDocument()
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('senza spuntare termini e privacy non parte; poi invia nome, email e password', async () => {
+    const onSubmit = vi.fn().mockResolvedValue(null)
+    render(<SignupForm onSubmit={onSubmit} />)
+    fill(m.signup.name, 'Giulia Rossi')
+    fill(m.email, 'giulia@example.com')
+    fill(m.password, 'lunghissima')
+    fill(m.newPassword.confirm, 'lunghissima')
+    fireEvent.click(screen.getByRole('button', { name: m.signup.submit }))
+    expect(await screen.findByText(m.errors.acceptRequired)).toBeInTheDocument()
+    expect(onSubmit).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: m.signup.submit }))
+    await vi.waitFor(() =>
+      expect(onSubmit).toHaveBeenCalledWith({
+        full_name: 'Giulia Rossi',
+        email: 'giulia@example.com',
+        password: 'lunghissima',
+        confirm: 'lunghissima',
+        accept: 'on',
+      }),
+    )
   })
 })
