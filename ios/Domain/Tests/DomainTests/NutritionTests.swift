@@ -53,3 +53,54 @@ struct NutritionTests {
         #expect(DeterministicID.nutritionDay(athleteID: a, day: "2026-10-16") != DeterministicID.nutritionDay(athleteID: b, day: "2026-10-16"))
     }
 }
+
+struct MacroReminderTests {
+    private var calendar: Calendar {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = TimeZone(identifier: "Europe/Rome")!
+        return c
+    }
+
+    private func date(_ y: Int, _ m: Int, _ d: Int, _ h: Int, _ min: Int = 0) -> Date {
+        calendar.date(from: DateComponents(year: y, month: m, day: d, hour: h, minute: min))!
+    }
+
+    @Test("un promemoria per ogni giorno dei prossimi 14, all'orario scelto")
+    func fourteenDays() {
+        let plan = MacroReminder.plan(now: date(2026, 10, 16, 9), minutes: 22 * 60, registeredDays: [], calendar: calendar)
+        #expect(plan.count == 14)
+        #expect(plan.first?.day == "2026-10-16")
+        #expect(plan.first?.fireDate == date(2026, 10, 16, 22))
+        #expect(plan.last?.day == "2026-10-29")
+    }
+
+    @Test("se l'orario di oggi è già passato si parte da domani")
+    func startsTomorrowWhenLate() {
+        let plan = MacroReminder.plan(now: date(2026, 10, 16, 22, 30), minutes: 22 * 60, registeredDays: [], calendar: calendar)
+        #expect(plan.first?.day == "2026-10-17")
+        #expect(plan.count == 13)
+    }
+
+    @Test("i giorni già registrati non ricevono il promemoria")
+    func skipsRegisteredDays() {
+        let plan = MacroReminder.plan(
+            now: date(2026, 10, 16, 9), minutes: 22 * 60, registeredDays: ["2026-10-16", "2026-10-18"], calendar: calendar)
+        #expect(plan.map(\.day).prefix(3) == ["2026-10-17", "2026-10-19", "2026-10-20"])
+    }
+
+    @Test("orario personalizzato, anche con i minuti; valori fuori misura si riportano dentro")
+    func customTime() {
+        let plan = MacroReminder.plan(now: date(2026, 10, 16, 9), minutes: 21 * 60 + 45, registeredDays: [], calendar: calendar)
+        #expect(plan.first?.fireDate == date(2026, 10, 16, 21, 45))
+        #expect(MacroReminder.clamp(-5) == 0)
+        #expect(MacroReminder.clamp(99_999) == 1439)
+        #expect(MacroReminder.timeText(minutes: 21 * 60 + 5) == "21:05")
+        #expect(MacroReminder.timeText(minutes: MacroReminder.defaultMinutes) == "22:00")
+    }
+
+    @Test("attraverso il cambio di mese e di anno")
+    func acrossYear() {
+        let plan = MacroReminder.plan(now: date(2026, 12, 25, 9), minutes: 22 * 60, registeredDays: [], calendar: calendar)
+        #expect(plan.map(\.day).contains("2026-12-31") && plan.map(\.day).contains("2027-01-01"))
+    }
+}

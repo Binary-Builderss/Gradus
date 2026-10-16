@@ -78,6 +78,12 @@ final class AuthModel {
     }
 
     /// All'avvio: se c'è una sessione salvata si entra subito, anche offline.
+    /// Chi è collegato, anche prima che `restore()` sia finito (serve quando l'app parte da una notifica).
+    func resolveUserID() async -> UUID? {
+        if case .signedIn(let id) = state { return id }
+        return await client.currentUserID()
+    }
+
     func restore() async {
         if let id = await client.currentUserID() { state = .signedIn(id) } else { state = .signedOut }
     }

@@ -101,3 +101,43 @@ public enum Nutrition {
     /// Da quale fonte nasce un giorno scritto dall'atleta: senza numeri è una conferma, con numeri è a mano.
     public static func manualSource(for intake: MacroIntake) -> MacroSource { intake.isEmpty ? .confirm : .manual }
 }
+
+/// Il promemoria serale dei macro («Hai rispettato i macro di oggi?»): quando e se farlo partire.
+public enum MacroReminder {
+    /// Orario di default: le 22:00, in minuti dalla mezzanotte.
+    public static let defaultMinutes = 22 * 60
+    /// Quanti giorni in avanti si programmano (si riprogramma a ogni apertura dell'app).
+    public static let daysAhead = 14
+
+    public struct Item: Equatable, Sendable {
+        public var day: String
+        public var fireDate: Date
+
+        public init(day: String, fireDate: Date) {
+            self.day = day
+            self.fireDate = fireDate
+        }
+    }
+
+    /// I promemoria da programmare: uno per ogni giorno da oggi, all'orario scelto, ma solo se ancora nel futuro e solo per i
+    /// giorni che l'atleta non ha già registrato (sul telefono o da Apple Salute): chi ha già risposto non viene disturbato.
+    public static func plan(now: Date, minutes: Int, registeredDays: Set<String>, calendar: Calendar = .current) -> [Item] {
+        let clamped = clamp(minutes)
+        return (0..<daysAhead).compactMap { offset in
+            guard let base = calendar.date(byAdding: .day, value: offset, to: now),
+                let fire = calendar.date(bySettingHour: clamped / 60, minute: clamped % 60, second: 0, of: base)
+            else { return nil }
+            let day = Nutrition.dayString(fire, calendar: calendar)
+            return fire > now && !registeredDays.contains(day) ? Item(day: day, fireDate: fire) : nil
+        }
+    }
+
+    /// Un orario valido: tra 00:00 e 23:59.
+    public static func clamp(_ minutes: Int) -> Int { min(max(minutes, 0), 24 * 60 - 1) }
+
+    /// «22:00».
+    public static func timeText(minutes: Int) -> String {
+        let m = clamp(minutes)
+        return String(format: "%02d:%02d", m / 60, m % 60)
+    }
+}

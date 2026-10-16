@@ -117,6 +117,19 @@ Data/Remote/    client Supabase
 - Fase 2: Live Activity con `Text(timerInterval:)`, nessun aggiornamento push necessario.
 - Fuori MVP: timer di esecuzione con PREP e cadenza vocale del TUT.
 
+## Guida a passi
+
+- Al primo accesso (dopo i primi dati) parte da sola una **guida a passi** sull'app, e si rifà da Profilo → Guida. Sta in
+  `Features/Tour`: `TourPlan` (i passi, uno per funzione: titolo, testo, scheda e, se c'è, l'elemento da evidenziare),
+  `TourModel` (avanti, indietro, «Salta», «già vista»), `TourOverlay` (schermo oscurato con un'evidenziazione attorno
+  all'elemento e il riquadro sopra o sotto, mai sopra l'elemento). Gli elementi si segnano con `.tourTarget("id")` e scrivono
+  la loro posizione in un registro condiviso (funziona anche dentro le liste).
+- **Regola come sul sito**: chi aggiunge una funzione aggiunge il suo passo. Un test (`TourTests`) controlla che ogni
+  `tourTarget` abbia un passo, che ogni passo evidenzi un elemento che esiste e che ogni scheda sia nel percorso.
+- `UITests/TourWalkthroughUITests` percorre la guida nel simulatore e salva uno screenshot per passo: per controllare a occhio
+  dove cade l'evidenziazione. Si salta da sola; per lanciarla vedi l'intestazione del file (serve il Supabase locale, il
+  seed e l'app **firmata**: senza firma il simulatore non salva la sessione nel portachiavi e l'app non scarica i dati).
+
 ## Altre schermate
 
 - **Allenamento (home)**: mesociclo attivo, selettore settimana × sessione aperto sulla prossima seduta
@@ -128,8 +141,13 @@ Data/Remote/    client Supabase
   Senza consenso il telefono non scrive e il server rifiuta. I giorni passano dalla stessa coda delle serie (id
   `DeterministicID.nutritionDay`, upsert idempotente); si correggono entro 14 giorni (`Nutrition.editableDays`, decisione
   aperta), mai il futuro. Il piano in vigore è una duplicazione ammessa con fixture (`Nutrition.planInForce`).
-  **Da fare**: notifica locale serale «Hai rispettato i macro di oggi?» con azioni Sì / No, lettura da Apple Salute (solo
-  totali giornalieri, sola lettura; e allora serve la regola «rispettato» entro la tolleranza, da portare nelle fixture).
+  **Promemoria serale** (`Features/Macro/MacroReminderCenter`): notifica locale «Hai rispettato i macro di oggi?» con
+  azioni **Sì** (registra rispettati senza aprire l'app) e **No** (registra non rispettati e l'app chiede se inserire i
+  numeri); il tocco sulla notifica apre il giorno. Personalizzabile da Profilo → Preferenze (acceso/spento, orario; default
+  acceso alle 22:00, solo con il consenso). Si programmano i prossimi 14 giorni e si riprogramma a ogni apertura, dopo ogni
+  registrazione e a ogni modifica: i giorni già registrati non ricevono la notifica (`MacroReminder.plan` in Domain).
+  **Da fare**: lettura da Apple Salute (solo totali giornalieri, sola lettura): allora un giorno con dati di Salute non
+  riceve la notifica, e serve la regola «rispettato entro la tolleranza», da portare nelle fixture.
   Mai i singoli alimenti fuori dal telefono.
 - **Check** (fase 2): check giornaliero mattina/sera, feedback per muscolo a fine seduta, questionari.
 - **Progressi** (fase 3): misure, pliche, circonferenze, foto (Storage privato), grafico carichi.
