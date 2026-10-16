@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Genera i test pgTAP dalle fixture condivise (stessi casi dei test Swift).
-//   node fixtures/generate-sql.mjs          scrive supabase/tests/previous_week_fixtures.test.sql e backoff_fixtures.test.sql
+//   node fixtures/generate-sql.mjs          scrive supabase/tests/previous_week_fixtures.test.sql, backoff_fixtures.test.sql e nutrition_target_fixtures.test.sql
 //   node fixtures/generate-sql.mjs --check  non scrive: esce con errore se un file non è aggiornato (CI)
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -149,9 +149,44 @@ function buildBackoff() {
   return out.join('\n') + '\n'
 }
 
+function buildNutritionTarget() {
+  const { cases } = JSON.parse(readFileSync(fixture('nutrition_target_cases.json'), 'utf8'))
+  const out = [
+    '-- GENERATO da fixtures/generate-sql.mjs a partire da fixtures/nutrition_target_cases.json: non modificare a mano.',
+    "-- nutrition_target_on: gli stessi casi della fixture che passa anche l'implementazione Swift.",
+    '',
+    'begin;',
+    'create extension if not exists pgtap with schema extensions;',
+    `select plan(${cases.length});`,
+    '',
+  ]
+  cases.forEach((c, idx) => {
+    const no = idx + 1
+    const athlete = uuid('a', no, 1)
+    out.push(`-- ${no}. ${c.name}`)
+    out.push(`insert into auth.users (id, email) values (${q(athlete)}, ${q(`macro${no}@fixture.test`)});`)
+    c.input.plans.forEach((p, j) => {
+      const plan = uuid('b', no, j + 1)
+      out.push(
+        `insert into public.nutrition_plans (id, athlete_id, valid_from, declared_at, declaration_version, deleted_at) values (${q(plan)}, ${q(athlete)}, ${q(p.valid_from)}, now(), 'fixture', ${p.deleted ? 'now()' : 'null'});`,
+      )
+      out.push(
+        `insert into public.nutrition_plan_days (plan_id, kcal, protein_g, carbs_g, fat_g) values (${q(plan)}, ${p.kcal}, 150, 250, 70);`,
+      )
+    })
+    out.push(
+      `select is((select kcal from public.nutrition_target_on(${q(athlete)}, ${q(c.input.day)}::date)), ${sqlNumber(c.expected.kcal)}::int, ${q(c.name)});`,
+      '',
+    )
+  })
+  out.push('select * from finish();', 'rollback;')
+  return out.join('\n') + '\n'
+}
+
 const outputs = [
   [testFile('previous_week_fixtures.test.sql'), buildPreviousWeek()],
   [testFile('backoff_fixtures.test.sql'), buildBackoff()],
+  [testFile('nutrition_target_fixtures.test.sql'), buildNutritionTarget()],
 ]
 let stale = false
 for (const [file, content] of outputs) {

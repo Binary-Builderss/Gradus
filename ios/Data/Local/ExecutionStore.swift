@@ -239,6 +239,8 @@ struct ExecutionStore: Sendable {
                     "reps": $0.reps ?? null, "deleted_at": $0.deletedAt ?? null,
                 ]
             }
+        case .nutritionDays:
+            return try NutritionStore.payload(db, ids: ids)
         default:
             rows = []
         }

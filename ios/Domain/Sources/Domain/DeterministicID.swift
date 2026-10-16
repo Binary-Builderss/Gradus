@@ -23,6 +23,11 @@ public enum DeterministicID {
         make("segment/\(setLogID.uuidString.lowercased())/\(segIdx)")
     }
 
+    /// `nutrition_days (athlete_id, day)`: `day` come `yyyy-MM-dd`.
+    public static func nutritionDay(athleteID: UUID, day: String) -> UUID {
+        make("nutrition/\(athleteID.uuidString.lowercased())/\(day)")
+    }
+
     static func make(_ name: String) -> UUID { v5(namespace: namespace, name: name) }
 
     static func v5(namespace: UUID, name: String) -> UUID {

@@ -103,7 +103,12 @@ actor SyncEngine {
         let remoteIDs = Set(try JSONDecoder().decode([IDRow].self, from: try await remote.fetchIDs(table: table)).map(\.id))
         try await database.writer.write { db in
             let localIDs = try UUID.fetchAll(db, sql: "SELECT id FROM \(table.rawValue)")
-            let gone = localIDs.filter { !remoteIDs.contains($0) }
+            // Le righe che l'atleta ha scritto e non sono ancora partite non sono sul server: non sono «sparite».
+            let unsent: Set<UUID> =
+                table.isWrittenByAthlete
+                ? Set(try UUID.fetchAll(db, sql: "SELECT row_id FROM pending_push WHERE table_name = ?", arguments: [table.rawValue]))
+                : []
+            let gone = localIDs.filter { !remoteIDs.contains($0) && !unsent.contains($0) }
             for id in gone {
                 if table == .mesocycles {
                     try db.execute(
@@ -135,6 +140,9 @@ actor SyncEngine {
         case .setBlocks: try save(SetBlockRecord.self, data, db)
         case .blockWeeks: try save(BlockWeekRecord.self, data, db)
         case .exerciseVideos: try save(ExerciseVideoRecord.self, data, db)
+        case .nutritionPlans: try save(NutritionPlanRecord.self, data, db)
+        case .nutritionPlanDays: try save(NutritionPlanDayRecord.self, data, db)
+        case .nutritionDays: try save(NutritionDayRecord.self, data, table: table, db)
         case .workouts: try save(WorkoutRecord.self, data, table: table, db)
         case .setLogs: try save(SetLogRecord.self, data, table: table, db)
         case .setSegments: try save(SetSegmentRecord.self, data, table: table, db)

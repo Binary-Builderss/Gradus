@@ -49,6 +49,24 @@ final class FakeRemote: RemoteAPI, @unchecked Sendable {
         }
     }
 
+    private(set) var consentCalls: [(user: UUID, at: Date?, version: String?)] = []
+    private(set) var withdrawCalls = 0
+    var failOnConsent: Error?
+
+    func setNutritionConsent(userID: UUID, at date: Date?, version: String?) async throws {
+        try lock.withLock {
+            if let failOnConsent { throw failOnConsent }
+            consentCalls.append((userID, date, version))
+        }
+    }
+
+    func withdrawNutritionConsent() async throws {
+        try lock.withLock {
+            if let failOnConsent { throw failOnConsent }
+            withdrawCalls += 1
+        }
+    }
+
     func setAccountDisabled(userID: UUID, disabled: Bool) async throws {
         lock.withLock { disabledCalls.append((userID, disabled)) }
     }

@@ -35,6 +35,11 @@ struct ProfileView: View {
                         Label("Preferenze", systemImage: "slider.horizontal.3")
                     }
                     NavigationLink {
+                        PrivacyView(environment: environment, userID: userID)
+                    } label: {
+                        Label("Privacy", systemImage: "hand.raised")
+                    }
+                    NavigationLink {
                         SyncView(environment: environment, model: model)
                     } label: {
                         HStack {

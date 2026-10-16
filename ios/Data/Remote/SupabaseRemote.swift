@@ -29,6 +29,19 @@ struct SupabaseRemote: RemoteAPI {
         try await client.from("profiles").update(["full_name": name]).eq("id", value: userID.uuidString).execute()
     }
 
+    func setNutritionConsent(userID: UUID, at date: Date?, version: String?) async throws {
+        let at: AnyJSON = date.map { .string(ISO8601DateFormatter().string(from: $0)) } ?? .null
+        let versionValue: AnyJSON = version.map { .string($0) } ?? .null
+        try await client.from("profiles")
+            .update(["nutrition_consent_at": at, "nutrition_consent_version": versionValue])
+            .eq("id", value: userID.uuidString)
+            .execute()
+    }
+
+    func withdrawNutritionConsent() async throws {
+        try await client.rpc("withdraw_nutrition_consent").execute()
+    }
+
     func setAccountDisabled(userID: UUID, disabled: Bool) async throws {
         let value: AnyJSON = disabled ? .string(ISO8601DateFormatter().string(from: Date())) : .null
         try await client.from("profiles").update(["disabled_at": value]).eq("id", value: userID.uuidString).execute()

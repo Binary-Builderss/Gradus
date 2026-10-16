@@ -185,4 +185,41 @@ struct LiveSyncTests {
         try await store.save(edit(90))
         #expect(try await engine.push() >= 1)
     }
+
+    @Test("macro: senza consenso il server rifiuta; con il consenso l'atleta scrive un giorno, lo ritrova su un altro telefono e il ritiro cancella tutto", .enabled(if: key != nil))
+    @MainActor
+    func nutritionWithConsent() async throws {
+        let (remote, phone1, engine1, athlete) = try await sessionWithUser(as: "atleta@prova.local")
+        let store = NutritionStore(database: phone1, remote: remote)
+        _ = try await engine1.sync()
+        // Si parte puliti: se una prova precedente ha lasciato il consenso, lo si ritira.
+        try await store.withdrawConsent(userID: athlete)
+        _ = try await engine1.sync()
+        let day = Nutrition.dayString(.now)
+
+        // senza consenso il telefono non scrive nemmeno
+        await #expect(throws: NutritionStore.StoreError.noConsent) {
+            try await store.save(DayEdit(athleteID: athlete, day: day, status: .respected, intake: MacroIntake()))
+        }
+
+        try await store.grantConsent(userID: athlete)
+        try await store.save(DayEdit(athleteID: athlete, day: day, status: .notRespected, intake: MacroIntake(kcal: 3050, proteinG: 160)))
+        #expect(try await engine1.push() == 1)
+
+        // un altro telefono, stesso account
+        let (_, phone2, engine2, _) = try await sessionWithUser(as: "atleta@prova.local")
+        _ = try await engine2.sync()
+        let received = try await phone2.writer.read { try NutritionStore.snapshot($0, athleteID: athlete) }
+        #expect(received.consent)
+        let entry = received.days.first { $0.day == day }
+        #expect(entry?.status == .notRespected)
+        #expect(entry?.intake.kcal == 3050)
+
+        // ritirare il consenso cancella i giorni sul server; l'altro telefono se ne accorge alla sincronizzazione
+        try await store.withdrawConsent(userID: athlete)
+        _ = try await engine2.sync()
+        let after = try await phone2.writer.read { try NutritionStore.snapshot($0, athleteID: athlete) }
+        #expect(after.consent == false)
+        #expect(after.days.allSatisfy { $0.status == nil })
+    }
 }
