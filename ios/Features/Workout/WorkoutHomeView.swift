@@ -127,7 +127,7 @@ private struct WeekPicker: View {
 
     var body: some View {
         ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
+            ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(1...max(weeks, 1), id: \.self) { w in
                         Button {
@@ -138,6 +138,8 @@ private struct WeekPicker: View {
                                 .padding(.horizontal, 14).padding(.vertical, 8)
                                 .background(w == selected ? Color.accentColor : Color.secondary.opacity(0.15), in: Capsule())
                                 .foregroundStyle(w == selected ? Color.white : Color.primary)
+                                .frame(minHeight: 44)
+                                .contentShape(.rect)
                         }
                         .buttonStyle(.plain)
                         .id(w)
@@ -147,6 +149,7 @@ private struct WeekPicker: View {
                 }
                 .padding(.vertical, 2)
             }
+            .scrollIndicators(.hidden)
             .onAppear { proxy.scrollTo(selected, anchor: .center) }
         }
     }
