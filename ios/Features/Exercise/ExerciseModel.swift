@@ -27,7 +27,6 @@ final class ExerciseModel {
     let session: SessionContent
     let slot: SlotContent
     let week: Int
-    let preferredScale: EffortScale
     private(set) var drafts: [SetKey: SetDraft] = [:]
     private(set) var setCounts: [UUID: Int] = [:]
     private(set) var references: [SetKey: String] = [:]
@@ -41,14 +40,13 @@ final class ExerciseModel {
 
     init(
         session: SessionContent, slot: SlotContent, week: Int, store: ExecutionStore,
-        preferredScale: EffortScale = .buf, debounce: Duration = ExerciseModel.debounce,
+        debounce: Duration = ExerciseModel.debounce,
         onSaved: @escaping @MainActor () -> Void = {}
     ) {
         self.session = session
         self.slot = slot
         self.week = week
         self.store = store
-        self.preferredScale = preferredScale
         self.debounce = debounce
         self.onSaved = onSaved
     }
@@ -110,14 +108,8 @@ final class ExerciseModel {
         drafts[key]?.segments.append(SegmentDraft())
     }
 
-    func addSet(to block: UUID) {
-        let next = setCounts[block] ?? 0
-        setCounts[block] = next + 1
-        drafts[SetKey(block: block, idx: next)] = SetDraft()
-    }
-
     func scale(for block: BlockContent) -> EffortScale {
-        EffortOptions.scale(prescribed: block.prescription?.method, preferred: preferredScale)
+        EffortOptions.scale(prescribed: block.prescription?.method)
     }
 
     // MARK: Salvataggio

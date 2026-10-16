@@ -29,10 +29,21 @@ struct SupabaseRemote: RemoteAPI {
         try await client.from("profiles").update(["full_name": name]).eq("id", value: userID.uuidString).execute()
     }
 
-    func reactivateAccount(userID: UUID) async throws {
-        try await client.from("profiles")
-            .update(["disabled_at": AnyJSON.null])
-            .eq("id", value: userID.uuidString)
-            .execute()
+    func setAccountDisabled(userID: UUID, disabled: Bool) async throws {
+        let value: AnyJSON = disabled ? .string(ISO8601DateFormatter().string(from: Date())) : .null
+        try await client.from("profiles").update(["disabled_at": value]).eq("id", value: userID.uuidString).execute()
+    }
+
+    func deleteAccount(confirm: String) async throws {
+        do {
+            try await client.functions.invoke("delete-account", options: FunctionInvokeOptions(body: ["confirm": confirm]))
+        } catch FunctionsError.httpError(_, let data) {
+            struct Payload: Decodable { var error: String? }
+            switch (try? JSONDecoder().decode(Payload.self, from: data))?.error {
+            case "confirm_mismatch": throw AccountDeletionError.confirmMismatch
+            case "subscription_active": throw AccountDeletionError.subscriptionActive
+            default: throw AccountDeletionError.failed
+            }
+        }
     }
 }

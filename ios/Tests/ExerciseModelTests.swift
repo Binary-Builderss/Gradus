@@ -133,6 +133,22 @@ struct ExerciseModelTests {
         #expect(try await logged(store).first?.segments == [Segment(loadKg: 80, reps: 8), Segment(loadKg: 60, reps: 6)])
     }
 
+    @Test("la scala la decide il coach: RPE se la prescrizione è RPE, altrimenti ripetizioni in riserva; le serie sono quelle prescritte")
+    func scaleFromCoach() async throws {
+        let (model, _, _) = try make()
+        await model.load()
+        let rpe = BlockContent(
+            id: UUID(), role: "working", technique: "none", restS: nil, tut: [], refBlockId: nil,
+            prescription: Prescription(sets: 3, method: .rpe, value: 8))
+        let load = BlockContent(
+            id: UUID(), role: "working", technique: "none", restS: nil, tut: [], refBlockId: nil,
+            prescription: Prescription(sets: 3, method: .load, value: 80))
+        #expect(model.scale(for: rpe) == .rpe)
+        #expect(model.scale(for: load) == .buf)
+        #expect(model.scale(for: BlockContent(id: UUID(), role: "working", technique: "none", restS: nil, tut: [], refBlockId: nil, prescription: nil)) == .buf)
+        #expect(model.setCounts[top] == 2)  // quante ne ha scritte il coach, non una di più
+    }
+
     @Test("lo sforzo si salva nella scala scelta: BUF se la prescrizione è BUF")
     func effortScale() async throws {
         let (model, store, _) = try make()

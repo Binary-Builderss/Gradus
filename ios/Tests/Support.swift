@@ -12,7 +12,9 @@ final class FakeRemote: RemoteAPI, @unchecked Sendable {
     private(set) var pageRequests: [(table: SyncTable, since: String?, offset: Int)] = []
     var failOnPage: Int?  // fa fallire la richiesta di pagina numero N (da 1)
     private var pageCount = 0
-    private(set) var reactivated: [UUID] = []
+    private(set) var disabledCalls: [(user: UUID, disabled: Bool)] = []
+    private(set) var deleteCalls: [String] = []
+    var failOnDelete: AccountDeletionError?
 
     func set(_ table: SyncTable, _ rows: [Row]) {
         lock.withLock { tables[table] = rows }
@@ -47,8 +49,15 @@ final class FakeRemote: RemoteAPI, @unchecked Sendable {
         }
     }
 
-    func reactivateAccount(userID: UUID) async throws {
-        lock.withLock { reactivated.append(userID) }
+    func setAccountDisabled(userID: UUID, disabled: Bool) async throws {
+        lock.withLock { disabledCalls.append((userID, disabled)) }
+    }
+
+    func deleteAccount(confirm: String) async throws {
+        try lock.withLock {
+            deleteCalls.append(confirm)
+            if let failOnDelete { throw failOnDelete }
+        }
     }
 
     /// Come PostgREST: upsert sull'id (le chiavi devono essere uguali in ogni riga), `updated_at` lo assegna il server.
