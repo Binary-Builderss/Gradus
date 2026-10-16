@@ -17,6 +17,8 @@ struct MacroView: View {
                     targetSection(snapshot)
                     if !snapshot.consent { consentSection }
                     daysSection(snapshot)
+                } else if model.readFailed {
+                    ReadFailedView()
                 } else {
                     ProgressView()
                 }

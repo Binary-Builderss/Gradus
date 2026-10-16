@@ -10,6 +10,7 @@ struct PrivacyView: View {
     @State private var confirming = false
     @State private var working = false
     @State private var failed = false
+    @State private var readFailed = false
 
     var body: some View {
         List {
@@ -22,7 +23,11 @@ struct PrivacyView: View {
                     Label("Non condividi i macro con il coach", systemImage: "shield.slash")
                     Text("Puoi dare il consenso dalla scheda Macro.").font(.footnote).foregroundStyle(.secondary)
                 case nil:
-                    ProgressView()
+                    if readFailed {
+                        Text("Non riesco a leggere i dati sul telefono. Chiudi e riapri l'app.").foregroundStyle(.red)
+                    } else {
+                        ProgressView()
+                    }
                 }
             } header: {
                 Text("Macro")
@@ -43,10 +48,7 @@ struct PrivacyView: View {
         }
         .task {
             let id = userID
-            let observation = ValueObservation.tracking { db in try NutritionStore.hasConsent(db, userID: id) }
-            do {
-                for try await value in observation.values(in: environment.database.writer) { consent = value }
-            } catch {}
+            readFailed = await !environment.database.watch({ db in try NutritionStore.hasConsent(db, userID: id) }) { consent = $0 }
         }
     }
 

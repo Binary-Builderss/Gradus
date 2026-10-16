@@ -32,7 +32,7 @@ final class AppEnvironment {
             client: SupabaseAuthClient(client: client, resetRedirect: config.siteURL.appending(path: "nuova-password")),
             onSignOut: {
                 // I dati sul telefono sono di chi era collegato: all'uscita si svuotano.
-                try? database.erase()
+                AppEnvironment.eraseOnSignOut(database)
                 syncModel.reset()
                 timer.skip()
                 Task { await reminderCenter.setUser(nil) }
@@ -56,10 +56,34 @@ final class AppEnvironment {
         sync.requestSync()
     }
 
-    /// L'ambiente vero dell'app, oppure nil se manca la configurazione.
+    /// Segnato quando lo svuotamento all'uscita non è riuscito: all'avvio dopo si rifà prima di aprire i dati.
+    static let pendingEraseKey = "pendingErase"
+
+    /// Svuota i dati dell'utente che esce. Se non ci riesce (due tentativi) lo segna: sono dati di un altro, non devono
+    /// restare per il prossimo che entra.
+    static func eraseOnSignOut(_ database: AppDatabase, defaults: UserDefaults = .standard) {
+        for _ in 0..<2 {
+            if (try? database.erase()) != nil { return }
+        }
+        defaults.set(true, forKey: pendingEraseKey)
+    }
+
+    /// Il database da usare: quello su disco, dopo aver finito un'uscita rimasta a metà. Se non si apre o non si riesce a
+    /// svuotare, uno vuoto in memoria (meglio nessun dato che quelli di un altro).
+    static func openDatabase(
+        onDisk: () throws -> AppDatabase = AppDatabase.onDisk, defaults: UserDefaults = .standard
+    ) throws -> AppDatabase {
+        guard let database = try? onDisk() else { return try AppDatabase.inMemory() }
+        if defaults.bool(forKey: pendingEraseKey) {
+            guard (try? database.erase()) != nil else { return try AppDatabase.inMemory() }
+            defaults.removeObject(forKey: pendingEraseKey)
+        }
+        return database
+    }
+
+    /// L'ambiente vero dell'app, oppure nil se manca la configurazione o non si riesce ad aprire nessun database.
     static func live() -> AppEnvironment? {
-        guard let config = AppConfig.current else { return nil }
-        let database = (try? AppDatabase.onDisk()) ?? (try! AppDatabase.inMemory())
+        guard let config = AppConfig.current, let database = try? openDatabase() else { return nil }
         return AppEnvironment(config: config, database: database)
     }
 }
