@@ -33,6 +33,10 @@ export const messages = {
       sent: 'Ti abbiamo scritto: apri il link nell’email per attivare l’account, poi accedi.',
       hasAccount: 'Hai già un account?',
       closed: 'Le registrazioni sono chiuse al momento.',
+      accept: 'Ho letto e accetto i',
+      acceptTerms: 'Termini di servizio',
+      acceptAnd: 'e l’',
+      acceptPrivacy: 'Informativa sulla privacy',
     },
     recovery: {
       title: 'Recupera la password',
@@ -56,6 +60,7 @@ export const messages = {
     errors: {
       emailInvalid: 'Inserisci un indirizzo email valido.',
       nameRequired: 'Inserisci il tuo nome.',
+      acceptRequired: 'Per registrarti devi accettare termini e privacy.',
       emailTaken: 'Esiste già un account con questa email. Prova ad accedere.',
       passwordRequired: 'Inserisci la password.',
       passwordTooShort: 'La password deve avere almeno 8 caratteri.',
@@ -66,6 +71,111 @@ export const messages = {
       network: 'Connessione non riuscita. Controlla la rete e riprova.',
       generic: 'Qualcosa non ha funzionato. Riprova.',
     },
+  },
+  legal: {
+    updated: 'Versione del 16 ottobre 2026',
+    footer: { terms: 'Termini', privacy: 'Privacy' },
+    back: 'Indietro',
+    termsTitle: 'Termini di servizio',
+    privacyTitle: 'Informativa sulla privacy',
+    terms: [
+      {
+        title: 'Cos’è Gradus',
+        paragraphs: [
+          'Gradus è un servizio per scrivere programmi di allenamento (mesocicli) e seguirne l’esecuzione. Il coach li prepara dal sito, l’atleta li esegue e registra dall’app.',
+          'Il servizio è gestito da {controller}. Usandolo accetti questi termini.',
+        ],
+      },
+      {
+        title: 'Account',
+        paragraphs: [
+          'Per registrarti servono nome, email e una password. Le informazioni devono essere vere e la password va tenuta riservata: quello che accade dal tuo account lo consideriamo fatto da te.',
+          'Puoi disattivare l’account o cancellarlo in qualsiasi momento dal Profilo. La cancellazione è definitiva.',
+        ],
+      },
+      {
+        title: 'Coach e atleti',
+        paragraphs: [
+          'Il coach è l’unico autore dei programmi che scrive e ne è responsabile verso i propri atleti. L’atleta registra l’esecuzione delle sedute e il coach la vede.',
+          'Gradus non fornisce consulenza medica né sostituisce il parere di un medico. Prima di iniziare un programma verifica di essere idoneo all’attività fisica.',
+        ],
+      },
+      {
+        title: 'Uso corretto',
+        paragraphs: [
+          'Non usare il servizio per attività illecite, per accedere a dati di altri senza permesso o per sovraccaricarlo di richieste automatiche.',
+          'I contenuti che inserisci (esercizi, programmi, note, video) restano tuoi. Ci autorizzi a conservarli e mostrarli alle persone che hai collegato, nei limiti necessari al funzionamento del servizio.',
+        ],
+      },
+      {
+        title: 'Piani',
+        paragraphs: [
+          'Il servizio ha un piano gratuito con un numero massimo di atleti. Funzioni e limiti dei piani sono indicati nella pagina Piano e abbonamento e possono cambiare, con preavviso ragionevole.',
+        ],
+      },
+      {
+        title: 'Responsabilità',
+        paragraphs: [
+          'Il servizio è fornito così com’è. Facciamo il possibile perché sia disponibile e i dati al sicuro, ma non garantiamo assenza di interruzioni o errori. Nei limiti consentiti dalla legge non rispondiamo di danni indiretti né di infortuni derivanti dall’allenamento.',
+        ],
+      },
+      {
+        title: 'Modifiche e legge applicabile',
+        paragraphs: [
+          'Possiamo aggiornare questi termini: se la modifica è importante te lo comunichiamo prima che valga. Continuando a usare il servizio accetti la nuova versione.',
+          'Si applica la legge italiana. Per domande scrivi a {contact}.',
+        ],
+      },
+    ],
+    privacy: [
+      {
+        title: 'Chi tratta i tuoi dati',
+        paragraphs: [
+          'Il titolare del trattamento è {controller}. Contatto per richieste sulla privacy: {contact}.',
+        ],
+      },
+      {
+        title: 'Quali dati trattiamo',
+        paragraphs: [
+          'Account: nome, email e password (conservata in forma cifrata, non la vediamo).',
+          'Allenamento: programmi, sedute, serie, carichi e ripetizioni, sforzo percepito, note e feedback per muscolo.',
+          'Salute e forma fisica: controlli giornalieri, questionari, misure corporee, foto e massimali, se l’atleta decide di inserirli. Sono dati relativi alla salute: li trattiamo solo con il tuo consenso esplicito, che puoi ritirare.',
+        ],
+      },
+      {
+        title: 'Perché e su quale base',
+        paragraphs: [
+          'Per fornirti il servizio (creare l’account, scrivere ed eseguire i programmi): è necessario al contratto con te.',
+          'Per i dati sulla salute: il tuo consenso. Se non lo dai o lo ritiri, quelle funzioni non sono disponibili.',
+          'Per la sicurezza del servizio e per obblighi di legge: il nostro legittimo interesse e la legge. Non usiamo i dati per pubblicità né li vendiamo.',
+        ],
+      },
+      {
+        title: 'Chi può vederli',
+        paragraphs: [
+          'Un coach vede i dati di esecuzione degli atleti collegati a lui, e un atleta vede i programmi scritti dal suo coach. Nessun altro utente li vede.',
+          'Ci appoggiamo a fornitori che trattano i dati per nostro conto: Supabase (database e accesso) e Cloudflare (hosting del sito). Non condividiamo i dati con altri.',
+        ],
+      },
+      {
+        title: 'Cookie e archiviazione',
+        paragraphs: [
+          'Usiamo solo l’archiviazione tecnica del browser necessaria a tenerti collegato e a ricordare alcune preferenze (per esempio il tema). Nessun cookie di profilazione o di analisi, quindi nessun banner da accettare.',
+        ],
+      },
+      {
+        title: 'Per quanto tempo',
+        paragraphs: [
+          'Finché l’account esiste. Se lo cancelli, i dati che hai registrato come atleta e il tuo account vengono eliminati. I programmi scritti da un coach restano agli atleti a cui erano destinati, senza più il suo account.',
+        ],
+      },
+      {
+        title: 'I tuoi diritti',
+        paragraphs: [
+          'Puoi chiedere accesso, correzione, cancellazione, limitazione, portabilità dei tuoi dati e opporti al trattamento; puoi ritirare il consenso quando vuoi. Scrivi a {contact}. Hai anche il diritto di reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).',
+        ],
+      },
+    ],
   },
   app: {
     nav: {

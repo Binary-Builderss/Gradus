@@ -46,10 +46,11 @@ describe('SignupForm', () => {
     expect(await screen.findByText(m.errors.nameRequired)).toBeInTheDocument()
     expect(screen.getByText(m.errors.emailInvalid)).toBeInTheDocument()
     expect(screen.getByText(m.errors.passwordTooShort)).toBeInTheDocument()
+    expect(screen.getByText(m.errors.acceptRequired)).toBeInTheDocument()
     expect(onSubmit).not.toHaveBeenCalled()
   })
 
-  it('invia nome, email e password', async () => {
+  it('senza spuntare termini e privacy non parte; poi invia nome, email e password', async () => {
     const onSubmit = vi.fn().mockResolvedValue(null)
     render(<SignupForm onSubmit={onSubmit} />)
     fill(m.signup.name, 'Giulia Rossi')
@@ -57,12 +58,17 @@ describe('SignupForm', () => {
     fill(m.password, 'lunghissima')
     fill(m.newPassword.confirm, 'lunghissima')
     fireEvent.click(screen.getByRole('button', { name: m.signup.submit }))
+    expect(await screen.findByText(m.errors.acceptRequired)).toBeInTheDocument()
+    expect(onSubmit).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: m.signup.submit }))
     await vi.waitFor(() =>
       expect(onSubmit).toHaveBeenCalledWith({
         full_name: 'Giulia Rossi',
         email: 'giulia@example.com',
         password: 'lunghissima',
         confirm: 'lunghissima',
+        accept: 'on',
       }),
     )
   })

@@ -25,6 +25,8 @@ export const signupSchema = z
     full_name: z.string().trim().min(1, e.nameRequired),
     email: z.email(e.emailInvalid),
     ...passwordFields,
+    // Una casella spuntata arriva dal form come 'on'; non spuntata non arriva affatto.
+    accept: z.literal('on', e.acceptRequired),
   })
   .refine((v) => v.password === v.confirm, samePasswords)
 

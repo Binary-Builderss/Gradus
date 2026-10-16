@@ -39,6 +39,7 @@ describe('signupSchema', () => {
     email: 'giulia@example.com',
     password: 'lunghissima',
     confirm: 'lunghissima',
+    accept: 'on',
   }
   it('accetta dati validi', () => {
     expect(signupSchema.safeParse(ok).success).toBe(true)
@@ -49,6 +50,9 @@ describe('signupSchema', () => {
     expect(
       signupSchema.safeParse({ ...ok, password: 'corta', confirm: 'corta' }).error?.issues[0]?.message,
     ).toBe(e.passwordTooShort)
+    expect(signupSchema.safeParse({ ...ok, accept: undefined }).error?.issues[0]?.message).toBe(
+      e.acceptRequired,
+    )
     expect(signupSchema.safeParse({ ...ok, confirm: 'diversa123' }).error?.issues[0]?.path).toEqual([
       'confirm',
     ])

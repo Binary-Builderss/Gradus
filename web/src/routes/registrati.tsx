@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AuthHeading, AuthLayout } from '@/components/auth/AuthLayout'
 import { SignupForm } from '@/components/auth/forms'
 import { mapAuthError } from '@/lib/auth'
+import { legal } from '@/lib/legal'
 import { messages } from '@/lib/messages'
 import { usePageTitle } from '@/lib/pageTitle'
 import { supabase } from '@/lib/supabase'
@@ -39,7 +40,15 @@ function SignupPage() {
               const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { data: { full_name }, emailRedirectTo: `${window.location.origin}/login` },
+                options: {
+                  // Prova del consenso: quando e a quale versione dei testi.
+                  data: {
+                    full_name,
+                    terms_accepted_at: new Date().toISOString(),
+                    terms_version: legal.version,
+                  },
+                  emailRedirectTo: `${window.location.origin}/login`,
+                },
               })
               if (error) return mapAuthError(error)
               // Con la conferma email attiva non c'è ancora una sessione: si attende il link.

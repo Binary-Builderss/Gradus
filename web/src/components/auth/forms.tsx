@@ -214,6 +214,43 @@ export function SignupForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof signu
         autoComplete="new-password"
         error={errors.confirm}
       />
+      <div className="grid gap-1.5">
+        <label className="flex items-start gap-2.5 text-sm leading-snug">
+          <input
+            type="checkbox"
+            name="accept"
+            aria-invalid={errors.accept ? true : undefined}
+            aria-describedby={errors.accept ? 'field-accept-error' : undefined}
+            className="mt-0.5 size-4 shrink-0 accent-primary"
+          />
+          <span>
+            {m.signup.accept}{' '}
+            <a
+              href="/termini"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
+              {m.signup.acceptTerms}
+            </a>{' '}
+            {m.signup.acceptAnd}
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
+              {m.signup.acceptPrivacy}
+            </a>
+            .
+          </span>
+        </label>
+        {errors.accept && (
+          <p id="field-accept-error" className="text-sm text-destructive">
+            {errors.accept}
+          </p>
+        )}
+      </div>
       <FormError message={formError} />
       <SubmitButton pending={pending} label={m.signup.submit} pendingLabel={m.signup.submitting} />
     </form>
