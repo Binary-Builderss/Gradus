@@ -79,16 +79,16 @@ insert("slot_groups", [{"id": G1, "mesocycle_id": M, "session_id": S1, "position
 SL1, SL2 = ids(4, 1), ids(4, 2)
 insert("slots", [
     {"id": SL1, "mesocycle_id": M, "group_id": G1, "position": 0, "exercise_id": EX1, "coach_notes": "Gomiti stretti"},
-    {"id": SL2, "mesocycle_id": M, "group_id": G1, "position": 1, "exercise_id": EX2},
+    {"id": SL2, "mesocycle_id": M, "group_id": G1, "position": 1, "exercise_id": EX2, "coach_notes": None},
 ])
 TOP, BACK = ids(5, 1), ids(5, 2)
 insert("set_blocks", [
-    {"id": TOP, "mesocycle_id": M, "slot_id": SL1, "position": 0, "role": "top", "rest_s": 180},
-    {"id": BACK, "mesocycle_id": M, "slot_id": SL1, "position": 1, "role": "backoff", "rest_s": 120},
+    {"id": TOP, "mesocycle_id": M, "slot_id": SL1, "position": 0, "role": "top", "rest_s": 180, "ref_block_id": None},
+    {"id": BACK, "mesocycle_id": M, "slot_id": SL1, "position": 1, "role": "backoff", "rest_s": 120, "ref_block_id": TOP},
 ])
 insert("block_weeks", [
-    {"id": ids(7, w), "mesocycle_id": M, "block_id": TOP, "week": w, "sets": 1, "reps_min": 5, "reps_max": 5, "method": "BUF", "intensity_value": max(3 - (w - 1) * 0.5, 0)}
+    {"id": ids(7, w), "mesocycle_id": M, "block_id": TOP, "week": w, "sets": 1, "reps_min": 5, "reps_max": 5, "method": "BUF", "intensity_value": max(3 - (w - 1) * 0.5, 0), "ref_pct": None}
     for w in range(1, 6)
-] + [{"id": ids(8, 1), "mesocycle_id": M, "block_id": BACK, "week": 1, "sets": 2, "reps_min": 8, "reps_max": 10, "ref_pct": 85}])
+] + [{"id": ids(8, 1), "mesocycle_id": M, "block_id": BACK, "week": 1, "sets": 2, "reps_min": 8, "reps_max": 10, "method": None, "intensity_value": None, "ref_pct": 85}])
 
 print(f"Creati sul database locale: {COACH}, {ATHLETE}, {OTHER} (password di prova: vedi lo script)")

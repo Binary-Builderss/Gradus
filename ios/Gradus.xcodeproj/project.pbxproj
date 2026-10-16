@@ -23,6 +23,7 @@
 		9F631E7F68F91FBB7116E20A /* SupabaseRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0285C859EDB7F63E45F7B536 /* SupabaseRemote.swift */; };
 		A00238807644F832C83258F6 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A275C57E4796C9645D7ED214 /* SessionDetailView.swift */; };
 		B2ACA51EEE72BD523A635E15 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E9E56D47271319AF087A8B /* AppConfig.swift */; };
+		B75AF6178521084D9EAF828F /* LiveSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */; };
 		B8C4E3AE25172604F411C2F2 /* GradusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */; };
 		C0AAD140BEF495BB346355B2 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AA76D53109D82C5F8214E5 /* AppEnvironment.swift */; };
 		CDABB546EEE4E96644418A48 /* WorkoutHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */; };
@@ -65,6 +66,7 @@
 		71D534E72889639A9946399F /* SyncEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineTests.swift; sourceTree = "<group>"; };
 		7980B8E54F28C9DA4056B1D5 /* AppConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigTests.swift; sourceTree = "<group>"; };
 		8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSyncTests.swift; sourceTree = "<group>"; };
 		9D43462907B6067E227250DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9FC06D27C3928FED57A9DD19 /* AuthModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModelTests.swift; sourceTree = "<group>"; };
 		A275C57E4796C9645D7ED214 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				7980B8E54F28C9DA4056B1D5 /* AppConfigTests.swift */,
 				122A91D31856795C6331649B /* AppTests.swift */,
 				9FC06D27C3928FED57A9DD19 /* AuthModelTests.swift */,
+				939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */,
 				16964EF6CBED657100714099 /* ProgramQueriesTests.swift */,
 				D6CC626E9BEC3A0D545F519B /* Support.swift */,
 				71D534E72889639A9946399F /* SyncEngineTests.swift */,
@@ -350,6 +353,7 @@
 				5B2085F8F45116D6FF58D907 /* AppConfigTests.swift in Sources */,
 				CFF1A6C346545044567C57D0 /* AppTests.swift in Sources */,
 				7C6F223D2EF0D4B4940177C2 /* AuthModelTests.swift in Sources */,
+				B75AF6178521084D9EAF828F /* LiveSyncTests.swift in Sources */,
 				24FE53FD43F58850E9B4FADB /* ProgramQueriesTests.swift in Sources */,
 				EA2962C198727A946FE925DB /* Support.swift in Sources */,
 				2B87D12DF5979DA64F32C8EE /* SyncEngineTests.swift in Sources */,
