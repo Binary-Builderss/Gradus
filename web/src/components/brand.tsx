@@ -21,7 +21,13 @@ export function Wordmark({ className }: { className?: string }) {
   return (
     <picture>
       <source media="(prefers-color-scheme: dark)" srcSet={logoDark} />
-      <img src={logoLight} alt={messages.brand.name} className={cn('h-9 w-auto', className)} />
+      <img
+        src={logoLight}
+        alt={messages.brand.name}
+        width={1560}
+        height={440}
+        className={cn('h-9 w-auto', className)}
+      />
     </picture>
   )
 }
