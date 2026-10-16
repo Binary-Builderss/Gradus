@@ -19,15 +19,17 @@ final class TourWalkthroughUITests: XCTestCase {
         app.launchArguments = ["-tourSeen", "NO"]  // la guida parte da sola anche se un'esecuzione precedente l'ha già vista
         app.launch()
 
-        // Accesso con l'account di prova del database locale.
+        // Accesso con l'account di prova del database locale (se una prova precedente ha lasciato la sessione nel
+        // portachiavi, che sopravvive alla disinstallazione, si è già dentro).
         let email = app.textFields.firstMatch
-        XCTAssertTrue(email.waitForExistence(timeout: 15))
-        email.tap()
-        email.typeText(user)
-        let secure = app.secureTextFields.firstMatch
-        secure.tap()
-        secure.typeText(password)
-        app.buttons["Accedi"].firstMatch.tap()
+        if email.waitForExistence(timeout: 15) {
+            email.tap()
+            email.typeText(user)
+            let secure = app.secureTextFields.firstMatch
+            secure.tap()
+            secure.typeText(password)
+            app.buttons["Accedi"].firstMatch.tap()
+        }
 
         // La guida parte da sola la prima volta.
         let next = app.buttons["Avanti"]
@@ -39,7 +41,7 @@ final class TourWalkthroughUITests: XCTestCase {
             if app.buttons["Fine"].exists { break }
             app.buttons["Avanti"].tap()
             index += 1
-            if index > 20 { XCTFail("la guida non finisce"); break }
+            if index > 40 { XCTFail("la guida non finisce"); break }
         }
         app.buttons["Fine"].tap()
         Thread.sleep(forTimeInterval: 0.5)

@@ -5,6 +5,9 @@ import Testing
 
 @MainActor
 struct TourTests {
+    /// Un programma con tre sedute, la prima con esercizi.
+    private static let program = TourProgram(sessionNames: ["Push", "Pull", "Legs"], firstHasExercises: true)
+
     // MARK: La guida copre tutta l'app (come sul sito)
 
     /// Tutti i `tourTarget("…")` scritti nelle schermate.
@@ -29,27 +32,27 @@ struct TourTests {
     @Test("ogni passo evidenzia un elemento che esiste davvero")
     func everyTargetExists() throws {
         let sources = try Self.targetsInSources()
-        for step in TourPlan.steps(hasProgram: true) {
+        for step in TourPlan.steps(program: Self.program) {
             if let target = step.target { #expect(sources.contains(target), "manca tourTarget(\"\(target)\") per il passo \(step.id)") }
         }
     }
 
     @Test("ogni elemento evidenziabile ha un passo (nuove funzioni = nuovo passo in TourPlan)")
     func everyTargetHasAStep() throws {
-        let used = Set(TourPlan.steps(hasProgram: true).compactMap(\.target))
+        let used = Set(TourPlan.steps(program: Self.program).compactMap(\.target))
         for target in try Self.targetsInSources() { #expect(used.contains(target), "nessun passo per tourTarget(\"\(target)\")") }
     }
 
     @Test("ogni scheda dell'app è nel percorso")
     func everyTabIsVisited() {
-        let tabs = Set(TourPlan.steps(hasProgram: true).map(\.tab))
+        let tabs = Set(TourPlan.steps(program: Self.program).map(\.tab))
         for tab in [MainTab.workout, .macro, .profile] { #expect(tabs.contains(tab), "la guida non passa da \(tab)") }
     }
 
     @Test("ogni passo ha un id unico, un titolo e un testo")
     func stepsAreWellFormed() {
-        for hasProgram in [true, false] {
-            let steps = TourPlan.steps(hasProgram: hasProgram)
+        for program in [Self.program, TourProgram(sessionNames: ["A"], firstHasExercises: false), TourProgram(sessionNames: [], firstHasExercises: false), nil] {
+            let steps = TourPlan.steps(program: program)
             #expect(Set(steps.map(\.id)).count == steps.count)
             #expect(steps.allSatisfy { !$0.title.isEmpty && !$0.body.isEmpty })
         }
@@ -57,9 +60,30 @@ struct TourTests {
 
     @Test("senza un programma la guida salta i passi che lo mostrano e lo spiega")
     func withoutProgram() {
-        let steps = TourPlan.steps(hasProgram: false)
+        let steps = TourPlan.steps(program: nil)
         #expect(!steps.contains { $0.target?.hasPrefix("home-") == true })
         #expect(steps.contains { $0.id == "no-program" })
+    }
+
+    @Test("la guida apre ogni seduta, e il primo esercizio dentro la prima")
+    func opensSessions() {
+        let steps = TourPlan.steps(program: Self.program)
+        let screens = steps.filter { $0.tab == .workout }.map(\.screen)
+        for index in 0..<3 { #expect(screens.contains(.session(index)), "la seduta \(index) non viene aperta") }
+        #expect(screens.contains(.exercise(0)))
+        #expect(!screens.contains(.exercise(1)))
+        // Un passo che evidenzia un elemento dell'esercizio sta nell'esercizio.
+        for step in steps where step.target?.hasPrefix("exercise-") == true { #expect(step.screen == .exercise(0), "\(step.id)") }
+        for step in steps where step.target?.hasPrefix("session-") == true { #expect(step.screen.sessionIndex != nil, "\(step.id)") }
+        // Le altre schede stanno alla radice.
+        #expect(steps.filter { $0.tab != .workout }.allSatisfy { $0.screen == .root })
+    }
+
+    @Test("senza esercizi da aprire i passi sull'esercizio restano testo nella seduta")
+    func emptyFirstSession() {
+        let steps = TourPlan.steps(program: TourProgram(sessionNames: ["A"], firstHasExercises: false))
+        #expect(!steps.contains { $0.screen == .exercise(0) })
+        #expect(steps.contains { $0.id == "logging" && $0.target == nil })
     }
 
     // MARK: Come ci si muove
@@ -69,7 +93,7 @@ struct TourTests {
         let defaults = UserDefaults(suiteName: "tour-\(UUID())")!
         let tour = TourModel(defaults: defaults)
         #expect(!tour.isActive && !tour.hasSeen)
-        tour.start(hasProgram: true)
+        tour.start(program: Self.program)
         #expect(tour.isActive && tour.isFirst && tour.current?.id == "welcome")
         tour.back()
         #expect(tour.isFirst)
@@ -87,11 +111,11 @@ struct TourTests {
     @Test("«Salta» chiude e la guida non riparte da sola, ma si può rifare")
     func skip() {
         let tour = TourModel(defaults: UserDefaults(suiteName: "tour-\(UUID())")!)
-        tour.start(hasProgram: true)
+        tour.start(program: Self.program)
         tour.next()
         tour.finish()
         #expect(!tour.isActive && tour.hasSeen)
-        tour.start(hasProgram: false)
+        tour.start(program: nil)
         #expect(tour.isActive && tour.isFirst)
     }
 

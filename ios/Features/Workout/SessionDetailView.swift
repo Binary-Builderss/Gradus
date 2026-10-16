@@ -27,6 +27,7 @@ struct SessionDetailView: View {
                 ForEach(content.groups) { group in
                     Section {
                         ForEach(group.slots) { slot in
+                            let isFirst = slot.id == content.groups.first?.slots.first?.id
                             Button {
                                 open = OpenSlot(slotID: slot.id, setIdx: nil)
                             } label: {
@@ -36,6 +37,7 @@ struct SessionDetailView: View {
                                 }
                             }
                             .buttonStyle(.plain)
+                            .tourTarget("session-exercise", if: isFirst)
                         }
                     } header: {
                         Text(groupHeader(group))
@@ -65,12 +67,27 @@ struct SessionDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 20).padding(.vertical, 6)
                 .background(.bar)
         }
+        .onChange(of: environment.tour.current?.screen) { _, _ in followTour() }
         .task {
             let (id, w) = (sessionID, week)
             let observation = ValueObservation.tracking { db in try ProgramQueries.session(db, id: id, week: w) }
             do {
-                for try await value in observation.values(in: environment.database.writer) { content = value }
+                for try await value in observation.values(in: environment.database.writer) {
+                    content = value
+                    followTour()
+                }
             } catch {}
+        }
+    }
+
+    /// La guida apre il primo esercizio nei suoi passi sull'esercizio e lo richiude negli altri.
+    private func followTour() {
+        switch environment.tour.current?.screen {
+        case .exercise:
+            if open == nil, let first = content?.groups.flatMap(\.slots).first { open = OpenSlot(slotID: first.id, setIdx: nil) }
+        case .session:
+            if open != nil { open = nil }
+        default: break
         }
     }
 
