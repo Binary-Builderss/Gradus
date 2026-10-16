@@ -228,7 +228,7 @@ private struct EffortRow: View {
         } label: {
             Text(NumberInput.text(shown))
                 .font(.body.monospacedDigit().weight(selected ? .bold : .regular))
-                .frame(maxWidth: .infinity, minHeight: 40)
+                .frame(maxWidth: .infinity, minHeight: 44)
                 .foregroundStyle(selected ? Color.white : Color.primary)
                 .background(selected ? Color.accentColor : Color.secondary.opacity(0.12), in: Capsule())
         }
