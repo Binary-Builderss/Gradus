@@ -1,37 +1,41 @@
 import { CheckIcon } from '@phosphor-icons/react'
-import { billingPortalUrl, checkoutUrl, PLANS, type Plan, type PlanUsage } from '@/lib/plans'
+import { billingPortalUrl, checkoutUrl, PLANS, type Plan, type PlanLimits, type PlanUsage } from '@/lib/plans'
 import { messages } from '@/lib/messages'
 import { cn } from '@/lib/utils'
 
 const m = messages.app.plans
 const dateFormat = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
 
-function Usage({ usage }: { usage: PlanUsage }) {
+function Usage({ usage, limits }: { usage: PlanUsage; limits: PlanLimits }) {
   const { athletes, athleteLimit } = usage
-  const percent = athleteLimit === null ? 0 : Math.min(100, Math.round((athletes / athleteLimit) * 100))
+  const percent = Math.min(100, Math.round((athletes / athleteLimit) * 100))
   return (
     <div className="grid max-w-md gap-2">
-      <p className="font-medium">
-        {athleteLimit === null ? m.usageUnlimited(athletes) : m.usage(athletes, athleteLimit)}
+      <p className="font-medium">{m.usage(athletes, athleteLimit)}</p>
+      <div
+        role="progressbar"
+        aria-label={m.usage(athletes, athleteLimit)}
+        aria-valuemin={0}
+        aria-valuemax={athleteLimit}
+        aria-valuenow={Math.min(athletes, athleteLimit)}
+        className="h-1.5 overflow-hidden rounded-full bg-muted"
+      >
+        <div className="h-full rounded-full bg-primary" style={{ width: `${percent}%` }} />
+      </div>
+      <p className="text-muted-foreground">
+        {m.usageContent(
+          usage.mesocycleTemplates,
+          limits.mesocycleTemplates,
+          usage.progressionPresets,
+          limits.progressionPresets,
+        )}
       </p>
-      {athleteLimit !== null && (
-        <div
-          role="progressbar"
-          aria-label={m.usage(athletes, athleteLimit)}
-          aria-valuemin={0}
-          aria-valuemax={athleteLimit}
-          aria-valuenow={Math.min(athletes, athleteLimit)}
-          className="h-1.5 overflow-hidden rounded-full bg-muted"
-        >
-          <div className="h-full rounded-full bg-primary" style={{ width: `${percent}%` }} />
-        </div>
-      )}
     </div>
   )
 }
 
 /** Stato dell'abbonamento e il modo di smettere di pagare: sempre a portata di clic, per chi ha un piano a pagamento. */
-function Subscription({ usage, freeLimit }: { usage: PlanUsage; freeLimit: number | null }) {
+function Subscription({ usage, freeLimit }: { usage: PlanUsage; freeLimit: number }) {
   const sub = m.subscription
   const portal = billingPortalUrl()
   const until = usage.renewsUntil ? dateFormat.format(new Date(usage.renewsUntil)) : null
@@ -105,13 +109,13 @@ function Cta({ plan }: { plan: Plan }) {
 }
 
 /** I quattro livelli a confronto: il tuo evidenziato, quelli sopra con il link all'acquisto. */
-export function Plans({ usage, limits }: { usage: PlanUsage; limits: Record<Plan, number | null> }) {
+export function Plans({ usage, limits }: { usage: PlanUsage; limits: Record<Plan, PlanLimits> }) {
   const currentIndex = PLANS.indexOf(usage.plan)
   const someSoon = PLANS.some((plan, index) => index > currentIndex && checkoutUrl(plan) === null)
   return (
     <div className="grid gap-6" data-tour="plans">
-      {usage.plan !== 'free' && <Subscription usage={usage} freeLimit={limits.free} />}
-      <Usage usage={usage} />
+      {usage.plan !== 'free' && <Subscription usage={usage} freeLimit={limits.free.athletes} />}
+      <Usage usage={usage} limits={limits[usage.plan]} />
       <div className="grid max-w-6xl gap-4 md:grid-cols-2 xl:grid-cols-4">
         {PLANS.map((plan, index) => {
           const tier = m.tiers[plan]
@@ -139,7 +143,12 @@ export function Plans({ usage, limits }: { usage: PlanUsage; limits: Record<Plan
                 <p className="text-muted-foreground">{tier.tagline}</p>
               </div>
               <ul className="grid gap-2">
-                {[m.limitLine(limits[plan]), ...tier.features].map((item) => (
+                {[
+                  m.limitLine(limits[plan].athletes),
+                  m.templatesLine(limits[plan].mesocycleTemplates),
+                  m.presetsLine(limits[plan].progressionPresets),
+                  ...tier.features,
+                ].map((item) => (
                   <li key={item} className="flex gap-2.5">
                     <CheckIcon size={18} weight="bold" className="mt-0.5 shrink-0 text-primary" />
                     <span>{item}</span>

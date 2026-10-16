@@ -39,7 +39,7 @@ describe('InviteAthlete', () => {
     expect(screen.getByRole('link', { name: 'Più posti' })).toHaveAttribute('href', '/piani')
   })
 
-  it('senza tetto (Unlimited) conta solo gli atleti', () => {
+  it('se il tetto non è noto conta solo gli atleti', () => {
     setup(null, { used: 130, limit: null, near: false })
     expect(screen.getByText('130 atleti')).toBeInTheDocument()
   })

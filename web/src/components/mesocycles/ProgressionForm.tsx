@@ -8,6 +8,7 @@ import { applyProgression, previewProgression, type ProgressionWeek } from '@/li
 import { fieldErrors } from '@/lib/auth'
 import { describeCell } from '@/lib/cellFields'
 import { messages } from '@/lib/messages'
+import { contentLimitReached } from '@/lib/planErrors'
 import {
   buildRule,
   EMPTY_PROGRESSION,
@@ -73,8 +74,16 @@ export function ProgressionForm({
       await refreshPresets()
       return v
     },
-    onError: (error: { code?: string }) =>
-      setModelError(error.code === '23505' ? m.models.errors.duplicate : m.models.errors.generic),
+    onError: (error: { code?: string }) => {
+      const limit = contentLimitReached(error)
+      setModelError(
+        limit?.kind === 'progression_presets'
+          ? messages.app.plans.limitReached.presets(limit.limit)
+          : error.code === '23505'
+            ? m.models.errors.duplicate
+            : m.models.errors.generic,
+      )
+    },
   })
   const removeModel = useMutation({
     mutationFn: (id: string) => deletePreset(coachId, id),

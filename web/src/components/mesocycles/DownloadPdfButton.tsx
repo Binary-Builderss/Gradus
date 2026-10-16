@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { resolveColors, STANDARD_COLORS } from '@/lib/brand'
 import { brandingQuery } from '@/lib/branding'
-import { planUsageQuery } from '@/lib/plans'
+import { canCustomize, planUsageQuery } from '@/lib/plans'
 import type { BlockData, WeekData } from '@/lib/gridModel'
 import { athleteQuery } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
@@ -23,7 +23,7 @@ type Program = {
   weeks: readonly WeekData[]
 }
 
-/** Scarica la programmazione in PDF: stile Gradus, o marchio del coach se ha il piano Pro. */
+/** Scarica la programmazione in PDF: stile Gradus, o marchio del coach dal piano Basic in su. */
 export function DownloadPdfButton({ coachId, program }: { coachId: string; program: Program }) {
   const queryClient = useQueryClient()
   const generate = useMutation({
@@ -37,7 +37,7 @@ export function DownloadPdfButton({ coachId, program }: { coachId: string; progr
         queryClient.fetchQuery(athleteQuery(coachId, mesocycle.athlete_id)),
       ])
       const athleteName = athlete?.athlete?.full_name?.trim() || athlete?.athlete?.email || ''
-      const branded = usage.canCustomize && branding !== null
+      const branded = canCustomize(usage) && branding !== null
       const model = buildPdfModel({
         brandName: branded ? branding.brandName?.trim() || displayName(coachProfile) : 'Gradus',
         athleteName,
@@ -50,7 +50,8 @@ export function DownloadPdfButton({ coachId, program }: { coachId: string; progr
         colors: branded ? resolveColors(branding.colors) : STANDARD_COLORS,
         logoPng: branded ? branding.logoPng : null,
         watermark: branded && branding.logoPng !== null,
-        madeWithGradus: !branded,
+        branded,
+        madeWithGradus: !branded || branding?.hideGradusCredit !== true,
       })
       downloadBlob(blob, pdfFileName(mesocycle.name, athleteName))
     },

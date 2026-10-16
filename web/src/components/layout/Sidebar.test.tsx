@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useSidebarCollapsed } from '@/lib/useSidebarCollapsed'
-import type { PlanUsage } from '@/lib/plans'
+import type { BrandingLevel, PlanUsage } from '@/lib/plans'
 import { Sidebar } from './Sidebar'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))
@@ -24,9 +24,11 @@ vi.mock('@tanstack/react-router', () => ({
 
 const usage = (plan: PlanUsage['plan'], athletes = 5): PlanUsage => ({
   plan,
-  athleteLimit: plan === 'free' ? 20 : plan === 'mid' ? 60 : plan === 'pro' ? 100 : null,
+  athleteLimit: { free: 20, basic: 50, advanced: 100, custom: 500 }[plan],
   athletes,
-  canCustomize: plan === 'pro' || plan === 'unlimited',
+  brandingLevel: { free: 0, basic: 1, advanced: 2, custom: 3 }[plan] as BrandingLevel,
+  mesocycleTemplates: 0,
+  progressionPresets: 0,
   renewsUntil: null,
   cancelAtPeriodEnd: false,
   hasSubscription: false,
@@ -35,7 +37,7 @@ const usage = (plan: PlanUsage['plan'], athletes = 5): PlanUsage => ({
 function Harness({
   onSignOut = () => {},
   onStartTour = () => {},
-  plan = 'pro' as PlanUsage['plan'] | undefined,
+  plan = 'advanced' as PlanUsage['plan'] | undefined,
   athletes = 5,
 }) {
   const [collapsed, toggle] = useSidebarCollapsed()
@@ -83,7 +85,7 @@ describe('Sidebar', () => {
     expect(await screen.findByRole('menuitem', { name: 'Profilo' })).toBeInTheDocument()
     expect(screen.getByRole('menuitem', { name: 'Personalizza' })).toBeInTheDocument()
     expect(screen.getByRole('menuitem', { name: 'Piano e abbonamento' })).toBeInTheDocument()
-    expect(screen.getByText('Piano Pro')).toBeInTheDocument()
+    expect(screen.getByText('Piano Advanced')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('menuitem', { name: 'Esci' }))
     expect(onSignOut).toHaveBeenCalled()
   })
@@ -115,23 +117,23 @@ describe('Sidebar', () => {
     vi.restoreAllMocks()
   })
 
-  it('free e mid hanno sotto la guida il link per passare a Pro, con i posti se stanno finendo', () => {
+  it('il piano Free ha sotto la guida il link per passare a Basic; basic mostra i posti se stanno finendo', () => {
     const { unmount } = render(<Harness plan="free" />)
-    expect(screen.getByRole('link', { name: /Passa a Pro/ })).toHaveAttribute('href', '/piani')
+    expect(screen.getByRole('link', { name: /Passa a Basic/ })).toHaveAttribute('href', '/piani')
     expect(screen.getByText('Logo e colori su PDF e app')).toBeInTheDocument()
     unmount()
-    render(<Harness plan="mid" athletes={50} />)
-    expect(screen.getByText('50 atleti su 60')).toBeInTheDocument()
+    render(<Harness plan="basic" athletes={42} />)
+    expect(screen.getByText('42 atleti su 50')).toBeInTheDocument()
   })
 
-  it('il Pro vede l’invito solo quando i posti stanno finendo, Unlimited mai', () => {
-    const { unmount } = render(<Harness plan="pro" athletes={10} />)
+  it('Advanced vede l’invito solo quando i posti stanno finendo, Custom mai (sopra non c’è altro)', () => {
+    const { unmount } = render(<Harness plan="advanced" athletes={10} />)
     expect(screen.queryByRole('link', { name: /Passa a|Più atleti/ })).not.toBeInTheDocument()
     unmount()
-    const second = render(<Harness plan="pro" athletes={85} />)
+    const second = render(<Harness plan="advanced" athletes={85} />)
     expect(screen.getByRole('link', { name: /Più atleti/ })).toHaveAttribute('href', '/piani')
     second.unmount()
-    render(<Harness plan="unlimited" athletes={900} />)
+    render(<Harness plan="custom" athletes={480} />)
     expect(screen.queryByRole('link', { name: /Passa a|Più atleti/ })).not.toBeInTheDocument()
   })
 

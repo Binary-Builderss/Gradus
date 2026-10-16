@@ -36,7 +36,7 @@ Ogni dato ha un solo autore.
 | Mesocicli, sessioni, gruppi, slot, blocchi, prescrizioni settimanali | coach (web) | atleta, sola lettura |
 | Libreria esercizi, pesi per muscolo, template | coach (web) | atleta (nome, video, note) |
 | Link ai video degli esercizi (`exercise_videos`, nessuno di default) | coach (web), ognuno i propri | i suoi atleti |
-| Marchio del coach (logo, nome, colori) | coach pro (web) | atleta collegato, solo se il coach è pro |
+| Marchio del coach (logo, nome, colori) | coach dal piano basic (web) | atleta collegato, solo se il coach ha la personalizzazione |
 | Piano del coach (`coach_plans`) | solo service_role / SQL | il coach, il proprio |
 | Sedute, serie, segmenti, feedback per muscolo | atleta (iOS) | coach |
 | Check giornalieri, questionari compilati, misure, foto, massimali | atleta (iOS) | coach |
@@ -92,18 +92,38 @@ Esecuzione: `workouts → set_logs → set_segments`.
 
 ## Piano, tetto di atleti, marchio e account
 
-- `coach_plans`: nessuna riga = gratuito. Nessun client scrive qui (solo service_role o SQL): per provare un
-  piano si inserisce una riga al coach di prova. Livelli e tetto di atleti: **free 20, mid 60, pro 100,
-  unlimited nessun tetto**; un piano a pagamento con `pro_until` scaduto vale free. Conta chi ha un
-  collegamento `pending` o `active` (l'invito in attesa occupa il posto), non quello con sé stesso né i chiusi.
-  Il tetto lo fa rispettare il trigger `enforce_athlete_limit` (vale per ogni via di scrittura); chi lo supera
-  dopo un declassamento tiene gli atleti ma non ne aggiunge. `plan_usage()` dà piano, tetto e atleti al client.
-  Le Edge Function e il web non ricalcolano le regole: le leggono da lì.
-- `private.is_pro` = pro **e unlimited** (non mid): è l'unico posto che decide chi ha Personalizza e il PDF col
-  marchio. `has_pro_plan()` lo espone al client.
+- `coach_plans`: nessuna riga = free. Nessun client scrive qui (solo service_role o SQL): per provare un piano si
+  inserisce una riga al coach di prova. Piani, in inglese: **`free`, `basic`, `advanced`, `custom`**; un piano a
+  pagamento con `pro_until` scaduto vale free. I tetti di ogni piano hanno **una sola fonte**: `private.plan_limit(piano,
+  tipo)` (il client li legge da `plan_limits()` e `plan_usage()`, mai ricalcolati altrove).
+
+  | Tetto | free | basic | advanced | custom |
+  | --- | --- | --- | --- | --- |
+  | Atleti | 20 | 50 | 100 | 500 |
+  | Template mesociclo | 1 | 5 | 10 | 20 |
+  | Progressioni salvate | 20 | 350 | 700 | 1400 |
+  | Template sessione (non ancora costruiti) | 5 | 35 | 70 | 140 |
+  | Schede dieta salvate (non ancora costruite) | 0 | 7 | 15 | 30 |
+  | Snapshot dieta per atleta (non ancora costruiti) | 0 | 12 | 12 | 12 |
+
+  Listino indicativo, senza incassi nel codice: basic 19,90 €, advanced 29,90 €, custom 129,90 € + IVA al mese. Il free è
+  volutamente limitato, per spingere almeno al basic. I tetti li fanno rispettare i trigger del database (vale per ogni
+  via di scrittura): `enforce_athlete_limit` (atleti: conta chi ha un collegamento `pending` o `active`, l'invito in
+  attesa occupa il posto, non il collegamento con sé stesso né i chiusi) e `enforce_owner_limit` (template di mesociclo e
+  progressioni: errori `mesocycle_templates_limit_reached` / `progression_presets_limit_reached`, con il tetto nel hint).
+  Chi supera un tetto dopo un declassamento **tiene quello che ha** ma non ne aggiunge. Le Edge Function e il web non
+  ricalcolano le regole: le leggono da `plan_usage()` (piano, tetti, uso, livello di personalizzazione).
+- **Personalizzazione a livelli** (`private.branding_level`, esposto come `plan_usage().branding_level`): 0 nessuna
+  (free) · 1 basic = logo, nome del marchio e un colore principale (`primary`) · 2 advanced = tavolozza completa · 3
+  custom = tavolozza completa e PDF senza la dicitura «Creato con Gradus» (`coach_branding.hide_gradus_credit`). È
+  l'unico posto che decide chi ha Personalizza e il PDF col marchio (ha sostituito `is_pro` / `has_pro_plan`). Il trigger
+  `enforce_branding_level` fa rispettare i livelli su ogni scrittura (`branding_level_too_low`, hint `plan`, `palette` o
+  `credit`); se il piano cambia tra due livelli a pagamento `prune_branding` ridimensiona il marchio (scendendo a free
+  il marchio resta ma l'atleta non lo vede più).
 - `coach_branding`: logo (PNG base64), colori `#RRGGBB` liberi con chiavi fisse (`primary`, `on_primary`,
-  `background`, `foreground`, `surface`, `muted_foreground`, `border`), nome del marchio. Lo scrive solo un coach
-  pro in su; l'atleta collegato lo legge solo finché il coach è pro. Chiavi assenti = colori standard di Gradus.
+  `background`, `foreground`, `surface`, `muted_foreground`, `border`), nome del marchio, dicitura. Lo scrive solo un
+  coach dal livello 1; l'atleta collegato lo legge solo finché il coach ha il livello 1 o più. Chiavi assenti = colori
+  standard di Gradus.
 - **Account**: `profiles.disabled_at` = account disattivato, reversibile dalla persona (il web e l'app mostrano
   una schermata per riattivarlo; un coach disattivato non può invitare). La **cancellazione** è definitiva ed è
   la Edge Function `delete-account` (conferma con l'email scritta a mano): `prepare_account_deletion` (solo
@@ -115,26 +135,8 @@ Esecuzione: `workouts → set_logs → set_segments`.
   pagamento; null = piano assegnato a mano, senza addebiti). Li scrive solo il webhook del servizio di pagamento
   (service_role). `prepare_account_deletion` rifiuta (`subscription_active`) un account con `billing_ref` che si
   rinnova ancora: prima si disdice. Disdire non cancella nessun dato.
-- **Direzione decisa per i piani (non ancora in migrazione: oggi il database ha ancora `free/mid/pro/unlimited`)**.
-  Nomi in inglese: `free`, `basic`, `advanced`, `custom`. Tetto di atleti 20 / 50 / 100 / 500 (non più illimitato). Listino
-  indicativo, senza incassi nel codice: basic 19,90 €, advanced 29,90 €, custom 129,90 € + IVA al mese. Il piano free è
-  volutamente limitato, per spingere almeno al basic. Tetti per piano (valori del free proposti, da confermare):
-
-  | | free | basic | advanced | custom |
-  | --- | --- | --- | --- | --- |
-  | Template sessione | 5 | 35 | 70 | 140 |
-  | Template mesociclo | 1 | 5 | 10 | 20 |
-  | Progressioni salvate | 20 | 350 | 700 | 1400 |
-  | Schede dieta salvate | 0 | 7 | 15 | 30 |
-  | Snapshot dieta per atleta | 0 | 12 | 12 | 12 |
-
-  **Personalizzazione** (marchio, PDF, colori dell'app atleta) dal basic in su, con più libertà a ogni livello: basic =
-  logo, nome del marchio e un colore principale; advanced = tavolozza completa; custom = tavolozza completa e PDF senza
-  la dicitura Gradus. Sostituisce `private.is_pro` con un livello di personalizzazione (0 = nessuna, 1, 2, 3). Il passaggio
-  richiede una migrazione nuova (rinomina dei valori di `coach_plan`, tetti nei trigger, livello di personalizzazione) e il
-  cambio dei testi del sito; i tetti si fanno rispettare nel database, come `enforce_athlete_limit`.
-- Le funzioni a pagamento oggi: PDF con marchio, Personalizza e colori dell'app atleta. Il sito del coach resta
-  Gradus, uguale per tutti.
+- Le funzioni a pagamento oggi: più atleti, più template e progressioni, PDF con marchio, Personalizza (a livelli) e
+  colori dell'app atleta. Il sito del coach resta Gradus, uguale per tutti.
 
 ## Nutrizione: i macro oggi, la dieta domani
 

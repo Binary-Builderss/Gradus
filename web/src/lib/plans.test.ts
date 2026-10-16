@@ -2,23 +2,31 @@ import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('./supabase', () => ({ supabase: {} }))
 
-import { atLimit, billingPortalUrl, checkoutUrl, nearLimit } from './plans'
+import {
+  atLimit,
+  billingPortalUrl,
+  canCustomize,
+  checkoutUrl,
+  nearLimit,
+  upgradeHint,
+  type PlanUsage,
+} from './plans'
 
 describe('checkoutUrl', () => {
   it('un https valido passa', () =>
-    expect(checkoutUrl('pro', 'https://buy.example.com/abc')).toBe('https://buy.example.com/abc'))
+    expect(checkoutUrl('advanced', 'https://buy.example.com/abc')).toBe('https://buy.example.com/abc'))
   it('assente o vuoto: nessun acquisto ancora', () => {
-    expect(checkoutUrl('pro', '')).toBeNull()
-    expect(checkoutUrl('pro', undefined)).toBeNull()
+    expect(checkoutUrl('advanced', '')).toBeNull()
+    expect(checkoutUrl('advanced', undefined)).toBeNull()
   })
   it('rifiuta http e schemi pericolosi', () => {
-    expect(checkoutUrl('pro', 'http://buy.example.com')).toBeNull()
-    expect(checkoutUrl('pro', 'javascript:alert(1)')).toBeNull()
+    expect(checkoutUrl('advanced', 'http://buy.example.com')).toBeNull()
+    expect(checkoutUrl('advanced', 'javascript:alert(1)')).toBeNull()
   })
   it('legge la variabile del piano richiesto', () => {
-    vi.stubEnv('VITE_CHECKOUT_URL_MID', 'https://buy.example.com/mid')
-    expect(checkoutUrl('mid')).toBe('https://buy.example.com/mid')
-    expect(checkoutUrl('unlimited')).toBeNull()
+    vi.stubEnv('VITE_CHECKOUT_URL_BASIC', 'https://buy.example.com/basic')
+    expect(checkoutUrl('basic')).toBe('https://buy.example.com/basic')
+    expect(checkoutUrl('custom')).toBeNull()
     vi.unstubAllEnvs()
   })
 })
@@ -30,9 +38,30 @@ describe('tetto di atleti', () => {
     expect(atLimit({ athleteLimit: 20, athletes: 19 })).toBe(false)
     expect(atLimit({ athleteLimit: 20, athletes: 20 })).toBe(true)
   })
-  it('senza tetto non avvisa e non blocca mai', () => {
-    expect(nearLimit({ athleteLimit: null, athletes: 500 })).toBe(false)
-    expect(atLimit({ athleteLimit: null, athletes: 500 })).toBe(false)
+})
+
+const usage = (plan: PlanUsage['plan'], athletes: number, athleteLimit: number): PlanUsage => ({
+  plan,
+  athleteLimit,
+  athletes,
+  brandingLevel: plan === 'free' ? 0 : 1,
+  mesocycleTemplates: 0,
+  progressionPresets: 0,
+  renewsUntil: null,
+  cancelAtPeriodEnd: false,
+  hasSubscription: false,
+})
+
+describe('canCustomize e upgradeHint', () => {
+  it("Personalizza c'è dal livello 1", () => {
+    expect(canCustomize({ brandingLevel: 0 })).toBe(false)
+    expect(canCustomize({ brandingLevel: 1 })).toBe(true)
+  })
+  it('il piano Free invita sempre a passare a Basic; gli altri solo se i posti stanno finendo; Custom mai', () => {
+    expect(upgradeHint(usage('free', 3, 20))?.title).toBe('Passa a Basic')
+    expect(upgradeHint(usage('basic', 10, 50))).toBeNull()
+    expect(upgradeHint(usage('basic', 45, 50))?.title).toBe('Più atleti')
+    expect(upgradeHint(usage('custom', 490, 500))).toBeNull()
   })
 })
 

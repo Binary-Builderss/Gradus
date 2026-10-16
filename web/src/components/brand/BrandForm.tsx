@@ -12,36 +12,53 @@ import {
   resolveColors,
   STANDARD_COLORS,
   type BrandColors,
+  type BrandOverrides,
 } from '@/lib/brand'
 import { type Branding, saveBranding } from '@/lib/branding'
+import type { BrandingLevel } from '@/lib/plans'
 import { fileToLogoPng, LogoError } from '@/lib/logoImage'
 import { messages } from '@/lib/messages'
 
 const m = messages.app.customize.brand
 
+/** Dei colori cambiati tiene solo il principale (livello 1). */
+const primaryOnly = (overrides: BrandOverrides): BrandOverrides =>
+  overrides.primary ? { primary: overrides.primary } : {}
+
 export function BrandForm({
   coachId,
   fallbackName,
   initial,
-  pro,
+  level,
 }: {
   coachId: string
   /** Nome del profilo: compare se il nome del marchio è vuoto. */
   fallbackName: string
   initial: Branding | null
-  pro: boolean
+  /** Quanta libertà ha il piano: 0 bloccato · 1 logo, nome e colore principale · 2 tavolozza · 3 anche senza la dicitura Gradus. */
+  level: BrandingLevel
 }) {
+  const pro = level >= 1
+  const fullPalette = level >= 2
+  const canHideCredit = level >= 3
   const queryClient = useQueryClient()
   const fileInput = useRef<HTMLInputElement>(null)
   const [name, setName] = useState(initial?.brandName ?? '')
   const [logo, setLogo] = useState<string | null>(initial?.logoPng ?? null)
   const [colors, setColors] = useState<BrandColors>(() => resolveColors(initial?.colors))
+  const [hideCredit, setHideCredit] = useState(initial?.hideGradusCredit ?? false)
   const [logoError, setLogoError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
 
   const save = useMutation({
     mutationFn: () =>
-      saveBranding(coachId, { brandName: name, logoPng: logo, colors: overridesFrom(colors) }),
+      saveBranding(coachId, {
+        brandName: name,
+        logoPng: logo,
+        // Con il livello 1 si salva solo il colore principale: gli altri li rifiuterebbe il database.
+        colors: fullPalette ? overridesFrom(colors) : primaryOnly(overridesFrom(colors)),
+        hideGradusCredit: canHideCredit && hideCredit,
+      }),
     onSuccess: async () => {
       setSaved(true)
       await queryClient.invalidateQueries({ queryKey: ['branding', coachId] })
@@ -148,7 +165,11 @@ export function BrandForm({
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => touch(setColors)({ ...STANDARD_COLORS })}
+                onClick={() =>
+                  touch(setColors)(
+                    fullPalette ? { ...STANDARD_COLORS } : { ...colors, primary: STANDARD_COLORS.primary },
+                  )
+                }
               >
                 {m.resetAll}
               </Button>
@@ -161,16 +182,35 @@ export function BrandForm({
                   help={m.colorHelp[key]}
                   value={colors[key]}
                   standard={STANDARD_COLORS[key]}
-                  disabled={!pro}
+                  disabled={!pro || (!fullPalette && key !== 'primary')}
                   onChange={(hex) => touch(setColors)({ ...colors, [key]: hex })}
                 />
               ))}
             </div>
+            {pro && !fullPalette && (
+              <p role="status" className="text-xs text-muted-foreground">
+                {m.paletteLocked}
+              </p>
+            )}
             {problems.map((p) => (
               <p key={p} role="status" className="text-sm text-warning-foreground">
                 {m.contrast[p]}
               </p>
             ))}
+          </div>
+
+          <div className="grid gap-1.5">
+            <label className="flex items-center gap-2.5 font-medium">
+              <input
+                type="checkbox"
+                checked={canHideCredit && hideCredit}
+                disabled={!canHideCredit}
+                onChange={(e) => touch(setHideCredit)(e.target.checked)}
+                className="size-4 accent-primary"
+              />
+              {m.creditLabel}
+            </label>
+            <p className="text-xs text-muted-foreground">{canHideCredit ? m.creditHint : m.creditLocked}</p>
           </div>
         </fieldset>
 

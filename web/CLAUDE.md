@@ -92,8 +92,8 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
 - Menu laterale (`components/layout/Sidebar.tsx`): in alto il marchio, al centro le sezioni di lavoro (Atleti,
   Esercizi), in basso la Guida e **il menu dell'account** (`AccountMenu`: nome, email e piano, Profilo, Personalizza, Piano e abbonamento,
   Esci). Profilo, Personalizza e Piano sono pagine diverse: il Profilo è la persona (nome, email, password, disattivazione ed
-  eliminazione dell'account), Personalizza è il marchio (piano Pro e Unlimited, bloccata per gli altri),
-  Piano e abbonamento confronta Gratuito e Pro. Sotto la Guida, a chi non ha il Pro, compare «Passa a Pro». Si comprime a una barra di
+  eliminazione dell'account), Personalizza è il marchio (dal piano Basic, a livelli: bloccata per il Free),
+  Piano e abbonamento confronta Free, Basic, Advanced e Custom. Sotto la Guida, a chi è sul Free, compare «Passa a Basic». Si comprime a una barra di
   sole icone che tiene il marchio (scelta in localStorage); da compresso ogni voce ha l'etichetta al passaggio
   del mouse e il nome accessibile. Su telefono lo stesso menu è l'avatar nell'header. Una sezione di lavoro
   nuova va nel blocco centrale. Le righe con testo lungo (nome, email) vanno sempre con `min-w-0` + `truncate`.
@@ -124,11 +124,12 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   chiude dalla sua scheda (menu «…», con conferma): il collegamento passa a `ended`, si libera il posto, non si cancella
   nulla e invitandolo di nuovo, se accetta, si ritrova tutto (`endLink` in `lib/athletes.ts`; il trigger
   `check_link_change` lo consente già).
-- **Piani** (`/piani`): Gratuito, Mid, Pro e Unlimited a confronto, con i posti usati (`plan_usage`) e i tetti letti
-  da `plan_limits` (i numeri stanno solo nel database). L'acquisto di ogni piano è un link https in
-  `VITE_CHECKOUT_URL_MID` / `_PRO` / `_UNLIMITED` (facoltative): finché manca il pulsante resta «Presto
-  disponibile». Nessun incasso nel codice. Sotto la Guida compare «Passa a Pro» a chi è free o mid e «Più
-  atleti» al Pro con i posti quasi finiti (`upgradeHint` in `lib/plans.ts`); a tetto raggiunto l'invito di
+- **Piani** (`/piani`): Free, Basic, Advanced e Custom a confronto, con i posti usati e template / progressioni salvati
+  (`plan_usage`) e i tetti letti da `plan_limits` (i numeri stanno solo nel database, `private.plan_limit`). L'acquisto di
+  ogni piano è un link https in `VITE_CHECKOUT_URL_BASIC` / `_ADVANCED` / `_CUSTOM` (facoltative): finché manca il
+  pulsante resta «Presto disponibile». Nessun incasso nel codice. Sotto la Guida compare «Passa a Basic» a chi è sul
+  Free e «Più atleti» a chi ha i posti quasi finiti, tranne Custom (`upgradeHint` in `lib/plans.ts`). Raggiunto il tetto
+  di template o progressioni il database risponde `<tipo>_limit_reached` (`lib/planErrors.ts`) e il sito lo spiega; a tetto raggiunto l'invito di
   nuovi atleti è spento con il rimando ai piani (il blocco vero è il trigger del database).
 - **Smettere di pagare** è sempre possibile e a portata di clic: «Il tuo abbonamento» in `/piani` mostra quando si
   rinnova (o fino a quando resta attivo se disdetto) e cosa succede disdicendo; il pulsante porta al portale del
@@ -165,16 +166,18 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
     in corso, sedute eseguite su previste, ultima seduta.
 - **PDF della programmazione** (pulsante «Scarica PDF» nella pagina del mesociclo): generato nel browser con
   jsPDF + autotable, caricati solo al clic. Una pagina A4 orizzontale per seduta, una colonna per settimana.
-  Stile Gradus per tutti; con piano Pro usa colori, logo e nome del marchio e un logo-filigrana sbiadito
-  (`lib/pdfModel.ts` costruisce i dati, `lib/programPdf.ts` li disegna). Non serve una Edge Function: non ci sono
+  Stile Gradus per tutti; dal piano Basic usa colori, logo e nome del marchio e un logo-filigrana sbiadito
+  (`lib/pdfModel.ts` costruisce i dati, `lib/programPdf.ts` li disegna). Il piè di pagina porta «Creato con Gradus»
+  (col marchio, dopo il nome); il piano Custom lo toglie (`hide_gradus_credit`). Non serve una Edge Function: non ci sono
   privilegi in gioco, i dati sono già visibili al coach per RLS.
 - **Profilo** (pagina `/profilo`, dal menu dell'account; nome e cambio password via email): nome e cognome del coach (`profiles.full_name`, scritto solo da lui: ogni dato ha un
   solo autore). Compare nella barra laterale, nel PDF (se non c'è un nome del marchio) e nella lista atleti del
   coach; senza nome si vede l'email. L'invito può portare un nome facoltativo, che entra nel profilo solo se
   l'atleta è nuovo; poi lo cambia lui dall'app.
-- **Personalizza** (`/personalizza`, piano pro, `coach_branding`): nome, logo (ridimensionato nel browser e salvato come
-  PNG base64) e sette colori liberi con anteprima; i colori non cambiati restano quelli standard
-  (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi non è pro vede la
+- **Personalizza** (`/personalizza`, dal piano Basic, `coach_branding`): nome, logo (ridimensionato nel browser e salvato come
+  PNG base64) e sette colori liberi con anteprima, a livelli (`brandingLevel`): Basic solo il colore principale, Advanced
+  la tavolozza completa, Custom anche il PDF senza la dicitura Gradus; i colori non cambiati restano quelli standard
+  (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi è sul Free vede la
   pagina bloccata. Il sito del coach non cambia colori: il marchio vale per PDF e app atleta.
 - **Libreria esercizi**: catalogo globale + esercizi del coach, note, pesi per muscolo 0..1.
 - **Modelli di progressione** (`progression_presets`, nel modulo «Progressione automatica» di ogni gruppo di serie): il coach salva con un
