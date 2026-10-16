@@ -10,6 +10,7 @@ final class AppEnvironment {
     let auth: AuthModel
     let sync: SyncModel
     let remote: any RemoteAPI
+    let restTimer: RestTimerModel
 
     init(config: AppConfig, database: AppDatabase) {
         self.config = config
@@ -18,6 +19,8 @@ final class AppEnvironment {
             supabaseURL: config.supabaseURL, supabaseKey: config.supabaseAnonKey,
             options: SupabaseClientOptions(auth: .init(emitLocalSessionAsInitialSession: true)))
         let remote = SupabaseRemote(client: client)
+        let timer = RestTimerModel()
+        self.restTimer = timer
         let syncModel = SyncModel(engine: SyncEngine(remote: remote, database: database))
         self.remote = remote
         self.sync = syncModel
@@ -27,6 +30,7 @@ final class AppEnvironment {
                 // I dati sul telefono sono di chi era collegato: all'uscita si svuotano.
                 try? database.erase()
                 syncModel.reset()
+                timer.skip()
             })
     }
 

@@ -1,3 +1,4 @@
+import Domain
 import GRDB
 import SwiftUI
 
@@ -13,6 +14,9 @@ struct ProfileView: View {
     let userID: UUID
     @State private var snapshot = ProfileSnapshot()
     @State private var confirmingSignOut = false
+    @AppStorage("effortScale") private var effortScale = EffortScale.buf.rawValue
+    @AppStorage(RestTimerModel.soundKey) private var timerSound = true
+    @AppStorage(RestTimerModel.hapticKey) private var timerHaptic = true
 
     var body: some View {
         NavigationStack {
@@ -21,6 +25,14 @@ struct ProfileView: View {
                     LabeledContent("Nome", value: snapshot.name ?? "–")
                     LabeledContent("Email", value: snapshot.email ?? "–")
                     LabeledContent("Coach", value: snapshot.coach ?? "Nessuno")
+                }
+                Section("Impostazioni") {
+                    Picker("Scala dello sforzo", selection: $effortScale) {
+                        Text("Ripetizioni in riserva (BUF)").tag(EffortScale.buf.rawValue)
+                        Text("RPE").tag(EffortScale.rpe.rawValue)
+                    }
+                    Toggle("Suono a fine recupero", isOn: $timerSound)
+                    Toggle("Vibrazione a fine recupero", isOn: $timerHaptic)
                 }
                 Section("Sincronizzazione") {
                     SyncStatusRow(sync: environment.sync)

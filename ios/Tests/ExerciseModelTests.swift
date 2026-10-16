@@ -164,4 +164,69 @@ struct ExerciseModelTests {
         #expect(slot.completion(logged: [top: 2, backoff: 1]) == .complete)
         _ = content
     }
+
+    // MARK: Timer di recupero
+
+    private func group(of members: [SlotContent], between: Int = 15, afterRound: Int = 90, kind: String = "superset") -> GroupContent {
+        GroupContent(id: UUID(), kind: kind, restBetweenS: between, restAfterRoundS: afterRound, slots: members)
+    }
+
+    private func slotWith(sets: Int, rest: Int?) -> SlotContent {
+        let block = BlockContent(
+            id: UUID(), role: "working", technique: "none", restS: rest, tut: [], refBlockId: nil,
+            prescription: Prescription(sets: sets))
+        return SlotContent(id: UUID(), exerciseName: "Esercizio", coachNotes: nil, blocks: [block])
+    }
+
+    private func model(for slot: SlotContent, in groups: [GroupContent]) throws -> ExerciseModel {
+        let content = SessionContent(
+            sessionID: Sample.session, mesocycleID: Sample.mesocycle, athleteID: Sample.athlete, deloadWeeks: [],
+            name: "S", coachNotes: nil, groups: groups, loggedCounts: [:])
+        return ExerciseModel(session: content, slot: slot, week: 1, store: ExecutionStore(database: try AppDatabase.inMemory()))
+    }
+
+    @Test("esercizio da solo: recupero del blocco, scorre alla serie dopo; ultima serie della seduta senza pulsante")
+    func singleExerciseTimer() async throws {
+        let a = slotWith(sets: 3, rest: 120)
+        let model = try model(for: a, in: [group(of: [a], kind: "single")])
+        await model.load()
+        let block = a.blocks[0]
+        #expect(model.restSeconds(for: block) == 120)
+        #expect(model.showsTimerButton(SetKey(block: block.id, idx: 0), block: block))
+        #expect(model.advance(after: SetKey(block: block.id, idx: 0)) == .set(SetKey(block: block.id, idx: 1)))
+        #expect(!model.showsTimerButton(SetKey(block: block.id, idx: 2), block: block))  // l'ultima della seduta
+    }
+
+    @Test("recupero 0: il pulsante non compare")
+    func noRestNoButton() async throws {
+        let a = slotWith(sets: 3, rest: nil)
+        let model = try model(for: a, in: [group(of: [a], kind: "single")])
+        await model.load()
+        #expect(!model.showsTimerButton(SetKey(block: a.blocks[0].id, idx: 0), block: a.blocks[0]))
+    }
+
+    @Test("superset: tra gli esercizi rest_between_s e si passa al successivo; dopo l'ultimo rest_after_round_s e si torna al primo alla serie dopo")
+    func supersetTimer() async throws {
+        let a = slotWith(sets: 2, rest: 999), b = slotWith(sets: 2, rest: 999)
+        let groups = [group(of: [a, b])]
+        let first = try model(for: a, in: groups), second = try model(for: b, in: groups)
+        await first.load()
+        await second.load()
+        #expect(first.restSeconds(for: a.blocks[0]) == 15)
+        #expect(first.advance(after: SetKey(block: a.blocks[0].id, idx: 0)) == .slot(b.id, setIdx: 0))
+        #expect(second.restSeconds(for: b.blocks[0]) == 90)
+        #expect(second.advance(after: SetKey(block: b.blocks[0].id, idx: 0)) == .slot(a.id, setIdx: 1))
+        // Ultimo giro, ultimo esercizio, ultima seduta: niente pulsante.
+        #expect(!second.showsTimerButton(SetKey(block: b.blocks[0].id, idx: 1), block: b.blocks[0]))
+        #expect(second.showsTimerButton(SetKey(block: b.blocks[0].id, idx: 0), block: b.blocks[0]))
+    }
+
+    @Test("finito un gruppo si passa al primo esercizio del gruppo dopo")
+    func nextGroup() async throws {
+        let a = slotWith(sets: 1, rest: 60), b = slotWith(sets: 3, rest: 60)
+        let groups = [group(of: [a], kind: "single"), group(of: [b], kind: "single")]
+        let model = try model(for: a, in: groups)
+        await model.load()
+        #expect(model.advance(after: SetKey(block: a.blocks[0].id, idx: 0)) == .slot(b.id, setIdx: 0))
+    }
 }
