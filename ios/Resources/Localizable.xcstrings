@@ -1,5 +1,81 @@
 {
   "sourceLanguage" : "it",
-  "strings" : { },
+  "strings" : {
+    "×" : {
+
+    },
+    "Accedi" : {
+
+    },
+    "Accedi con l'account che ti ha dato il tuo coach." : {
+
+    },
+    "Aggiornato %@" : {
+
+    },
+    "Copia ios/Config/Secrets.example.xcconfig in Secrets.xcconfig e inserisci l'indirizzo e la chiave pubblica di Supabase." : {
+
+    },
+    "Gradus" : {
+
+    },
+    "Hai disattivato il tuo account. I tuoi dati sono al sicuro: riattivalo per tornare ad allenarti." : {
+
+    },
+    "Hai ricevuto un invito dal tuo coach? Apri il link nell'email, scegli la password e poi accedi qui." : {
+
+    },
+    "I dati salvati sul telefono vengono tolti. Li ritrovi accedendo di nuovo." : {
+
+    },
+    "In corso" : {
+
+    },
+    "Inizia il %@" : {
+
+    },
+    "Iniziata" : {
+
+    },
+    "Non ancora sincronizzato" : {
+
+    },
+    "Non riesco a sincronizzare. Riprovo appena c'è rete." : {
+
+    },
+    "Non sono riuscito a riattivarlo. Controlla la rete e riprova." : {
+
+    },
+    "Quando il tuo coach attiva un mesociclo lo trovi qui, anche senza rete." : {
+
+    },
+    "Questa seduta non ha ancora esercizi." : {
+
+    },
+    "Recupero %@" : {
+
+    },
+    "Riattiva l'account" : {
+
+    },
+    "Ripetizioni in riserva (BUF)" : {
+
+    },
+    "RPE" : {
+
+    },
+    "Se l'indirizzo è registrato, tra poco ricevi un'email con il link per scegliere una nuova password." : {
+
+    },
+    "Serie %@" : {
+
+    },
+    "Settimana %@" : {
+
+    },
+    "Sincronizzo…" : {
+
+    }
+  },
   "version" : "1.0"
 }

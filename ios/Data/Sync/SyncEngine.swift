@@ -23,21 +23,29 @@ actor SyncEngine {
     }
 
     func sync() async throws -> SyncSummary {
+        // Si legge e si invia sempre entrambe le cose: se la lettura fallisce (una tabella, il server) le serie
+        // dell'atleta partono comunque; l'errore si segnala alla fine.
+        var failure: (any Error)?
         var rows = 0
-        for table in SyncTable.allCases {
-            rows += try await pull(table)
-            if table.removesRows { try await reconcile(table) }
+        do {
+            for table in SyncTable.allCases {
+                rows += try await pull(table)
+                if table.removesRows { try await reconcile(table) }
+            }
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            failure = error
         }
-        // Prima si legge, poi si invia: un errore dell'invio non impedisce di ricevere il programma.
-        let sent = try await push()
+        var sent = 0
+        do { sent = try await push() } catch is CancellationError { throw CancellationError() } catch { failure = failure ?? error }
+        if let failure { throw failure }
         return SyncSummary(rows: rows, sent: sent)
     }
 
-    /// Solo la lettura dal server (per i test dell'ordine pull → push).
-    func pullOnlyForTests() async throws -> Int {
-        var rows = 0
-        for table in SyncTable.allCases { rows += try await pull(table) }
-        return rows
+    /// Serie registrate sul telefono e non ancora arrivate al server.
+    func unsentSets() async -> Int {
+        (try? await database.writer.read { try ExecutionStore.unsentSets($0) }) ?? 0
     }
 
     /// Invia le serie registrate sul telefono. Upsert sulla chiave primaria (derivata dalla chiave naturale): reinviare
@@ -58,6 +66,13 @@ actor SyncEngine {
             }
         }
         return sent
+    }
+
+    /// Solo la lettura dal server (per i test dell'ordine pull → push).
+    func pullOnlyForTests() async throws -> Int {
+        var rows = 0
+        for table in SyncTable.allCases { rows += try await pull(table) }
+        return rows
     }
 
     private func pull(_ table: SyncTable) async throws -> Int {
