@@ -12,6 +12,7 @@ final class AppEnvironment {
     let remote: any RemoteAPI
     let restTimer: RestTimerModel
     let reminders: MacroReminderCenter
+    let tour = TourModel()
 
     init(config: AppConfig, database: AppDatabase) {
         self.config = config
@@ -36,6 +37,13 @@ final class AppEnvironment {
                 timer.skip()
                 Task { await reminderCenter.setUser(nil) }
             })
+    }
+
+    /// Fa partire la guida: se non c'è ancora un programma, salta i passi che lo mostrano.
+    func startTour(userID: UUID) async {
+        let hasProgram =
+            (try? await database.writer.read { try ProgramQueries.home($0, athleteID: userID).mesocycle != nil }) ?? false
+        tour.start(hasProgram: hasProgram)
     }
 
     /// Una risposta al promemoria dei macro, anche se l'app si è appena aperta dalla notifica.

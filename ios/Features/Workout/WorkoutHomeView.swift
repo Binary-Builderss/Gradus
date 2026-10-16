@@ -54,7 +54,9 @@ struct WorkoutHomeView: View {
                             .font(.subheadline).foregroundStyle(.orange)
                     }
                 }
+                .tourTarget("home-program")
                 WeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: Binding(get: { selected }, set: { week = $0 }))
+                    .tourTarget("home-weeks")
                 if mesocycle.deloadWeeks.contains(selected) {
                     Label("Settimana di scarico", systemImage: "arrow.down.right.circle")
                         .font(.subheadline).foregroundStyle(.orange)
@@ -81,6 +83,7 @@ struct WorkoutHomeView: View {
                             }
                         }
                         .padding(.vertical, 2)
+                        .tourTarget("home-sessions", if: session.id == snapshot.sessions.first?.id)
                     }
                 }
             }

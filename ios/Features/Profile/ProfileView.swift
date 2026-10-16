@@ -29,6 +29,7 @@ struct ProfileView: View {
                     } label: {
                         Label("Account", systemImage: "person.crop.circle")
                     }
+                    .tourTarget("profile-sections")
                     NavigationLink {
                         PreferencesView(environment: environment, userID: userID)
                     } label: {
@@ -55,6 +56,13 @@ struct ProfileView: View {
                     } label: {
                         Label("Assistenza e informazioni", systemImage: "questionmark.circle")
                     }
+                    Button {
+                        Task { await environment.startTour(userID: userID) }
+                    } label: {
+                        Label("Guida", systemImage: "questionmark.bubble")
+                    }
+                    .foregroundStyle(.primary)
+                    .tourTarget("profile-guide")
                 }
                 Section {
                     NavigationLink {

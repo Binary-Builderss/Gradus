@@ -72,7 +72,26 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.binarybuilders.gradus.tests
         GENERATE_INFOPLIST_FILE: YES
+  GradusUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+    dependencies:
+      - target: Gradus
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.binarybuilders.gradus.uitests
+        GENERATE_INFOPLIST_FILE: YES
 schemes:
+  GradusUI:
+    build:
+      targets:
+        Gradus: all
+        GradusUITests: all
+    test:
+      targets:
+        - GradusUITests
   Gradus:
     build:
       targets:

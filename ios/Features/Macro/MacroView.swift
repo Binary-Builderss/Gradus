@@ -75,8 +75,10 @@ struct MacroView: View {
                     Text("Tolleranza ±\(plan.tolerancePct)%").font(.footnote).foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 4)
+                .tourTarget("macro-target")
             } else {
                 Text("Il tuo coach non ha ancora impostato i macro.").foregroundStyle(.secondary)
+                    .tourTarget("macro-target")
             }
         } header: {
             Text("Obiettivo di oggi")
@@ -109,6 +111,7 @@ struct MacroView: View {
                     if snapshot.consent { editing = entry } else { consenting = true }
                 } label: {
                     DayRow(entry: entry)
+                        .tourTarget("macro-days", if: entry.day == snapshot.days.first?.day)
                 }
                 .buttonStyle(.plain)
             }
