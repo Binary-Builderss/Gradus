@@ -18,6 +18,8 @@ insert into public.coach_athletes (coach_id, athlete_id, status) values
   ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000a1', 'active'),
   ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000a2', 'pending'),
   ('00000000-0000-0000-0000-0000000000c2', '00000000-0000-0000-0000-0000000000b1', 'active');
+-- c1 ha un piano che ammette più template (il free ne ammette uno solo)
+insert into public.coach_plans (coach_id, plan) values ('00000000-0000-0000-0000-0000000000c1', 'basic');
 insert into public.exercises (id, owner_id, name) values
   ('e0000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1', 'Panca'),
   ('e0000000-0000-0000-0000-0000000000e2', '00000000-0000-0000-0000-0000000000c1', 'Croci');

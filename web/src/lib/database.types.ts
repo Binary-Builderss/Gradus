@@ -129,6 +129,7 @@ export type Database = {
           coach_id: string
           colors: NonNullable<Json>
           created_at: string
+          hide_gradus_credit: boolean
           logo_png: string | null
           updated_at: string
         }
@@ -138,6 +139,7 @@ export type Database = {
           coach_id: string
           colors?: NonNullable<Json>
           created_at?: string
+          hide_gradus_credit?: boolean
           logo_png?: string | null
           updated_at?: string
         }
@@ -146,6 +148,7 @@ export type Database = {
           coach_id?: string
           colors?: NonNullable<Json>
           created_at?: string
+          hide_gradus_credit?: boolean
           logo_png?: string | null
           updated_at?: string
         }
@@ -876,7 +879,6 @@ export type Database = {
         Returns: string
       }
       generate_progression: { Args: { p_block_id: string; p_rule: Json }; Returns: number }
-      has_pro_plan: { Args: Record<PropertyKey, never>; Returns: boolean }
       instantiate_template: {
         Args: { p_athlete_id: string; p_name?: string; p_start_date: string; p_template_id: string }
         Returns: string
@@ -885,7 +887,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: {
           athlete_limit: number
+          branding_level: number
+          diet_plans: number
+          diet_snapshots: number
+          mesocycle_templates: number
           plan: Database['public']['Enums']['coach_plan']
+          progression_presets: number
+          session_templates: number
         }[]
       }
       plan_usage: {
@@ -893,10 +901,12 @@ export type Database = {
         Returns: {
           athlete_limit: number
           athletes: number
-          can_customize: boolean
+          branding_level: number
           cancel_at_period_end: boolean
           has_subscription: boolean
+          mesocycle_templates: number
           plan: Database['public']['Enums']['coach_plan']
+          progression_presets: number
           renews_until: string
         }[]
       }
@@ -966,7 +976,7 @@ export type Database = {
     }
     Enums: {
       block_role: 'warmup' | 'top' | 'backoff' | 'working'
-      coach_plan: 'free' | 'mid' | 'pro' | 'unlimited'
+      coach_plan: 'free' | 'basic' | 'advanced' | 'custom'
       effort_scale: 'BUF' | 'RPE'
       group_kind: 'single' | 'superset' | 'giant' | 'circuit' | 'jumpset'
       intensity_method: 'BUF' | 'RPE' | 'RM' | 'PCT_1RM' | 'LOAD'
@@ -1106,7 +1116,7 @@ export const Constants = {
   public: {
     Enums: {
       block_role: ['warmup', 'top', 'backoff', 'working'],
-      coach_plan: ['free', 'mid', 'pro', 'unlimited'],
+      coach_plan: ['free', 'basic', 'advanced', 'custom'],
       effort_scale: ['BUF', 'RPE'],
       group_kind: ['single', 'superset', 'giant', 'circuit', 'jumpset'],
       intensity_method: ['BUF', 'RPE', 'RM', 'PCT_1RM', 'LOAD'],

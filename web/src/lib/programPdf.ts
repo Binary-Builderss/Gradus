@@ -7,10 +7,18 @@ const m = messages.app.pdf
 export type PdfStyle = {
   colors: BrandColors
   logoPng: string | null
-  /** Logo grande e sbiadito dietro la tabella (funzione del piano Pro). */
+  /** Logo grande e sbiadito dietro la tabella (dal piano Basic). */
   watermark: boolean
-  /** Piè di pagina «Creato con Gradus» al posto del nome del marchio. */
+  /** Il PDF porta il marchio del coach (non lo stile Gradus). */
+  branded: boolean
+  /** Piè di pagina con «Creato con Gradus»: da solo se non c'è il marchio, dopo il nome se c'è. Il piano Custom lo toglie. */
   madeWithGradus: boolean
+}
+
+/** Il piè di pagina: senza marchio «Creato con Gradus»; col marchio il suo nome, e la dicitura Gradus dopo se non è tolta. */
+export function footerText(brandName: string, style: Pick<PdfStyle, 'branded' | 'madeWithGradus'>): string {
+  if (!style.branded) return m.madeWith
+  return style.madeWithGradus ? `${brandName} · ${m.madeWith}` : brandName
 }
 
 const MARGIN = 36
@@ -83,7 +91,7 @@ export async function renderProgramPdf(model: PdfModel, style: PdfStyle): Promis
     doc.line(MARGIN, 60, width - MARGIN, 60)
 
     doc.line(MARGIN, height - 32, width - MARGIN, height - 32)
-    text(style.madeWithGradus ? m.madeWith : model.brandName, MARGIN, height - 18, 8, c.muted_foreground)
+    text(footerText(model.brandName, style), MARGIN, height - 18, 8, c.muted_foreground)
     text(
       m.page(String(page), TOTAL_PAGES),
       width - MARGIN,

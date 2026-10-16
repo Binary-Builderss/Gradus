@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { BrandForm } from '@/components/brand/BrandForm'
 import { brandingQuery } from '@/lib/branding'
-import { planUsageQuery } from '@/lib/plans'
+import { canCustomize, planUsageQuery } from '@/lib/plans'
 import { messages } from '@/lib/messages'
 import { displayName, profileQuery } from '@/lib/profile'
 import { usePageTitle } from '@/lib/pageTitle'
@@ -30,7 +30,7 @@ function SettingsPage() {
             {messages.app.plans.planName[usage.data.plan]}
           </span>
         )}
-        {usage.isSuccess && !usage.data.canCustomize && (
+        {usage.isSuccess && !canCustomize(usage.data) && (
           <Link
             to="/piani"
             className="inline-flex h-8 items-center rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -52,7 +52,7 @@ function SettingsPage() {
           coachId={user.id}
           fallbackName={displayName(profile.data, user.email)}
           initial={branding.data}
-          pro={usage.data.canCustomize}
+          level={usage.data.brandingLevel}
         />
       ) : (
         <div aria-hidden className="h-64 animate-pulse rounded-lg border bg-muted/40" />

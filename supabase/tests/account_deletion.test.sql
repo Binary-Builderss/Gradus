@@ -13,7 +13,7 @@ insert into auth.users (id, email) values
 insert into public.coach_athletes (coach_id, athlete_id, status) values
   ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000a1', 'active'),
   ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000b1', 'active');
-insert into public.coach_plans (coach_id, plan) values ('00000000-0000-0000-0000-0000000000c1', 'pro');
+insert into public.coach_plans (coach_id, plan) values ('00000000-0000-0000-0000-0000000000c1', 'advanced');
 insert into public.coach_branding (coach_id, brand_name) values ('00000000-0000-0000-0000-0000000000c1', 'Studio');
 insert into public.exercises (id, owner_id, name) values
   ('e0000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1', 'Usato'),
@@ -48,7 +48,7 @@ select throws_ok(
 select set_config('role', 'postgres', true);
 
 -- abbonamento che si rinnova: la cancellazione si ferma finché non si disdice
-update public.coach_plans set plan = 'pro', billing_ref = 'sub_123', cancel_at_period_end = false
+update public.coach_plans set plan = 'advanced', billing_ref = 'sub_123', cancel_at_period_end = false
  where coach_id = '00000000-0000-0000-0000-0000000000c1';
 select throws_ok(
   $$select public.prepare_account_deletion('00000000-0000-0000-0000-0000000000c1')$$,

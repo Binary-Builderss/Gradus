@@ -28,7 +28,13 @@ const model: PdfModel = {
     { name: 'Gambe', rows: [] },
   ],
 }
-const style = { colors: STANDARD_COLORS, logoPng: null, watermark: false, madeWithGradus: true }
+const style = {
+  colors: STANDARD_COLORS,
+  logoPng: null,
+  watermark: false,
+  branded: false,
+  madeWithGradus: true,
+}
 
 const text = (blob: Blob) =>
   new Promise<string>((resolve) => {
@@ -51,6 +57,7 @@ describe('renderProgramPdf', () => {
       ...style,
       logoPng: LOGO,
       watermark: true,
+      branded: true,
       madeWithGradus: false,
     })
     expect(await text(branded)).toContain('/Subtype /Image')

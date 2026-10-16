@@ -251,7 +251,7 @@ export const messages = {
         },
         pdf: {
           title: 'PDF della scheda',
-          body: 'Scarica la programmazione in PDF, una pagina per seduta, da stampare o mandare a chi non usa l’app. Con il piano Pro ha il tuo logo e i tuoi colori.',
+          body: 'Scarica la programmazione in PDF, una pagina per seduta, da stampare o mandare a chi non usa l’app. Dal piano Basic ha il tuo logo e i tuoi colori.',
         },
         sessionHeader: {
           title: 'Nome e ordine della seduta',
@@ -335,7 +335,7 @@ export const messages = {
         },
         account: {
           title: 'Il tuo account',
-          body: 'In basso a sinistra c’è il tuo nome: cliccalo per aprire il Profilo (nome, password), Personalizza (logo e colori, piano Pro) o per uscire.',
+          body: 'In basso a sinistra c’è il tuo nome: cliccalo per aprire il Profilo (nome, password), Personalizza (logo e colori, dal piano Basic) o per uscire.',
         },
         profile: {
           title: 'Il tuo profilo',
@@ -343,7 +343,7 @@ export const messages = {
         },
         brand: {
           title: 'Personalizza',
-          body: 'Qui scegli logo e colori che compaiono nel PDF della scheda e, più avanti, nell’app dei tuoi atleti. Parti dai colori di Gradus e cambiali come vuoi. È una funzione del piano Pro.',
+          body: 'Qui scegli logo e colori che compaiono nel PDF della scheda e, più avanti, nell’app dei tuoi atleti. Parti dai colori di Gradus e cambiali come vuoi. Parte dal piano Basic, con più libertà a ogni livello.',
         },
         finish: {
           title: 'È tutto',
@@ -448,12 +448,20 @@ export const messages = {
       loadError: 'Non riesco a caricare il piano. Riprova tra poco.',
       active: 'Il tuo piano attuale',
       usage: (athletes: number, limit: number) => `Hai ${athletes} atleti su ${limit}.`,
-      usageUnlimited: (athletes: number) => `Hai ${athletes} atleti: il tuo piano non ha un tetto.`,
-      limitLine: (limit: number | null) =>
-        limit === null ? 'Atleti senza limite' : `Fino a ${limit} atleti`,
+      limitLine: (limit: number) => `Fino a ${limit} atleti`,
+      templatesLine: (limit: number) => `${limit} template di mesociclo`,
+      presetsLine: (limit: number) => `${limit} progressioni salvate`,
+      usageContent: (templates: number, templatesLimit: number, presets: number, presetsLimit: number) =>
+        `Template: ${templates} su ${templatesLimit} · Progressioni salvate: ${presets} su ${presetsLimit}`,
+      limitReached: {
+        templates: (limit: number | null) =>
+          `Hai raggiunto il limite di ${limit ?? 'template'} template del tuo piano. Elimina un template o passa a un piano superiore.`,
+        presets: (limit: number | null) =>
+          `Hai raggiunto il limite di ${limit ?? 'modelli'} progressioni salvate del tuo piano. Elimina un modello o passa a un piano superiore.`,
+      },
       tiers: {
         free: {
-          name: 'Gratuito',
+          name: 'Free',
           tagline: 'Per iniziare e provare Gradus.',
           features: [
             'Mesocicli e libreria esercizi',
@@ -461,25 +469,28 @@ export const messages = {
             'PDF della scheda in stile Gradus',
           ],
         },
-        mid: {
-          name: 'Mid',
-          tagline: 'Per chi segue molti atleti.',
-          features: ['Tutto il piano Gratuito'],
-        },
-        pro: {
-          name: 'Pro',
-          tagline: 'La tua identità sulle schede dei tuoi atleti.',
+        basic: {
+          name: 'Basic',
+          tagline: 'Per iniziare con i tuoi atleti e con il tuo marchio.',
           features: [
-            'Tutto il piano Mid',
-            'Personalizza: il tuo logo, il tuo nome e i tuoi colori',
+            'Tutto il piano Free',
+            'Personalizza: il tuo logo, il tuo nome e il tuo colore principale',
             'PDF col tuo marchio e il tuo logo come filigrana',
+          ],
+        },
+        advanced: {
+          name: 'Advanced',
+          tagline: 'Per professionisti che seguono molti atleti.',
+          features: [
+            'Tutto il piano Basic',
+            'Tavolozza completa: scegli tutti i colori',
             'L’app dei tuoi atleti nei tuoi colori (in arrivo)',
           ],
         },
-        unlimited: {
-          name: 'Unlimited',
-          tagline: 'Per studi e centri, senza tetto di atleti.',
-          features: ['Tutto il piano Pro'],
+        custom: {
+          name: 'Custom',
+          tagline: 'Per studi strutturati, con la massima capienza.',
+          features: ['Tutto il piano Advanced', 'PDF senza la dicitura «Creato con Gradus»'],
         },
       },
       cta: (name: string) => `Passa a ${name}`,
@@ -489,30 +500,40 @@ export const messages = {
       subscription: {
         title: 'Il tuo abbonamento',
         renews: (date: string) => `Si rinnova il ${date}.`,
-        ends: (date: string) => `Disdetto: il piano resta attivo fino al ${date}, poi torni al Gratuito.`,
+        ends: (date: string) => `Disdetto: il piano resta attivo fino al ${date}, poi torni al piano Free.`,
         manual: 'Piano attivo, senza scadenza e senza addebiti.',
         manage: 'Gestisci o disdici l’abbonamento',
         manageSoon: 'Disdetta presto disponibile',
         manageSoonHint: 'Appena l’acquisto è attivo potrai disdire da qui, in un clic, quando vuoi.',
-        whatHappens: (freeLimit: number | null) =>
-          `Se disdici resti nel piano fino alla fine del periodo già pagato. Dopo torni al Gratuito: non perdi nessun dato e tieni tutti i tuoi atleti${freeLimit === null ? '' : `, ma ne puoi aggiungere solo fino a ${freeLimit}`}. Logo, colori e PDF col marchio tornano allo stile Gradus.`,
+        whatHappens: (freeLimit: number) =>
+          `Se disdici resti nel piano fino alla fine del periodo già pagato. Dopo torni al piano Free: non perdi nessun dato e tieni tutti i tuoi atleti, template e progressioni, ma puoi aggiungerne solo entro i limiti del piano (atleti fino a ${freeLimit}). Logo, colori e PDF col marchio tornano allo stile Gradus.`,
       },
-      upsellTitle: 'Passa a Pro',
+      upsellTitle: 'Passa a Basic',
       upsellBody: 'Logo e colori su PDF e app',
       moreAthletes: 'Più atleti',
       slotsLeft: (athletes: number, limit: number) => `${athletes} atleti su ${limit}`,
-      planName: { free: 'Piano gratuito', mid: 'Piano Mid', pro: 'Piano Pro', unlimited: 'Piano Unlimited' },
+      planName: {
+        free: 'Piano Free',
+        basic: 'Piano Basic',
+        advanced: 'Piano Advanced',
+        custom: 'Piano Custom',
+      },
     },
     customize: {
       title: 'Personalizza',
       loadError: 'Non riesco a caricare la pagina. Riprova tra poco.',
-      upgrade: 'Passa a Pro',
+      upgrade: 'Passa a Basic',
       brand: {
         title: 'Il tuo marchio',
         intro:
           'Logo e colori compaiono nel PDF della scheda e, più avanti, nell’app dei tuoi atleti. Parti dai colori di Gradus e cambiali come vuoi.',
         locked:
-          'Personalizza è una funzione del piano Pro. Finché non è attivo, PDF e app usano lo stile standard di Gradus.',
+          'Personalizza parte dal piano Basic. Finché non è attivo, PDF e app usano lo stile standard di Gradus.',
+        paletteLocked:
+          'Con il piano Basic scegli il colore principale. La tavolozza completa è del piano Advanced.',
+        creditLabel: 'Nascondi «Creato con Gradus» nel PDF',
+        creditHint: 'Il PDF porta solo il tuo marchio.',
+        creditLocked: 'Dal piano Custom puoi togliere la dicitura Gradus dal PDF.',
         name: 'Nome del marchio',
         namePlaceholder: 'Il tuo nome o quello del tuo studio',
         nameHint: 'Se lo lasci vuoto compare il tuo nome.',

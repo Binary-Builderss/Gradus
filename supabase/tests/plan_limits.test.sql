@@ -1,6 +1,6 @@
--- Tetto di atleti per piano (free 20, mid 60, pro 100, unlimited nessuno), piano scaduto, collegamenti
--- che non occupano posti, plan_usage e disattivazione dell'account.
--- Coach: f = free, m = mid, p = pro, u = unlimited, x = pro scaduto, s = free con 19 atleti + sé stesso.
+-- Tetto di atleti per piano (free 20, basic 50, advanced 100, custom 500), piano scaduto, collegamenti
+-- che non occupano posti, plan_usage, plan_limits e disattivazione dell'account.
+-- Coach: f = free, b = basic, a = advanced, c = custom, x = advanced scaduto, s = free con 19 atleti + sé stesso.
 
 begin;
 create extension if not exists pgtap with schema extensions;
@@ -12,15 +12,15 @@ select ('00000000-0000-0000-0000-0000000000' || lpad(to_hex(g), 2, '0'))::uuid, 
 from generate_series(1, 7) g;
 insert into auth.users (id, email)
 select ('a0000000-0000-0000-0000-' || lpad(g::text, 12, '0'))::uuid, 'ath' || g || '@t.dev'
-from generate_series(1, 330) g;
+from generate_series(1, 501) g;
 
--- coach 01 = f, 02 = m, 03 = p, 04 = u, 05 = x, 06 = s (senza riga di piano = free)
+-- coach 01 = f, 02 = b, 03 = a, 04 = c, 05 = x, 06 = s (senza riga di piano = free)
 insert into public.coach_plans (coach_id, plan, pro_until) values
   ('00000000-0000-0000-0000-000000000001', 'free', null),
-  ('00000000-0000-0000-0000-000000000002', 'mid', null),
-  ('00000000-0000-0000-0000-000000000003', 'pro', null),
-  ('00000000-0000-0000-0000-000000000004', 'unlimited', null),
-  ('00000000-0000-0000-0000-000000000005', 'pro', now() - interval '1 day');
+  ('00000000-0000-0000-0000-000000000002', 'basic', null),
+  ('00000000-0000-0000-0000-000000000003', 'advanced', null),
+  ('00000000-0000-0000-0000-000000000004', 'custom', null),
+  ('00000000-0000-0000-0000-000000000005', 'advanced', now() - interval '1 day');
 
 create function pg_temp.link(c int, first_ath int, last_ath int, st public.link_status default 'pending') returns void
 language sql as $$
@@ -66,20 +66,28 @@ select lives_ok(
      where coach_id = '00000000-0000-0000-0000-000000000001' and athlete_id = 'a0000000-0000-0000-0000-000000000001'$$,
   'pending → active resta consentito a tetto pieno');
 
--- mid 60, pro 100, unlimited senza tetto, pro scaduto = free
-select lives_ok($$select pg_temp.link(2, 1, 60)$$, 'mid: 60 atleti');
-select throws_ok($$select pg_temp.link(2, 61, 61)$$, 'P0001', 'athlete_limit_reached', 'mid: il 61° no');
-select lives_ok($$select pg_temp.link(3, 1, 100)$$, 'pro: 100 atleti');
-select throws_ok($$select pg_temp.link(3, 101, 101)$$, 'P0001', 'athlete_limit_reached', 'pro: il 101° no');
-select lives_ok($$select pg_temp.link(4, 1, 330)$$, 'unlimited: 330 atleti, nessun tetto');
-select lives_ok($$select pg_temp.link(5, 1, 20)$$, 'pro scaduto: 20 atleti');
-select throws_ok($$select pg_temp.link(5, 21, 21)$$, 'P0001', 'athlete_limit_reached', 'pro scaduto: vale il tetto del free');
+-- basic 50, advanced 100, custom 500, advanced scaduto = free
+select lives_ok($$select pg_temp.link(2, 1, 50)$$, 'basic: 50 atleti');
+select throws_ok($$select pg_temp.link(2, 51, 51)$$, 'P0001', 'athlete_limit_reached', 'basic: il 51° no');
+select lives_ok($$select pg_temp.link(3, 1, 100)$$, 'advanced: 100 atleti');
+select throws_ok($$select pg_temp.link(3, 101, 101)$$, 'P0001', 'athlete_limit_reached', 'advanced: il 101° no');
+select lives_ok($$select pg_temp.link(4, 1, 500)$$, 'custom: 500 atleti');
+select throws_ok($$select pg_temp.link(4, 501, 501)$$, 'P0001', 'athlete_limit_reached', 'custom: il 501° no, non è più senza tetto');
+select lives_ok($$select pg_temp.link(5, 1, 20)$$, 'advanced scaduto: 20 atleti');
+select throws_ok($$select pg_temp.link(5, 21, 21)$$, 'P0001', 'athlete_limit_reached', 'advanced scaduto: vale il tetto del free');
 
--- Funzioni di Personalizza: da pro in su, non mid, non scaduto
-select ok(private.is_pro('00000000-0000-0000-0000-000000000003'), 'pro è pro');
-select ok(private.is_pro('00000000-0000-0000-0000-000000000004'), 'unlimited è pro');
-select ok(not private.is_pro('00000000-0000-0000-0000-000000000002'), 'mid non ha Personalizza');
-select ok(not private.is_pro('00000000-0000-0000-0000-000000000005'), 'pro scaduto no');
+-- Livello di personalizzazione: free 0, basic 1, advanced 2, custom 3, piano scaduto = free
+select is(private.branding_level('00000000-0000-0000-0000-000000000001'), 0, 'free: nessuna personalizzazione');
+select is(private.branding_level('00000000-0000-0000-0000-000000000002'), 1, 'basic: livello 1');
+select is(private.branding_level('00000000-0000-0000-0000-000000000003'), 2, 'advanced: livello 2');
+select is(private.branding_level('00000000-0000-0000-0000-000000000004'), 3, 'custom: livello 3');
+select is(private.branding_level('00000000-0000-0000-0000-000000000005'), 0, 'advanced scaduto: livello 0');
+select is(private.branding_level('00000000-0000-0000-0000-000000000007'), 0, 'nessuna riga di piano: livello 0');
+
+-- Tetti per tipo: un tipo sconosciuto è un errore, mai «nessun tetto»
+select throws_ok($$select private.plan_limit('free', 'banane')$$, '22023', 'unknown_limit_kind', 'tipo di tetto sconosciuto');
+select is(private.plan_limit('basic', 'diet_plans'), 7, 'basic: 7 schede dieta');
+select is(private.plan_limit('free', 'diet_plans'), 0, 'free: nessuna scheda dieta');
 
 create schema tests;
 grant usage on schema tests to authenticated;
@@ -91,26 +99,28 @@ grant execute on all functions in schema tests to authenticated;
 
 select tests.login('00000000-0000-0000-0000-000000000002');
 select results_eq(
-  $$select plan::text, athlete_limit, athletes, can_customize from public.plan_usage()$$,
-  $$values ('mid', 60, 60, false)$$, 'plan_usage del coach mid');
+  $$select plan::text, athlete_limit, athletes, branding_level from public.plan_usage()$$,
+  $$values ('basic', 50, 50, 1)$$, 'plan_usage del coach basic');
 select tests.login('00000000-0000-0000-0000-000000000004');
 select results_eq(
-  $$select plan::text, athlete_limit, athletes, can_customize from public.plan_usage()$$,
-  $$values ('unlimited', null::int, 330, true)$$, 'plan_usage di unlimited: nessun tetto');
+  $$select plan::text, athlete_limit, athletes, branding_level from public.plan_usage()$$,
+  $$values ('custom', 500, 500, 3)$$, 'plan_usage di custom: 500 atleti, livello 3');
 select results_eq(
   $$select renews_until is null, cancel_at_period_end, has_subscription from public.plan_usage()$$,
   $$values (true, false, false)$$, 'piano assegnato a mano: senza scadenza, non disdetto, senza abbonamento');
 select tests.login('00000000-0000-0000-0000-000000000005');
 select results_eq(
-  $$select plan::text, athlete_limit, can_customize from public.plan_usage()$$,
-  $$values ('free', 20, false)$$, 'plan_usage con pro scaduto vale free');
+  $$select plan::text, athlete_limit, branding_level from public.plan_usage()$$,
+  $$values ('free', 20, 0)$$, 'plan_usage con advanced scaduto vale free');
 select is((select renews_until from public.plan_usage()), null, 'un piano scaduto non mostra una data di rinnovo');
 
 -- Il catalogo dei piani per la pagina dei prezzi: stessi numeri dei tetti
 select results_eq(
-  $$select plan::text, athlete_limit from public.plan_limits() order by plan$$,
-  $$values ('free', 20), ('mid', 60), ('pro', 100), ('unlimited', null::int)$$,
-  'plan_limits elenca i quattro livelli con il loro tetto');
+  $$select plan::text, athlete_limit, session_templates, mesocycle_templates, progression_presets, diet_plans, diet_snapshots,
+           branding_level from public.plan_limits() f order by f.plan$$,
+  $$values ('free', 20, 5, 1, 20, 0, 0, 0), ('basic', 50, 35, 5, 350, 7, 12, 1),
+           ('advanced', 100, 70, 10, 700, 15, 12, 2), ('custom', 500, 140, 20, 1400, 30, 12, 3)$$,
+  'plan_limits elenca i quattro livelli con tetti e livello di personalizzazione');
 
 -- Disattivazione: la persona cambia solo il proprio profilo
 select tests.login('00000000-0000-0000-0000-000000000001');

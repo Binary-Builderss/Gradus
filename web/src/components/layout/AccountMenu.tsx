@@ -11,7 +11,7 @@ import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/compo
 import { Tip } from '@/components/ui/tooltip'
 import { initials } from '@/lib/athleteStats'
 import { messages } from '@/lib/messages'
-import type { PlanUsage } from '@/lib/plans'
+import { canCustomize, type PlanUsage } from '@/lib/plans'
 import { cn } from '@/lib/utils'
 
 const m = messages.app
@@ -101,8 +101,8 @@ export function AccountMenu({
           <Link to="/personalizza">
             <PaintBrushIcon />
             {m.nav.customize}
-            {usage && !usage.canCustomize && (
-              <span className="ml-auto rounded border px-1.5 py-px text-xs text-muted-foreground">Pro</span>
+            {usage && !canCustomize(usage) && (
+              <span className="ml-auto rounded border px-1.5 py-px text-xs text-muted-foreground">Basic</span>
             )}
           </Link>
         </MenuItem>

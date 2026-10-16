@@ -15,6 +15,7 @@ import { fieldErrors } from '@/lib/auth'
 import { duplicateMesocycleSchema, saveTemplateSchema } from '@/lib/mesocycleSchema'
 import { cloneMesocycle } from '@/lib/mesocycles'
 import { messages } from '@/lib/messages'
+import { contentLimitReached } from '@/lib/planErrors'
 import { saveAsTemplate } from '@/lib/templates'
 
 const m = messages.app.mesocycle.status
@@ -150,6 +151,7 @@ export function SaveAsTemplate({
   }
 
   const duplicateName = run.isError && (run.error as { code?: string }).code === '23505'
+  const planLimit = run.isError ? contentLimitReached(run.error) : null
   return (
     <Dialog open={open} onOpenChange={close}>
       <DialogContent>
@@ -192,7 +194,11 @@ export function SaveAsTemplate({
             </Field>
             {run.isError && (
               <p role="alert" className="text-sm text-destructive">
-                {duplicateName ? copy.errors.duplicateName : copy.errors.generic}
+                {planLimit?.kind === 'mesocycle_templates'
+                  ? messages.app.plans.limitReached.templates(planLimit.limit)
+                  : duplicateName
+                    ? copy.errors.duplicateName
+                    : copy.errors.generic}
               </p>
             )}
             <div className="flex justify-end gap-2">
