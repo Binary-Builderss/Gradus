@@ -117,13 +117,3 @@ struct MacroDayView: View {
         }
     }
 }
-
-enum MacroDayTitle {
-    static func text(_ day: String) -> String {
-        let parts = day.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3, let date = Calendar.current.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])) else {
-            return day
-        }
-        return date.formatted(.dateTime.weekday(.wide).day().month(.wide))
-    }
-}

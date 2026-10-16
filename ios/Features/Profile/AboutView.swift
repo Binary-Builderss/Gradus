@@ -7,8 +7,10 @@ struct AboutView: View {
     var body: some View {
         List {
             Section("Assistenza") {
-                Link(destination: URL(string: "mailto:contactus@binarybuilders.dev")!) {
-                    Label("Scrivici", systemImage: "envelope")
+                if let support = URL(string: "mailto:contactus@binarybuilders.dev") {
+                    Link(destination: support) {
+                        Label("Scrivici", systemImage: "envelope")
+                    }
                 }
             }
             Section("Informazioni legali") {
