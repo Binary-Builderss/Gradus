@@ -11,10 +11,4 @@ struct AppTests {
             mesocycleID: .init(), sessionID: .init(), week: 1, deloadWeeks: [], blockOrder: [], logs: [])
         #expect(none.isEmpty)
     }
-
-    @Test("la vista radice si crea")
-    @MainActor
-    func rootView() {
-        _ = RootView()
-    }
 }

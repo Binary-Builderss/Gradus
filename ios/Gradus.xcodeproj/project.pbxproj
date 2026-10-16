@@ -8,13 +8,35 @@
 
 /* Begin PBXBuildFile section */
 		1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC631A430AF67AA936C5AC /* ProfileView.swift */; };
+		199F2D1DCE9EB796A8F1A9EB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BBF8A086C5DD356333B48 /* LoginView.swift */; };
+		24FE53FD43F58850E9B4FADB /* ProgramQueriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16964EF6CBED657100714099 /* ProgramQueriesTests.swift */; };
+		2B87D12DF5979DA64F32C8EE /* SyncEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71D534E72889639A9946399F /* SyncEngineTests.swift */; };
 		3B0EC4D9193A08AD049ABDF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9D43462907B6067E227250DC /* Assets.xcassets */; };
+		4CC9D8398696EBFBFF49698E /* SyncModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BBB860263CD34F09279E9E /* SyncModel.swift */; };
+		5B2085F8F45116D6FF58D907 /* AppConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7980B8E54F28C9DA4056B1D5 /* AppConfigTests.swift */; };
 		73CB5473C7886C9C5DDC3FBA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B764FF928E312383A6B7389D /* RootView.swift */; };
+		745779BE7CC17B76DA477A08 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FDD1B9BE727F90D1AEAE58 /* AppDatabase.swift */; };
+		7C6F223D2EF0D4B4940177C2 /* AuthModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC06D27C3928FED57A9DD19 /* AuthModelTests.swift */; };
+		80FBFC5BA8019122B9030902 /* Records.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666B70B40D86F1AAA1D10243 /* Records.swift */; };
+		8172A613015624C566E53677 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = F5AA03ABB6DA1433C55B1BC6 /* GRDB */; };
+		8456768705A711B3CF8E7DA4 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 77C928FF0434CFB05271B17E /* Supabase */; };
+		9F631E7F68F91FBB7116E20A /* SupabaseRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0285C859EDB7F63E45F7B536 /* SupabaseRemote.swift */; };
+		A00238807644F832C83258F6 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A275C57E4796C9645D7ED214 /* SessionDetailView.swift */; };
+		B2ACA51EEE72BD523A635E15 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E9E56D47271319AF087A8B /* AppConfig.swift */; };
+		B75AF6178521084D9EAF828F /* LiveSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */; };
 		B8C4E3AE25172604F411C2F2 /* GradusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */; };
+		C0AAD140BEF495BB346355B2 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AA76D53109D82C5F8214E5 /* AppEnvironment.swift */; };
 		CDABB546EEE4E96644418A48 /* WorkoutHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */; };
 		CFF1A6C346545044567C57D0 /* AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122A91D31856795C6331649B /* AppTests.swift */; };
+		D6021A9B0AC0B18F3EE52B5F /* AccountGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F6C7DAEAE01C8272B45B7 /* AccountGate.swift */; };
+		E40505EE93856AD6A6FF70E5 /* MissingConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196BA65F9D5DAA445C25C528 /* MissingConfigView.swift */; };
 		E5AD3DD145207E1D5526A437 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */; };
+		E94E86C0F3968A1C991E94C2 /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B2816FC3364D50F724B7CE /* AuthModel.swift */; };
+		EA2962C198727A946FE925DB /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CC626E9BEC3A0D545F519B /* Support.swift */; };
+		F3D9621874B2FA50B441B163 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02433C41324AA26375EF9AD2 /* SyncEngine.swift */; };
+		F54A301867F0C87D8AC40782 /* ProgramQueries.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF7C091BFDEAA873833F20E /* ProgramQueries.swift */; };
 		F7AAAA38107F9E3FBF859EDA /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = D3CC16077424650BF678E67A /* Domain */; };
+		FE6F4A1B923EF7580549EECD /* RemoteAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6A4A47CF2B524DDEEF9D6 /* RemoteAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,16 +50,38 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02433C41324AA26375EF9AD2 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		0285C859EDB7F63E45F7B536 /* SupabaseRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseRemote.swift; sourceTree = "<group>"; };
+		089F6C7DAEAE01C8272B45B7 /* AccountGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountGate.swift; sourceTree = "<group>"; };
 		122A91D31856795C6331649B /* AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTests.swift; sourceTree = "<group>"; };
+		16964EF6CBED657100714099 /* ProgramQueriesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramQueriesTests.swift; sourceTree = "<group>"; };
+		196BA65F9D5DAA445C25C528 /* MissingConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingConfigView.swift; sourceTree = "<group>"; };
 		243F1694CC06A475AF48ACE8 /* GradusTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GradusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		34E9E56D47271319AF087A8B /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		48B2816FC3364D50F724B7CE /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
+		4B4BBF8A086C5DD356333B48 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6227B6A7F402DCD1A8CDF538 /* Gradus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Gradus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		666B70B40D86F1AAA1D10243 /* Records.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Records.swift; sourceTree = "<group>"; };
+		70BBB860263CD34F09279E9E /* SyncModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncModel.swift; sourceTree = "<group>"; };
+		71D534E72889639A9946399F /* SyncEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineTests.swift; sourceTree = "<group>"; };
+		7980B8E54F28C9DA4056B1D5 /* AppConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigTests.swift; sourceTree = "<group>"; };
 		8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSyncTests.swift; sourceTree = "<group>"; };
 		9D43462907B6067E227250DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9FC06D27C3928FED57A9DD19 /* AuthModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModelTests.swift; sourceTree = "<group>"; };
+		A275C57E4796C9645D7ED214 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		A7AA76D53109D82C5F8214E5 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		ADF7C091BFDEAA873833F20E /* ProgramQueries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramQueries.swift; sourceTree = "<group>"; };
 		B764FF928E312383A6B7389D /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutHomeView.swift; sourceTree = "<group>"; };
 		C7CC631A430AF67AA936C5AC /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		D09FDDCB571D91A3A4A9D7A3 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradusApp.swift; sourceTree = "<group>"; };
+		D6CC626E9BEC3A0D545F519B /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
+		D8FDD1B9BE727F90D1AEAE58 /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
 		E5CF97CAFD07A441E7D2F5B4 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Domain; path = Domain; sourceTree = SOURCE_ROOT; };
+		E6D6A4A47CF2B524DDEEF9D6 /* RemoteAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAPI.swift; sourceTree = "<group>"; };
+		FDF9394F3DA73C9A3568A42D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +90,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F7AAAA38107F9E3FBF859EDA /* Domain in Frameworks */,
+				8172A613015624C566E53677 /* GRDB in Frameworks */,
+				8456768705A711B3CF8E7DA4 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,12 +106,30 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		1067220CCAE700FF19670BAB /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				D09FDDCB571D91A3A4A9D7A3 /* Base.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		3B2A63F5976D0AD055F73732 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				089F6C7DAEAE01C8272B45B7 /* AccountGate.swift */,
 				C7CC631A430AF67AA936C5AC /* ProfileView.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		4A56CF919303BCEAEBBCC729 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				48B2816FC3364D50F724B7CE /* AuthModel.swift */,
+				4B4BBF8A086C5DD356333B48 /* LoginView.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		5C300B27DE084E4EE7B4EC63 /* Packages */ = {
@@ -76,10 +140,21 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		82B6DA12CA35C1CD1FC7393F /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				02433C41324AA26375EF9AD2 /* SyncEngine.swift */,
+				70BBB860263CD34F09279E9E /* SyncModel.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
 		97F2CA1BF82F929E752C7CB5 = {
 			isa = PBXGroup;
 			children = (
 				A93135EDBFA90998BC3DF65C /* App */,
+				1067220CCAE700FF19670BAB /* Config */,
+				F33DF24F338CF2D155CDCF9E /* Data */,
 				F50168A906FA09DC97791A14 /* Features */,
 				5C300B27DE084E4EE7B4EC63 /* Packages */,
 				05E73C43858D9B1E5C90ED45 /* Resources */,
@@ -91,16 +166,50 @@
 		A93135EDBFA90998BC3DF65C /* App */ = {
 			isa = PBXGroup;
 			children = (
+				34E9E56D47271319AF087A8B /* AppConfig.swift */,
+				A7AA76D53109D82C5F8214E5 /* AppEnvironment.swift */,
 				9D43462907B6067E227250DC /* Assets.xcassets */,
 				D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */,
+				FDF9394F3DA73C9A3568A42D /* Info.plist */,
+				196BA65F9D5DAA445C25C528 /* MissingConfigView.swift */,
 				B764FF928E312383A6B7389D /* RootView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
 		};
+		C1E5EB9C6055F9FCA97011ED /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				E6D6A4A47CF2B524DDEEF9D6 /* RemoteAPI.swift */,
+				0285C859EDB7F63E45F7B536 /* SupabaseRemote.swift */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
+		EE202713D33FB1DC7E8CAF5E /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				D8FDD1B9BE727F90D1AEAE58 /* AppDatabase.swift */,
+				ADF7C091BFDEAA873833F20E /* ProgramQueries.swift */,
+				666B70B40D86F1AAA1D10243 /* Records.swift */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
+		F33DF24F338CF2D155CDCF9E /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				EE202713D33FB1DC7E8CAF5E /* Local */,
+				C1E5EB9C6055F9FCA97011ED /* Remote */,
+				82B6DA12CA35C1CD1FC7393F /* Sync */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		F50168A906FA09DC97791A14 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				4A56CF919303BCEAEBBCC729 /* Auth */,
 				3B2A63F5976D0AD055F73732 /* Profile */,
 				F65E56AF4DF7B35FA2396C35 /* Workout */,
 			);
@@ -119,6 +228,7 @@
 		F65E56AF4DF7B35FA2396C35 /* Workout */ = {
 			isa = PBXGroup;
 			children = (
+				A275C57E4796C9645D7ED214 /* SessionDetailView.swift */,
 				C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */,
 			);
 			path = Workout;
@@ -127,7 +237,13 @@
 		F6A610C345981446CAF7CE85 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7980B8E54F28C9DA4056B1D5 /* AppConfigTests.swift */,
 				122A91D31856795C6331649B /* AppTests.swift */,
+				9FC06D27C3928FED57A9DD19 /* AuthModelTests.swift */,
+				939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */,
+				16964EF6CBED657100714099 /* ProgramQueriesTests.swift */,
+				D6CC626E9BEC3A0D545F519B /* Support.swift */,
+				71D534E72889639A9946399F /* SyncEngineTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -150,6 +266,8 @@
 			name = Gradus;
 			packageProductDependencies = (
 				D3CC16077424650BF678E67A /* Domain */,
+				F5AA03ABB6DA1433C55B1BC6 /* GRDB */,
+				77C928FF0434CFB05271B17E /* Supabase */,
 			);
 			productName = Gradus;
 			productReference = 6227B6A7F402DCD1A8CDF538 /* Gradus.app */;
@@ -200,6 +318,8 @@
 			mainGroup = 97F2CA1BF82F929E752C7CB5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				63EDF49D7481BB3012C863A0 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				1683A5E1392BA3A7D7A5BDA5 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				659D27F7FE3CA695DDA2C57D /* XCLocalSwiftPackageReference "Domain" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -230,7 +350,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B2085F8F45116D6FF58D907 /* AppConfigTests.swift in Sources */,
 				CFF1A6C346545044567C57D0 /* AppTests.swift in Sources */,
+				7C6F223D2EF0D4B4940177C2 /* AuthModelTests.swift in Sources */,
+				B75AF6178521084D9EAF828F /* LiveSyncTests.swift in Sources */,
+				24FE53FD43F58850E9B4FADB /* ProgramQueriesTests.swift in Sources */,
+				EA2962C198727A946FE925DB /* Support.swift in Sources */,
+				2B87D12DF5979DA64F32C8EE /* SyncEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,9 +364,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6021A9B0AC0B18F3EE52B5F /* AccountGate.swift in Sources */,
+				B2ACA51EEE72BD523A635E15 /* AppConfig.swift in Sources */,
+				745779BE7CC17B76DA477A08 /* AppDatabase.swift in Sources */,
+				C0AAD140BEF495BB346355B2 /* AppEnvironment.swift in Sources */,
+				E94E86C0F3968A1C991E94C2 /* AuthModel.swift in Sources */,
 				B8C4E3AE25172604F411C2F2 /* GradusApp.swift in Sources */,
+				199F2D1DCE9EB796A8F1A9EB /* LoginView.swift in Sources */,
+				E40505EE93856AD6A6FF70E5 /* MissingConfigView.swift in Sources */,
 				1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */,
+				F54A301867F0C87D8AC40782 /* ProgramQueries.swift in Sources */,
+				80FBFC5BA8019122B9030902 /* Records.swift in Sources */,
+				FE6F4A1B923EF7580549EECD /* RemoteAPI.swift in Sources */,
 				73CB5473C7886C9C5DDC3FBA /* RootView.swift in Sources */,
+				A00238807644F832C83258F6 /* SessionDetailView.swift in Sources */,
+				9F631E7F68F91FBB7116E20A /* SupabaseRemote.swift in Sources */,
+				F3D9621874B2FA50B441B163 /* SyncEngine.swift in Sources */,
+				4CC9D8398696EBFBFF49698E /* SyncModel.swift in Sources */,
 				CDABB546EEE4E96644418A48 /* WorkoutHomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -296,12 +436,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Gradus;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				INFOPLIST_FILE = App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,6 +450,7 @@
 		};
 		4B366B9DA871BBD3C6CAB2D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D09FDDCB571D91A3A4A9D7A3 /* Base.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -382,6 +518,7 @@
 		};
 		7147809917ED7852E71F91D5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D09FDDCB571D91A3A4A9D7A3 /* Base.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -446,12 +583,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Gradus;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				INFOPLIST_FILE = App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -502,10 +634,39 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		1683A5E1392BA3A7D7A5BDA5 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		63EDF49D7481BB3012C863A0 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		77C928FF0434CFB05271B17E /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1683A5E1392BA3A7D7A5BDA5 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
 		D3CC16077424650BF678E67A /* Domain */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Domain;
+		};
+		F5AA03ABB6DA1433C55B1BC6 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63EDF49D7481BB3012C863A0 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

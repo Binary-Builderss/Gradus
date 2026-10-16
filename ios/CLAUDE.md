@@ -24,6 +24,10 @@ quando un task tocca anche `/supabase` o `/fixtures`.
   `/fixtures`). L'app lo importa con `import Domain`.
 - App e test: `xcodebuild test -project Gradus.xcodeproj -scheme Gradus -destination 'platform=iOS Simulator,id=<id>'`
   (gli id con `xcodebuild -showdestinations`); aggiungi `CODE_SIGNING_ALLOWED=NO` da terminale.
+- `Tests/LiveSyncTests.swift` prova accesso e sincronizzazione contro il Supabase LOCALE vero (RLS compresa) e si salta
+  da solo. Per lanciarla: `supabase start && python3 ios/Scripts/seed_local.py`, poi davanti a `xcodebuild` metti
+  `TEST_RUNNER_GRADUS_LIVE_KEY=<PUBLISHABLE_KEY di supabase status -o env>`. Senza firma il portachiavi del simulatore
+  non c'è: la prova usa un archivio in memoria.
 
 ## Architettura
 

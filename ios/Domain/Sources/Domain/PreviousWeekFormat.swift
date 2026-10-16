@@ -17,11 +17,7 @@ extension PreviousWeekReference {
         "\(effort.scale.rawValue) \(number(effort.value))"
     }
 
-    /// Numeri all'italiana, senza decimali inutili: 100 → «100», 102.5 → «102,5».
     static func number(_ value: Double?) -> String {
-        guard let value else { return "–" }
-        let rounded = (value * 100).rounded() / 100
-        if rounded == rounded.rounded() { return String(Int(rounded)) }
-        return String(rounded).replacingOccurrences(of: ".", with: ",")
+        value.map(Format.number) ?? "–"
     }
 }
