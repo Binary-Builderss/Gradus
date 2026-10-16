@@ -5,9 +5,10 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { queryClient } from './lib/queryClient'
 import { supabase } from './lib/supabase'
+import { NotFound } from './components/auth/NotFound'
 import { routeTree } from './routeTree.gen'
 
-const router = createRouter({ routeTree, context: {} })
+const router = createRouter({ routeTree, context: {}, defaultNotFoundComponent: NotFound })
 
 // setTimeout: dentro il callback non si chiamano metodi di supabase.auth (rischio di stallo).
 supabase.auth.onAuthStateChange((event) => {

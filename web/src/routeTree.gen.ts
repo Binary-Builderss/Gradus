@@ -12,7 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RecuperoPasswordRouteImport } from './routes/recupero-password'
+import { Route as RegistratiRouteImport } from './routes/registrati'
+import { Route as TerminiRouteImport } from './routes/termini'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppEserciziRouteImport } from './routes/_app/esercizi'
 import { Route as AppPersonalizzaRouteImport } from './routes/_app/personalizza'
@@ -36,9 +39,24 @@ const NuovaPasswordRoute = NuovaPasswordRouteImport.update({
   path: '/nuova-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecuperoPasswordRoute = RecuperoPasswordRouteImport.update({
   id: '/recupero-password',
   path: '/recupero-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistratiRoute = RegistratiRouteImport.update({
+  id: '/registrati',
+  path: '/registrati',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminiRoute = TerminiRouteImport.update({
+  id: '/termini',
+  path: '/termini',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -86,7 +104,10 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
+  '/privacy': typeof PrivacyRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/registrati': typeof RegistratiRoute
+  '/termini': typeof TerminiRoute
   '/esercizi': typeof AppEserciziRoute
   '/personalizza': typeof AppPersonalizzaRoute
   '/piani': typeof AppPianiRoute
@@ -98,7 +119,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
+  '/privacy': typeof PrivacyRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/registrati': typeof RegistratiRoute
+  '/termini': typeof TerminiRoute
   '/esercizi': typeof AppEserciziRoute
   '/personalizza': typeof AppPersonalizzaRoute
   '/piani': typeof AppPianiRoute
@@ -113,7 +137,10 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
+  '/privacy': typeof PrivacyRoute
   '/recupero-password': typeof RecuperoPasswordRoute
+  '/registrati': typeof RegistratiRoute
+  '/termini': typeof TerminiRoute
   '/_app/esercizi': typeof AppEserciziRoute
   '/_app/personalizza': typeof AppPersonalizzaRoute
   '/_app/piani': typeof AppPianiRoute
@@ -129,7 +156,10 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/nuova-password'
+    | '/privacy'
     | '/recupero-password'
+    | '/registrati'
+    | '/termini'
     | '/esercizi'
     | '/personalizza'
     | '/piani'
@@ -141,7 +171,10 @@ export interface FileRouteTypes {
   to:
     | '/login'
     | '/nuova-password'
+    | '/privacy'
     | '/recupero-password'
+    | '/registrati'
+    | '/termini'
     | '/esercizi'
     | '/personalizza'
     | '/piani'
@@ -155,7 +188,10 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/nuova-password'
+    | '/privacy'
     | '/recupero-password'
+    | '/registrati'
+    | '/termini'
     | '/_app/esercizi'
     | '/_app/personalizza'
     | '/_app/piani'
@@ -170,7 +206,10 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   NuovaPasswordRoute: typeof NuovaPasswordRoute
+  PrivacyRoute: typeof PrivacyRoute
   RecuperoPasswordRoute: typeof RecuperoPasswordRoute
+  RegistratiRoute: typeof RegistratiRoute
+  TerminiRoute: typeof TerminiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -196,11 +235,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NuovaPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recupero-password': {
       id: '/recupero-password'
       path: '/recupero-password'
       fullPath: '/recupero-password'
       preLoaderRoute: typeof RecuperoPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registrati': {
+      id: '/registrati'
+      path: '/registrati'
+      fullPath: '/registrati'
+      preLoaderRoute: typeof RegistratiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termini': {
+      id: '/termini'
+      path: '/termini'
+      fullPath: '/termini'
+      preLoaderRoute: typeof TerminiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -290,7 +350,10 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   NuovaPasswordRoute: NuovaPasswordRoute,
+  PrivacyRoute: PrivacyRoute,
   RecuperoPasswordRoute: RecuperoPasswordRoute,
+  RegistratiRoute: RegistratiRoute,
+  TerminiRoute: TerminiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

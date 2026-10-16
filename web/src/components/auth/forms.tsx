@@ -4,7 +4,7 @@ import type { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { credentialsSchema, emailSchema, fieldErrors, newPasswordSchema } from '@/lib/auth'
+import { credentialsSchema, emailSchema, fieldErrors, newPasswordSchema, signupSchema } from '@/lib/auth'
 import { messages } from '@/lib/messages'
 
 const m = messages.auth
@@ -184,6 +184,75 @@ export function NewPasswordForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof 
       />
       <FormError message={formError} />
       <SubmitButton pending={pending} label={m.newPassword.submit} pendingLabel={m.newPassword.submitting} />
+    </form>
+  )
+}
+
+export function SignupForm({ onSubmit }: { onSubmit: Submit<z.infer<typeof signupSchema>> }) {
+  const { errors, formError, pending, submit } = useAuthForm(signupSchema, onSubmit)
+  return (
+    <form noValidate onSubmit={submit} className="grid gap-4">
+      <TextField
+        name="full_name"
+        label={m.signup.name}
+        autoComplete="name"
+        autoFocus
+        error={errors.full_name}
+      />
+      <TextField name="email" type="email" label={m.email} autoComplete="email" error={errors.email} />
+      <TextField
+        name="password"
+        type="password"
+        label={m.password}
+        autoComplete="new-password"
+        error={errors.password}
+      />
+      <TextField
+        name="confirm"
+        type="password"
+        label={m.newPassword.confirm}
+        autoComplete="new-password"
+        error={errors.confirm}
+      />
+      <div className="grid gap-1.5">
+        <label className="flex items-start gap-2.5 text-sm leading-snug">
+          <input
+            type="checkbox"
+            name="accept"
+            aria-invalid={errors.accept ? true : undefined}
+            aria-describedby={errors.accept ? 'field-accept-error' : undefined}
+            className="mt-0.5 size-4 shrink-0 accent-primary"
+          />
+          <span>
+            {m.signup.accept}{' '}
+            <a
+              href="/termini"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
+              {m.signup.acceptTerms}
+            </a>{' '}
+            {m.signup.acceptAnd}
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
+              {m.signup.acceptPrivacy}
+            </a>
+            .
+          </span>
+        </label>
+        {errors.accept && (
+          <p id="field-accept-error" className="text-sm text-destructive">
+            {errors.accept}
+          </p>
+        )}
+      </div>
+      <FormError message={formError} />
+      <SubmitButton pending={pending} label={m.signup.submit} pendingLabel={m.signup.submitting} />
     </form>
   )
 }

@@ -36,6 +36,12 @@ function LoginPage() {
       >
         {m.login.forgot}
       </Link>
+      <p className="mt-4 border-t pt-4 text-sm text-muted-foreground">
+        {m.login.noAccount}{' '}
+        <Link to="/registrati" className="font-medium text-foreground underline-offset-4 hover:underline">
+          {m.login.signUp}
+        </Link>
+      </p>
     </AuthLayout>
   )
 }
