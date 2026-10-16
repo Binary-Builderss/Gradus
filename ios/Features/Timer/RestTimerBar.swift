@@ -13,7 +13,7 @@ struct RestTimerBar: View {
                         Text(RestTimerState.clock(state.remainingSeconds(at: context.date)))
                             .font(.title2.monospacedDigit().weight(.semibold))
                     }
-                    Text(state.title).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    Text(state.title).font(.footnote).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer()
                 Button("−15 s") { timer.adjust(bySeconds: -15) }

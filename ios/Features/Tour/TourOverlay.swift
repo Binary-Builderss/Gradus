@@ -45,7 +45,7 @@ struct TourOverlay: View {
     private func card(_ step: TourStep) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("\(tour.index + 1) di \(tour.steps.count)").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                Text("\(tour.index + 1) di \(tour.steps.count)").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
                 Spacer()
                 if !tour.isLast { Button("Salta") { tour.finish() }.font(.subheadline) }
             }
