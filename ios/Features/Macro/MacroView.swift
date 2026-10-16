@@ -89,7 +89,7 @@ struct MacroView: View {
     private func stat(_ name: String, _ grams: Int) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("\(grams) g").font(.headline.monospacedDigit())
-            Text(name).font(.caption).foregroundStyle(.secondary)
+            Text(name).font(.footnote).foregroundStyle(.secondary)
         }
     }
 
