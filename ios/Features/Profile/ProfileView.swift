@@ -6,6 +6,7 @@ private struct ProfileSnapshot: Equatable {
     var name: String?
     var email: String?
     var coach: String?
+    var unsent = 0
 }
 
 /// Profilo: chi sei, il coach collegato, lo stato della sincronizzazione ed esci.
@@ -14,6 +15,8 @@ struct ProfileView: View {
     let userID: UUID
     @State private var snapshot = ProfileSnapshot()
     @State private var confirmingSignOut = false
+    @State private var unsentAtSignOut = 0
+    @State private var checkingSignOut = false
     @AppStorage("effortScale") private var effortScale = EffortScale.buf.rawValue
     @AppStorage(RestTimerModel.soundKey) private var timerSound = true
     @AppStorage(RestTimerModel.hapticKey) private var timerHaptic = true
@@ -36,20 +39,38 @@ struct ProfileView: View {
                 }
                 Section("Sincronizzazione") {
                     SyncStatusRow(sync: environment.sync)
+                    if snapshot.unsent > 0 {
+                        Label(
+                            snapshot.unsent == 1 ? "1 serie da inviare" : "\(snapshot.unsent) serie da inviare",
+                            systemImage: "arrow.up.circle"
+                        )
+                        .font(.subheadline).foregroundStyle(.orange)
+                    }
                     Button("Sincronizza ora") { Task { await environment.sync.sync() } }
                         .disabled(environment.sync.state == .syncing)
                 }
                 Section {
-                    Button("Esci", role: .destructive) { confirmingSignOut = true }
+                    Button("Esci", role: .destructive) { Task { await beginSignOut() } }
+                        .disabled(checkingSignOut)
                 }
             }
             .navigationTitle("Profilo")
             .confirmationDialog(
-                "Uscire dall'account?", isPresented: $confirmingSignOut, titleVisibility: .visible
+                unsentAtSignOut > 0
+                    ? (unsentAtSignOut == 1 ? "Hai 1 serie non ancora inviata" : "Hai \(unsentAtSignOut) serie non ancora inviate")
+                    : "Uscire dall'account?",
+                isPresented: $confirmingSignOut, titleVisibility: .visible
             ) {
-                Button("Esci", role: .destructive) { Task { await environment.auth.signOut() } }
+                Button(unsentAtSignOut > 0 ? "Esci e perdi le serie" : "Esci", role: .destructive) {
+                    Task { await environment.auth.signOut() }
+                }
+                Button("Annulla", role: .cancel) {}
             } message: {
-                Text("I dati salvati sul telefono vengono tolti. Li ritrovi accedendo di nuovo.")
+                if unsentAtSignOut > 0 {
+                    Text("Non sono riuscito a inviarle al server (forse manca la rete). Se esci le perdi: aspetta di avere connessione e riprova.")
+                } else {
+                    Text("I dati salvati sul telefono vengono tolti. Li ritrovi accedendo di nuovo.")
+                }
             }
         }
         .task {
@@ -59,12 +80,23 @@ struct ProfileView: View {
                 let link = try CoachLinkRecord
                     .filter(Column("athlete_id") == id && Column("status") == "active").fetchOne(db)
                 let coach = try link.flatMap { try ProfileRecord.fetchOne(db, key: $0.coachId) }
-                return ProfileSnapshot(name: me?.fullName, email: me?.email, coach: coach?.displayName)
+                return ProfileSnapshot(
+                    name: me?.fullName, email: me?.email, coach: coach?.displayName, unsent: try ExecutionStore.unsentSets(db))
             }
             do {
                 for try await value in observation.values(in: environment.database.writer) { snapshot = value }
             } catch {}
         }
+    }
+}
+
+extension ProfileView {
+    /// Uscire non deve far perdere serie: prima si prova a inviarle, e se non si riesce lo si dice.
+    fileprivate func beginSignOut() async {
+        checkingSignOut = true
+        defer { checkingSignOut = false }
+        unsentAtSignOut = await environment.sync.flushBeforeSignOut()
+        confirmingSignOut = true
     }
 }
 

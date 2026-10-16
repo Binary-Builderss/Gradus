@@ -182,6 +182,11 @@ struct ExecutionStore: Sendable {
 
     // MARK: Coda di invio
 
+    /// Quante serie hanno modifiche non ancora arrivate al server (ogni modifica a una serie mette in coda la serie).
+    static func unsentSets(_ db: Database) throws -> Int {
+        try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pending_push WHERE table_name = ?", arguments: [SyncTable.setLogs.rawValue]) ?? 0
+    }
+
     static func pendingCount(_ db: Database) throws -> Int {
         try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pending_push") ?? 0
     }

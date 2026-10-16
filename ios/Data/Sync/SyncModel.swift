@@ -54,6 +54,14 @@ final class SyncModel {
         }
     }
 
+    /// Prima di uscire dall'account: prova a inviare le serie in coda e dice quante restano non inviate (0 = si può
+    /// uscire senza perdere niente). Aspetta una sincronizzazione già in corso, poi ne fa una.
+    func flushBeforeSignOut() async -> Int {
+        while state == .syncing { try? await Task.sleep(for: .milliseconds(200)) }
+        await sync()
+        return await engine.unsentSets()
+    }
+
     /// All'uscita dall'account la data dell'ultima sincronizzazione non vale più.
     func reset() {
         lastSync = nil
