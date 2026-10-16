@@ -157,6 +157,61 @@ final class ExerciseModel {
         }
     }
 
+    // MARK: Timer di recupero
+
+    private var group: GroupContent? { session.groups.first { $0.slots.contains { $0.id == slot.id } } }
+
+    /// Il recupero dopo una serie di questo blocco: `rest_s` se l'esercizio è da solo; in un gruppo `rest_between_s`
+    /// e, dopo l'ultimo esercizio del giro, `rest_after_round_s`.
+    func restSeconds(for block: BlockContent) -> Int {
+        let members = group?.slots ?? [slot]
+        return RestPlan.seconds(
+            groupSize: members.count, position: members.firstIndex { $0.id == slot.id } ?? 0, blockRestS: block.restS,
+            restBetweenS: group?.restBetweenS ?? 0, restAfterRoundS: group?.restAfterRoundS ?? 0)
+    }
+
+    /// L'ultima serie della seduta: ultimo gruppo, ultimo esercizio, ultimo blocco, ultima serie.
+    func isLastSetOfSession(_ key: SetKey) -> Bool {
+        guard let lastGroup = session.groups.last, let lastSlot = lastGroup.slots.last, lastSlot.id == slot.id,
+            slot.blocks.last?.id == key.block
+        else { return false }
+        return key.idx == (setCounts[key.block] ?? 1) - 1
+    }
+
+    func showsTimerButton(_ key: SetKey, block: BlockContent) -> Bool {
+        RestPlan.showsButton(seconds: restSeconds(for: block), isLastSetOfSession: isLastSetOfSession(key))
+    }
+
+    /// Dove andare dopo aver avviato il timer: la serie successiva (scorrendo) o l'esercizio successivo del gruppo.
+    enum Advance: Equatable {
+        case set(SetKey)
+        case slot(UUID, setIdx: Int)
+        case none
+    }
+
+    func advance(after key: SetKey) -> Advance {
+        let groups = session.groups
+        guard let groupIndex = groups.firstIndex(where: { $0.slots.contains { $0.id == slot.id } }) else { return .none }
+        let members = groups[groupIndex].slots
+        let position = members.firstIndex { $0.id == slot.id } ?? 0
+        let nextGroupStart: Advance =
+            groupIndex + 1 < groups.count ? groups[groupIndex + 1].slots.first.map { .slot($0.id, setIdx: 0) } ?? .none : .none
+
+        if members.count > 1 {
+            // Superset e simili: si passa all'esercizio dopo; finito il giro si torna al primo con la serie dopo.
+            if position + 1 < members.count { return .slot(members[position + 1].id, setIdx: key.idx) }
+            let first = members[0]
+            return (first.blocks.first?.prescribedSets ?? 0) > key.idx + 1 ? .slot(first.id, setIdx: key.idx + 1) : nextGroupStart
+        }
+        if key.idx + 1 < (setCounts[key.block] ?? 0) { return .set(SetKey(block: key.block, idx: key.idx + 1)) }
+        if let at = slot.blocks.firstIndex(where: { $0.id == key.block }), at + 1 < slot.blocks.count {
+            return .set(SetKey(block: slot.blocks[at + 1].id, idx: 0))
+        }
+        return nextGroupStart
+    }
+
+    func timerTitle(for key: SetKey) -> String { "\(slot.exerciseName) · serie \(key.idx + 1)" }
+
     // MARK: Indicazioni (testo, mai valori nei campi)
 
     /// «≈ 90 kg» per un back-off legato, appena il blocco di riferimento ha un carico registrato in questa seduta.

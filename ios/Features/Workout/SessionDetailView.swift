@@ -10,6 +10,13 @@ struct SessionDetailView: View {
     let title: String
     let week: Int
     @State private var content: SessionContent?
+    @State private var open: OpenSlot?
+
+    /// L'esercizio aperto, e la serie a cui scorrere (dopo «Avvia timer» in un gruppo si passa al successivo).
+    struct OpenSlot: Hashable {
+        var slotID: UUID
+        var setIdx: Int?
+    }
 
     var body: some View {
         List {
@@ -20,11 +27,15 @@ struct SessionDetailView: View {
                 ForEach(content.groups) { group in
                     Section {
                         ForEach(group.slots) { slot in
-                            NavigationLink {
-                                ExerciseView(environment: environment, session: content, slot: slot, week: week)
+                            Button {
+                                open = OpenSlot(slotID: slot.id, setIdx: nil)
                             } label: {
-                                SlotRow(slot: slot, completion: content.completion(of: slot))
+                                HStack {
+                                    SlotRow(slot: slot, completion: content.completion(of: slot))
+                                    Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                                }
                             }
+                            .buttonStyle(.plain)
                         }
                     } header: {
                         Text(groupHeader(group))
@@ -39,6 +50,15 @@ struct SessionDetailView: View {
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(item: $open) { target in
+            if let content, let slot = content.groups.flatMap(\.slots).first(where: { $0.id == target.slotID }) {
+                ExerciseView(
+                    environment: environment, session: content, slot: slot, week: week, startSetIdx: target.setIdx,
+                    goTo: { id, idx in open = OpenSlot(slotID: id, setIdx: idx) }
+                )
+                .id(target)
+            }
+        }
         .safeAreaInset(edge: .top, spacing: 0) {
             Text("Settimana \(week)")
                 .font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
