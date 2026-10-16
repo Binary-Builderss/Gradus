@@ -7,6 +7,7 @@ struct MacroView: View {
     let userID: UUID
     @State private var model = MacroModel()
     @State private var editing: DayEntry?
+    @State private var askingNumbers: DayEntry?
     @State private var consenting = false
 
     var body: some View {
@@ -28,8 +29,35 @@ struct MacroView: View {
             .sheet(isPresented: $consenting) {
                 MacroConsentView(environment: environment, userID: userID) { consenting = false }
             }
+            .confirmationDialog(
+                "Vuoi inserire quanto hai assunto?",
+                isPresented: Binding(get: { askingNumbers != nil }, set: { if !$0 { askingNumbers = nil } }),
+                titleVisibility: .visible
+            ) {
+                Button("Inserisci i numeri") { editing = askingNumbers }
+                Button("Non ora", role: .cancel) {}
+            } message: {
+                Text("Ho segnato i macro di oggi come non rispettati. Puoi aggiungere calorie e macro, o lasciarlo così.")
+            }
+            // Un promemoria serale: «Sì»/«No» registrano da soli; «No» chiede se inserire i numeri, il tocco apre il giorno.
+            .onChange(of: model.snapshot) { _, _ in routeReminder() }
+            .onChange(of: environment.reminders.coordinator.openDay) { _, _ in routeReminder() }
+            .onChange(of: environment.reminders.coordinator.askManualEntry) { _, _ in routeReminder() }
         }
         .task { await model.watch(database: environment.database, userID: userID) }
+    }
+
+    private func routeReminder() {
+        let coordinator = environment.reminders.coordinator
+        guard let snapshot = model.snapshot else { return }
+        if let day = coordinator.openDay, let entry = snapshot.days.first(where: { $0.day == day }) {
+            coordinator.openDay = nil
+            if snapshot.consent { editing = entry } else { consenting = true }
+        }
+        if let day = coordinator.askManualEntry, let entry = snapshot.days.first(where: { $0.day == day }) {
+            coordinator.askManualEntry = nil
+            if snapshot.consent { askingNumbers = entry }
+        }
     }
 
     private func targetSection(_ snapshot: NutritionSnapshot) -> some View {

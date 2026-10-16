@@ -44,6 +44,7 @@ struct MacroConsentView: View {
         failed = false
         do {
             try await NutritionStore(database: environment.database, remote: environment.remote).grantConsent(userID: userID)
+            await environment.reminders.refresh()
             onClose()
         } catch {
             failed = true

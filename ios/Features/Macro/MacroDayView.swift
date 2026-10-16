@@ -35,7 +35,10 @@ struct MacroDayView: View {
         .task {
             model = MacroDayModel(
                 entry: entry, athleteID: userID, store: NutritionStore(database: environment.database, remote: environment.remote),
-                onSaved: { environment.sync.requestSync() })
+                onSaved: {
+                    environment.sync.requestSync()
+                    Task { await environment.reminders.refresh() }
+                })
         }
         .presentationDetents([.large])
     }

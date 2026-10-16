@@ -12,6 +12,7 @@
 		0DF6870816408B61D7E2402D /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E052B11FD4A61E4E9C750C40 /* AccountView.swift */; };
 		1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC631A430AF67AA936C5AC /* ProfileView.swift */; };
 		199F2D1DCE9EB796A8F1A9EB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BBF8A086C5DD356333B48 /* LoginView.swift */; };
+		1F0BCB2581FC581DB4BEA060 /* MacroReminderCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864D13AD14695AE32A48C001 /* MacroReminderCenterTests.swift */; };
 		24FE53FD43F58850E9B4FADB /* ProgramQueriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16964EF6CBED657100714099 /* ProgramQueriesTests.swift */; };
 		29ABD3D6359A7640C438521F /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CF6EDC87E939780D327EB1 /* AccountStore.swift */; };
 		2B87D12DF5979DA64F32C8EE /* SyncEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71D534E72889639A9946399F /* SyncEngineTests.swift */; };
@@ -34,6 +35,7 @@
 		7C6F223D2EF0D4B4940177C2 /* AuthModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC06D27C3928FED57A9DD19 /* AuthModelTests.swift */; };
 		80FBFC5BA8019122B9030902 /* Records.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666B70B40D86F1AAA1D10243 /* Records.swift */; };
 		8172A613015624C566E53677 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = F5AA03ABB6DA1433C55B1BC6 /* GRDB */; };
+		82DC2CCEDC1679AB0E33DB0B /* MacroReminderCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB8F07CF5CCBEA697AE18DC /* MacroReminderCenter.swift */; };
 		83185BF203870B920871A621 /* RestTimerModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE36305960BA922625D6D8A /* RestTimerModelTests.swift */; };
 		8456768705A711B3CF8E7DA4 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 77C928FF0434CFB05271B17E /* Supabase */; };
 		88FB5D26F28F366A9F4D8B6B /* AccountStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C783DF64750C30EE522C77AC /* AccountStoreTests.swift */; };
@@ -103,6 +105,7 @@
 		7D7CD4332B83EBE4838EB39F /* NutritionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionStore.swift; sourceTree = "<group>"; };
 		83126B9F4D0577D5B9DF858D /* MacroModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroModel.swift; sourceTree = "<group>"; };
 		86462891D3109E83BF539A70 /* MacroConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroConsentView.swift; sourceTree = "<group>"; };
+		864D13AD14695AE32A48C001 /* MacroReminderCenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroReminderCenterTests.swift; sourceTree = "<group>"; };
 		8BDBCA6122158AF0C6C41B76 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSyncTests.swift; sourceTree = "<group>"; };
@@ -136,6 +139,7 @@
 		E052B11FD4A61E4E9C750C40 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		E5CF97CAFD07A441E7D2F5B4 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Domain; path = Domain; sourceTree = SOURCE_ROOT; };
 		E6D6A4A47CF2B524DDEEF9D6 /* RemoteAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAPI.swift; sourceTree = "<group>"; };
+		EBB8F07CF5CCBEA697AE18DC /* MacroReminderCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroReminderCenter.swift; sourceTree = "<group>"; };
 		F8DF44CC1F09917AB8E248FB /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
 		FDF9394F3DA73C9A3568A42D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -274,6 +278,7 @@
 				86462891D3109E83BF539A70 /* MacroConsentView.swift */,
 				641DF567E4BF0E66CF02B89C /* MacroDayView.swift */,
 				83126B9F4D0577D5B9DF858D /* MacroModel.swift */,
+				EBB8F07CF5CCBEA697AE18DC /* MacroReminderCenter.swift */,
 				DD824B39F44959A4FE3D37F9 /* MacroView.swift */,
 			);
 			path = Macro;
@@ -345,6 +350,7 @@
 				B9459A93D2319C6B43017BF8 /* ExerciseModelTests.swift */,
 				939E50B07B4432E60D39DB65 /* LiveSyncTests.swift */,
 				4B86B9594E1447A0FCC0DD68 /* MacroDayModelTests.swift */,
+				864D13AD14695AE32A48C001 /* MacroReminderCenterTests.swift */,
 				E027A45BA721292636A1AD2A /* NutritionStoreTests.swift */,
 				9A325C40980607661CC935C9 /* ProfileStoreTests.swift */,
 				16964EF6CBED657100714099 /* ProgramQueriesTests.swift */,
@@ -468,6 +474,7 @@
 				AA1084AC51B7488B55BA5BE8 /* ExerciseModelTests.swift in Sources */,
 				B75AF6178521084D9EAF828F /* LiveSyncTests.swift in Sources */,
 				3B3878FD2B144CA3D1404D4C /* MacroDayModelTests.swift in Sources */,
+				1F0BCB2581FC581DB4BEA060 /* MacroReminderCenterTests.swift in Sources */,
 				C3ADD4F8AB2C336192511D05 /* NutritionStoreTests.swift in Sources */,
 				FE59838192DF8F394E407B7F /* ProfileStoreTests.swift in Sources */,
 				24FE53FD43F58850E9B4FADB /* ProgramQueriesTests.swift in Sources */,
@@ -499,6 +506,7 @@
 				9BD854B78297A1DC2D2210EE /* MacroConsentView.swift in Sources */,
 				954B8B7ED2655EBB873ED130 /* MacroDayView.swift in Sources */,
 				9A3612F44DA6B8E2FCF97A28 /* MacroModel.swift in Sources */,
+				82DC2CCEDC1679AB0E33DB0B /* MacroReminderCenter.swift in Sources */,
 				A8372E0331F3518E2D4BB8E0 /* MacroView.swift in Sources */,
 				E40505EE93856AD6A6FF70E5 /* MissingConfigView.swift in Sources */,
 				6A875CBA973C5CBA1518177C /* NamePromptView.swift in Sources */,

@@ -55,6 +55,7 @@ struct PrivacyView: View {
         failed = false
         do {
             try await NutritionStore(database: environment.database, remote: environment.remote).withdrawConsent(userID: userID)
+            await environment.reminders.refresh()
         } catch {
             failed = true
         }

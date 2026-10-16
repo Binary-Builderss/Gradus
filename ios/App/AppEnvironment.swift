@@ -11,6 +11,7 @@ final class AppEnvironment {
     let sync: SyncModel
     let remote: any RemoteAPI
     let restTimer: RestTimerModel
+    let reminders: MacroReminderCenter
 
     init(config: AppConfig, database: AppDatabase) {
         self.config = config
@@ -21,6 +22,8 @@ final class AppEnvironment {
         let remote = SupabaseRemote(client: client)
         let timer = RestTimerModel()
         self.restTimer = timer
+        let reminderCenter = MacroReminderCenter(database: database, remote: remote)
+        self.reminders = reminderCenter
         let syncModel = SyncModel(engine: SyncEngine(remote: remote, database: database))
         self.remote = remote
         self.sync = syncModel
@@ -31,7 +34,15 @@ final class AppEnvironment {
                 try? database.erase()
                 syncModel.reset()
                 timer.skip()
+                Task { await reminderCenter.setUser(nil) }
             })
+    }
+
+    /// Una risposta al promemoria dei macro, anche se l'app si è appena aperta dalla notifica.
+    func resolveReminder(_ action: ReminderAction, day: String) async {
+        if let id = await auth.resolveUserID(), reminders.userID != id { await reminders.setUser(id) }
+        await reminders.handle(action, day: day)
+        sync.requestSync()
     }
 
     /// L'ambiente vero dell'app, oppure nil se manca la configurazione.

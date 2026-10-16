@@ -30,7 +30,7 @@ struct ProfileView: View {
                         Label("Account", systemImage: "person.crop.circle")
                     }
                     NavigationLink {
-                        PreferencesView()
+                        PreferencesView(environment: environment, userID: userID)
                     } label: {
                         Label("Preferenze", systemImage: "slider.horizontal.3")
                     }
