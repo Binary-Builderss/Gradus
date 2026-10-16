@@ -17,6 +17,8 @@ struct MacroView: View {
                     targetSection(snapshot)
                     if !snapshot.consent { consentSection }
                     daysSection(snapshot)
+                } else if model.readFailed {
+                    ReadFailedView()
                 } else {
                     ProgressView()
                 }
@@ -31,14 +33,10 @@ struct MacroView: View {
             .sheet(isPresented: $consenting) {
                 MacroConsentView(environment: environment, userID: userID) { consenting = false }
             }
-            .confirmationDialog(
-                "Vuoi inserire quanto hai assunto?",
-                isPresented: Binding(get: { askingNumbers != nil }, set: { if !$0 { askingNumbers = nil } }),
-                titleVisibility: .visible
-            ) {
-                Button("Inserisci i numeri") { editing = askingNumbers }
+            .confirmationDialog("Vuoi inserire quanto hai assunto?", item: $askingNumbers, titleVisibility: .visible) { entry in
+                Button("Inserisci i numeri") { editing = entry }
                 Button("Non ora", role: .cancel) {}
-            } message: {
+            } message: { _ in
                 Text("Ho segnato i macro di oggi come non rispettati. Puoi aggiungere calorie e macro, o lasciarlo così.")
             }
             // Un promemoria serale: «Sì»/«No» registrano da soli; «No» chiede se inserire i numeri, il tocco apre il giorno.

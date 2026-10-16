@@ -10,6 +10,7 @@ struct WorkoutHomeView: View {
     @State private var snapshot: HomeSnapshot?
     @State private var week: Int?
     @State private var states: [UUID: Completion] = [:]
+    @State private var readFailed = false
     /// Le sedute aperte (al massimo una). Lo muove anche la guida, che apre le sedute da sola.
     @State private var path: [UUID] = []
 
@@ -18,6 +19,8 @@ struct WorkoutHomeView: View {
             Group {
                 if let snapshot, let mesocycle = snapshot.mesocycle {
                     program(snapshot, mesocycle)
+                } else if readFailed {
+                    ReadFailedView()
                 } else if snapshot == nil || environment.sync.state == .syncing && environment.sync.lastSync == nil {
                     ProgressView("Carico il tuo programma…")
                 } else {
@@ -33,15 +36,13 @@ struct WorkoutHomeView: View {
         .onChange(of: environment.tour.current) { _, step in followTour(step) }
         .task {
             let id = userID
-            let observation = ValueObservation.tracking { db in try ProgramQueries.home(db, athleteID: id) }
-            do {
-                for try await value in observation.values(in: environment.database.writer) {
-                    snapshot = value
-                    if week == nil, let m = value.mesocycle {
-                        week = MesocycleCalendar.currentWeek(startDate: m.startDate, weeks: m.weeks, today: .now)
-                    }
+            let ok = await environment.database.watch({ db in try ProgramQueries.home(db, athleteID: id) }) { value in
+                snapshot = value
+                if week == nil, let m = value.mesocycle {
+                    week = MesocycleCalendar.currentWeek(startDate: m.startDate, weeks: m.weeks, today: .now)
                 }
-            } catch {}
+            }
+            if !ok { readFailed = true }
         }
     }
 
@@ -57,10 +58,8 @@ struct WorkoutHomeView: View {
         }
         .task(id: selected) {
             let (id, w) = (mesocycle.id, selected)
-            let observation = ValueObservation.tracking { db in try ProgramQueries.sessionStates(db, mesocycleID: id, week: w) }
-            do {
-                for try await value in observation.values(in: environment.database.writer) { states = value }
-            } catch {}
+            let ok = await environment.database.watch({ db in try ProgramQueries.sessionStates(db, mesocycleID: id, week: w) }) { states = $0 }
+            if !ok { readFailed = true }
         }
     }
 
@@ -90,7 +89,7 @@ struct WorkoutHomeView: View {
             .padding(Theme.Space.m)
         }
         .safeAreaInset(edge: .top, spacing: 0) {
-            WeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: Binding(get: { selected }, set: { week = $0 }))
+            WeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: selected, onSelect: { week = $0 })
                 .tourTarget("home-weeks")
                 .padding(.horizontal, Theme.Space.m)
                 .padding(.bottom, Theme.Space.s)
@@ -113,7 +112,8 @@ struct WorkoutHomeView: View {
 private struct WeekPicker: View {
     let weeks: Int
     let deload: Set<Int>
-    @Binding var selected: Int
+    let selected: Int
+    let onSelect: (Int) -> Void
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -137,7 +137,7 @@ private struct WeekPicker: View {
     private func chip(_ w: Int) -> some View {
         let isSelected = w == selected
         return Button {
-            selected = w
+            onSelect(w)
         } label: {
             Text(deload.contains(w) ? "S\(w) ↓" : "S\(w)")
                 .font(.subheadline.weight(.semibold))

@@ -8,12 +8,10 @@ import Observation
 @Observable
 final class MacroModel {
     private(set) var snapshot: NutritionSnapshot?
+    private(set) var readFailed = false
 
     func watch(database: AppDatabase, userID: UUID) async {
-        let observation = ValueObservation.tracking { db in try NutritionStore.snapshot(db, athleteID: userID) }
-        do {
-            for try await value in observation.values(in: database.writer) { snapshot = value }
-        } catch {}
+        readFailed = await !database.watch({ db in try NutritionStore.snapshot(db, athleteID: userID) }) { snapshot = $0 }
     }
 }
 

@@ -13,6 +13,7 @@ struct TourOverlay: View {
             GeometryReader { proxy in
                 let origin = proxy.frame(in: .global).origin
                 let size = proxy.size
+                let insets = proxy.safeAreaInsets
                 let target = TourRegistry.shared.frames[step.target ?? ""].map { $0.offsetBy(dx: -origin.x, dy: -origin.y) }
                 let visible = target.flatMap { Self.visible($0, in: size) }.map { Self.highlight($0, in: size) }
                 ZStack {
@@ -32,7 +33,8 @@ struct TourOverlay: View {
                         .frame(maxWidth: 420)
                         .padding(.horizontal, 20)
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { cardHeight = $0 }
-                        .position(x: size.width / 2, y: Self.cardCenterY(visible, size: size, cardHeight: cardHeight))
+                        .position(x: size.width / 2, y: Self.cardCenterY(
+                            visible, size: size, cardHeight: cardHeight, top: insets.top + 16, bottom: insets.bottom + Self.tabBarHeight))
                 }
                 .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: step.id)
             }
@@ -64,6 +66,9 @@ struct TourOverlay: View {
         .accessibilityElement(children: .contain)
     }
 
+    /// Quanto sta sopra l'area sicura in basso la barra delle schede (galleggia: il sistema non ne dà l'altezza).
+    static let tabBarHeight: CGFloat = 76
+
     // MARK: Geometria (funzioni pure, provabili senza schermo)
 
     /// L'elemento solo se sta almeno in parte sullo schermo; altrimenti il passo si mostra senza evidenziare nulla.
@@ -79,10 +84,11 @@ struct TourOverlay: View {
     }
 
     /// Dove mettere il riquadro: sotto l'elemento se ci sta, altrimenti sopra, altrimenti dalla parte con più spazio; al
-    /// centro se non c'è un elemento. Mai fuori dallo schermo né sulla barra in basso. `cardHeight` è l'altezza misurata.
-    static func cardCenterY(_ target: CGRect?, size: CGSize, cardHeight: CGFloat = 260) -> CGFloat {
-        let top: CGFloat = 70  // sotto l'orologio
-        let bottom: CGFloat = 110  // sopra la barra delle schede
+    /// centro se non c'è un elemento. Mai fuori dallo schermo né sulla barra in basso. `cardHeight` è l'altezza misurata;
+    /// `top` e `bottom` sono i margini da tenere liberi (area sicura più, in basso, la barra delle schede).
+    static func cardCenterY(
+        _ target: CGRect?, size: CGSize, cardHeight: CGFloat = 260, top: CGFloat = 70, bottom: CGFloat = 110
+    ) -> CGFloat {
         let lowest = size.height - bottom - cardHeight / 2
         let highest = top + cardHeight / 2
         guard let target else { return min(max(size.height / 2, highest), lowest) }

@@ -12,10 +12,12 @@
 		0DF6870816408B61D7E2402D /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E052B11FD4A61E4E9C750C40 /* AccountView.swift */; };
 		1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC631A430AF67AA936C5AC /* ProfileView.swift */; };
 		199F2D1DCE9EB796A8F1A9EB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BBF8A086C5DD356333B48 /* LoginView.swift */; };
+		1B5FC7311BF5658F01DCCF1A /* ReadFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BD5DD8712B2A5A941361B /* ReadFailedView.swift */; };
 		1F0BCB2581FC581DB4BEA060 /* MacroReminderCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864D13AD14695AE32A48C001 /* MacroReminderCenterTests.swift */; };
 		24FE53FD43F58850E9B4FADB /* ProgramQueriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16964EF6CBED657100714099 /* ProgramQueriesTests.swift */; };
 		29ABD3D6359A7640C438521F /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CF6EDC87E939780D327EB1 /* AccountStore.swift */; };
 		2B87D12DF5979DA64F32C8EE /* SyncEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71D534E72889639A9946399F /* SyncEngineTests.swift */; };
+		2D94BDA56D1A9F7EFB693F12 /* AppDatabase+Watch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445C7E7A85861E41AA044DC4 /* AppDatabase+Watch.swift */; };
 		305E82D0519B2B8959695E63 /* ExecutionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EE85AF52362B355D2EE816 /* ExecutionStoreTests.swift */; };
 		31E03A2BCCC6611AE8DCF082 /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52191BD4301091DE12DF1EC /* SyncView.swift */; };
 		34D41D877BC55755E19EF04A /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DF44CC1F09917AB8E248FB /* ProfileStore.swift */; };
@@ -40,6 +42,7 @@
 		8456768705A711B3CF8E7DA4 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 77C928FF0434CFB05271B17E /* Supabase */; };
 		866D41644A28F915347679B4 /* TourModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105C5F191F9B902EFAB2EAD9 /* TourModel.swift */; };
 		88FB5D26F28F366A9F4D8B6B /* AccountStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C783DF64750C30EE522C77AC /* AccountStoreTests.swift */; };
+		89E01CF21C788C2C21606CDE /* SignOutEraseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11910D85DD364B28A48B646E /* SignOutEraseTests.swift */; };
 		954B8B7ED2655EBB873ED130 /* MacroDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641DF567E4BF0E66CF02B89C /* MacroDayView.swift */; };
 		9A3612F44DA6B8E2FCF97A28 /* MacroModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83126B9F4D0577D5B9DF858D /* MacroModel.swift */; };
 		9BD854B78297A1DC2D2210EE /* MacroConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86462891D3109E83BF539A70 /* MacroConsentView.swift */; };
@@ -99,13 +102,16 @@
 		03D6510C8AE8A7E93850B980 /* GradusUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GradusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		089F6C7DAEAE01C8272B45B7 /* AccountGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountGate.swift; sourceTree = "<group>"; };
 		105C5F191F9B902EFAB2EAD9 /* TourModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourModel.swift; sourceTree = "<group>"; };
+		11910D85DD364B28A48B646E /* SignOutEraseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignOutEraseTests.swift; sourceTree = "<group>"; };
 		122A91D31856795C6331649B /* AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTests.swift; sourceTree = "<group>"; };
 		12CF6EDC87E939780D327EB1 /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
 		16964EF6CBED657100714099 /* ProgramQueriesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramQueriesTests.swift; sourceTree = "<group>"; };
 		196BA65F9D5DAA445C25C528 /* MissingConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingConfigView.swift; sourceTree = "<group>"; };
 		21192884579178BBB3F6ABD2 /* ExecutionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionStore.swift; sourceTree = "<group>"; };
 		243F1694CC06A475AF48ACE8 /* GradusTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GradusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		339BD5DD8712B2A5A941361B /* ReadFailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFailedView.swift; sourceTree = "<group>"; };
 		34E9E56D47271319AF087A8B /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		445C7E7A85861E41AA044DC4 /* AppDatabase+Watch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabase+Watch.swift"; sourceTree = "<group>"; };
 		48B2816FC3364D50F724B7CE /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
 		4B4BBF8A086C5DD356333B48 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		4B86B9594E1447A0FCC0DD68 /* MacroDayModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroDayModelTests.swift; sourceTree = "<group>"; };
@@ -297,6 +303,7 @@
 				D2A0B6FBDB3BB81A67AD55D9 /* GradusApp.swift */,
 				FDF9394F3DA73C9A3568A42D /* Info.plist */,
 				196BA65F9D5DAA445C25C528 /* MissingConfigView.swift */,
+				339BD5DD8712B2A5A941361B /* ReadFailedView.swift */,
 				B764FF928E312383A6B7389D /* RootView.swift */,
 				C05C689DEF345710CD34FF43 /* Theme.swift */,
 			);
@@ -329,6 +336,7 @@
 			children = (
 				12CF6EDC87E939780D327EB1 /* AccountStore.swift */,
 				D8FDD1B9BE727F90D1AEAE58 /* AppDatabase.swift */,
+				445C7E7A85861E41AA044DC4 /* AppDatabase+Watch.swift */,
 				21192884579178BBB3F6ABD2 /* ExecutionStore.swift */,
 				7D7CD4332B83EBE4838EB39F /* NutritionStore.swift */,
 				F8DF44CC1F09917AB8E248FB /* ProfileStore.swift */,
@@ -397,6 +405,7 @@
 				9A325C40980607661CC935C9 /* ProfileStoreTests.swift */,
 				16964EF6CBED657100714099 /* ProgramQueriesTests.swift */,
 				DAE36305960BA922625D6D8A /* RestTimerModelTests.swift */,
+				11910D85DD364B28A48B646E /* SignOutEraseTests.swift */,
 				A72B5F9E74279F5026D07899 /* SignOutGuardTests.swift */,
 				D6CC626E9BEC3A0D545F519B /* Support.swift */,
 				71D534E72889639A9946399F /* SyncEngineTests.swift */,
@@ -554,6 +563,7 @@
 				FE59838192DF8F394E407B7F /* ProfileStoreTests.swift in Sources */,
 				24FE53FD43F58850E9B4FADB /* ProgramQueriesTests.swift in Sources */,
 				83185BF203870B920871A621 /* RestTimerModelTests.swift in Sources */,
+				89E01CF21C788C2C21606CDE /* SignOutEraseTests.swift in Sources */,
 				76EA7B0029DCB879BE0A1A53 /* SignOutGuardTests.swift in Sources */,
 				EA2962C198727A946FE925DB /* Support.swift in Sources */,
 				2B87D12DF5979DA64F32C8EE /* SyncEngineTests.swift in Sources */,
@@ -570,6 +580,7 @@
 				29ABD3D6359A7640C438521F /* AccountStore.swift in Sources */,
 				0DF6870816408B61D7E2402D /* AccountView.swift in Sources */,
 				B2ACA51EEE72BD523A635E15 /* AppConfig.swift in Sources */,
+				2D94BDA56D1A9F7EFB693F12 /* AppDatabase+Watch.swift in Sources */,
 				745779BE7CC17B76DA477A08 /* AppDatabase.swift in Sources */,
 				C0AAD140BEF495BB346355B2 /* AppEnvironment.swift in Sources */,
 				E94E86C0F3968A1C991E94C2 /* AuthModel.swift in Sources */,
@@ -593,6 +604,7 @@
 				34D41D877BC55755E19EF04A /* ProfileStore.swift in Sources */,
 				1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */,
 				F54A301867F0C87D8AC40782 /* ProgramQueries.swift in Sources */,
+				1B5FC7311BF5658F01DCCF1A /* ReadFailedView.swift in Sources */,
 				80FBFC5BA8019122B9030902 /* Records.swift in Sources */,
 				FE6F4A1B923EF7580549EECD /* RemoteAPI.swift in Sources */,
 				6B6D1128057C91B60ECCAE90 /* RestTimerBar.swift in Sources */,

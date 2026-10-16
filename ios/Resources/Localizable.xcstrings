@@ -1,6 +1,35 @@
 {
   "sourceLanguage" : "it",
   "strings" : {
+    "%@" : {
+
+    },
+    "%@ di %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ di %2$@"
+          }
+        }
+      }
+    },
+    "%@ g" : {
+
+    },
+    "%@ kcal" : {
+
+    },
+    "%@ kcal · P %@ g · C %@ g · G %@ g" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ kcal · P %2$@ g · C %3$@ g · G %4$@ g"
+          }
+        }
+      }
+    },
     "×" : {
 
     },
@@ -10,13 +39,43 @@
     "Accedi con l'account che ti ha dato il tuo coach." : {
 
     },
+    "Acconsento" : {
+
+    },
     "Aggiornato %@" : {
+
+    },
+    "Cambia password" : {
+
+    },
+    "Come ti chiami?" : {
+
+    },
+    "Condividi i tuoi macro con il coach" : {
+
+    },
+    "Continua" : {
 
     },
     "Copia ios/Config/Secrets.example.xcconfig in Secrets.xcconfig e inserisci l'indirizzo e la chiave pubblica di Supabase." : {
 
     },
-    "Gradus" : {
+    "Disattiva" : {
+
+    },
+    "È definitivo: l'account e le tue serie registrate vengono cancellati. I programmi scritti dal tuo coach restano al coach." : {
+
+    },
+    "È il nome con cui il tuo coach ti vede." : {
+
+    },
+    "Elimina" : {
+
+    },
+    "Facoltativo: inseriscili solo se li sai. Puoi modificarli quando vuoi." : {
+
+    },
+    "Gradus Atleta" : {
 
     },
     "Hai disattivato il tuo account. I tuoi dati sono al sicuro: riattivalo per tornare ad allenarti." : {
@@ -25,7 +84,25 @@
     "Hai ricevuto un invito dal tuo coach? Apri il link nell'email, scegli la password e poi accedi qui." : {
 
     },
+    "Ho segnato i macro di oggi come non rispettati. Puoi aggiungere calorie e macro, o lasciarlo così." : {
+
+    },
     "I dati salvati sul telefono vengono tolti. Li ritrovi accedendo di nuovo." : {
+
+    },
+    "I giorni di macro che hai registrato vengono cancellati e il coach non li vede più. Gli obiettivi restano." : {
+
+    },
+    "I tuoi dati restano al sicuro e puoi riattivare l'account quando vuoi. Intanto non vedi i programmi." : {
+
+    },
+    "I tuoi macro" : {
+
+    },
+    "Il nome è quello con cui il tuo coach ti vede." : {
+
+    },
+    "Il tuo coach non ha ancora impostato i macro." : {
 
     },
     "In corso" : {
@@ -37,16 +114,64 @@
     "Iniziata" : {
 
     },
+    "L'app funziona anche senza rete: le serie si salvano sul telefono e partono appena c'è connessione." : {
+
+    },
+    "Macro" : {
+
+    },
     "Non ancora sincronizzato" : {
 
     },
     "Non riesco a sincronizzare. Riprovo appena c'è rete." : {
 
     },
+    "Non si può annullare. Per confermare scrivi la tua email: %@" : {
+
+    },
+    "Non sono riuscito a inviarle al server (forse manca la rete). Se esci le perdi: aspetta di avere connessione e riprova." : {
+
+    },
+    "Non sono riuscito a mandare l'email. Controlla la rete e riprova." : {
+
+    },
     "Non sono riuscito a riattivarlo. Controlla la rete e riprova." : {
 
     },
+    "Non sono riuscito a ritirare il consenso. Controlla la rete e riprova." : {
+
+    },
+    "Non sono riuscito a salvare il consenso. Controlla la rete e riprova." : {
+
+    },
+    "Obiettivo" : {
+
+    },
+    "Obiettivo di oggi" : {
+
+    },
+    "Password" : {
+
+    },
+    "Per registrare come vanno i tuoi macro serve il tuo consenso: sono dati sulla tua salute e li vede anche il tuo coach." : {
+
+    },
+    "Potrai riattivarlo in qualsiasi momento: i dati non vengono toccati." : {
+
+    },
+    "Promemoria dei macro" : {
+
+    },
+    "Prossima" : {
+
+    },
+    "Puoi dare il consenso dalla scheda Macro." : {
+
+    },
     "Quando il tuo coach attiva un mesociclo lo trovi qui, anche senza rete." : {
+
+    },
+    "Quanto hai assunto" : {
 
     },
     "Questa seduta non ha ancora esercizi." : {
@@ -58,13 +183,13 @@
     "Riattiva l'account" : {
 
     },
-    "Ripetizioni in riserva (BUF)" : {
-
-    },
-    "RPE" : {
+    "Se l'app è in background il recupero te lo dice una notifica." : {
 
     },
     "Se l'indirizzo è registrato, tra poco ricevi un'email con il link per scegliere una nuova password." : {
+
+    },
+    "Sedute" : {
 
     },
     "Serie %@" : {
@@ -74,6 +199,24 @@
 
     },
     "Sincronizzo…" : {
+
+    },
+    "Sono dati sulla tua salute: li trattiamo solo con il tuo consenso esplicito." : {
+
+    },
+    "Sono dati sulla tua salute: li vede solo il tuo coach e solo con il tuo consenso. Ritirandolo, i giorni che hai registrato vengono cancellati." : {
+
+    },
+    "Ti ho mandato un'email a %@: apri il link per scegliere una nuova password." : {
+
+    },
+    "Ti mandiamo un'email con il link per sceglierne una nuova." : {
+
+    },
+    "Timer di recupero" : {
+
+    },
+    "Tolleranza ±%@%%" : {
 
     }
   },

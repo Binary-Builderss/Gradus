@@ -11,16 +11,16 @@ final class AccountStatus {
     private(set) var needsName = false
 
     func watch(database: AppDatabase, userID: UUID) async {
-        let observation = ValueObservation.tracking { db -> (Bool, Bool) in
-            guard let profile = try ProfileRecord.fetchOne(db, key: userID) else { return (false, false) }
-            return (profile.disabledAt != nil, ProfileName.normalized(profile.fullName ?? "") == nil)
-        }
-        do {
-            for try await (isDisabled, noName) in observation.values(in: database.writer) {
-                disabled = isDisabled
-                needsName = noName
+        // Se la lettura fallisce resta lo stato di prima: l'avviso lo dà già la schermata che legge gli stessi dati.
+        _ = await database.watch(
+            { db -> [Bool] in
+                guard let profile = try ProfileRecord.fetchOne(db, key: userID) else { return [false, false] }
+                return [profile.disabledAt != nil, ProfileName.normalized(profile.fullName ?? "") == nil]
             }
-        } catch {}
+        ) { flags in
+            disabled = flags[0]
+            needsName = flags[1]
+        }
     }
 }
 

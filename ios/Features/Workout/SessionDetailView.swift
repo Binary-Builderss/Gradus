@@ -11,6 +11,7 @@ struct SessionDetailView: View {
     let week: Int
     @State private var content: SessionContent?
     @State private var open: OpenSlot?
+    @State private var readFailed = false
 
     /// L'esercizio aperto, e la serie a cui scorrere (dopo «Avvia timer» in un gruppo si passa al successivo).
     struct OpenSlot: Hashable {
@@ -36,6 +37,8 @@ struct SessionDetailView: View {
                     }
                 }
                 .padding(Theme.Space.m)
+            } else if readFailed {
+                ReadFailedView()
             } else {
                 ProgressView().frame(maxWidth: .infinity).padding(.top, Theme.Space.xl)
             }
@@ -63,13 +66,11 @@ struct SessionDetailView: View {
         .onChange(of: environment.tour.current?.screen) { _, _ in followTour() }
         .task {
             let (id, w) = (sessionID, week)
-            let observation = ValueObservation.tracking { db in try ProgramQueries.session(db, id: id, week: w) }
-            do {
-                for try await value in observation.values(in: environment.database.writer) {
-                    content = value
-                    followTour()
-                }
-            } catch {}
+            let ok = await environment.database.watch({ db in try ProgramQueries.session(db, id: id, week: w) }) { value in
+                content = value
+                followTour()
+            }
+            if !ok { readFailed = true }
         }
     }
 

@@ -123,7 +123,7 @@ private struct BlockSection: View {
 }
 
 private struct SetRow: View {
-    let model: ExerciseModel
+    @Bindable var model: ExerciseModel
     let block: BlockContent
     let key: SetKey
     /// La prima serie dell'esercizio: la guida ne evidenzia i campi e lo sforzo.
@@ -145,12 +145,12 @@ private struct SetRow: View {
             ForEach(draft.segments.indices, id: \.self) { index in
                 HStack(spacing: 10) {
                     field(
-                        text: Binding(get: { model.drafts[key]?.segments[safe: index]?.load ?? "" }, set: { model.setLoad(key, segment: index, $0) }),
+                        text: $model[load: key, segment: index],
                         unit: "kg", keyboard: .decimalPad,
                         label: "Carico, serie \(key.idx + 1)\(draft.segments.count > 1 ? ", segmento \(index + 1)" : "")")
                     Text("×").foregroundStyle(.secondary)
                     field(
-                        text: Binding(get: { model.drafts[key]?.segments[safe: index]?.reps ?? "" }, set: { model.setReps(key, segment: index, $0) }),
+                        text: $model[reps: key, segment: index],
                         unit: "rip.", keyboard: .numberPad,
                         label: "Ripetizioni, serie \(key.idx + 1)\(draft.segments.count > 1 ? ", segmento \(index + 1)" : "")")
                 }

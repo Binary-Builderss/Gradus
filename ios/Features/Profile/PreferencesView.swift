@@ -10,6 +10,7 @@ struct PreferencesView: View {
     @AppStorage(MacroReminderCenter.enabledKey) private var reminderOn = true
     @AppStorage(MacroReminderCenter.minutesKey) private var reminderMinutes = 22 * 60
     @State private var consent = false
+    @State private var readFailed = false
 
     var body: some View {
         List {
@@ -22,7 +23,9 @@ struct PreferencesView: View {
                 Text("Promemoria dei macro")
             } footer: {
                 Text(
-                    consent
+                    readFailed
+                        ? "Non riesco a leggere i dati sul telefono. Chiudi e riapri l'app."
+                        : consent
                         ? "La sera ti chiedo «Hai rispettato i macro di oggi?» e rispondi con un tocco. Non ti disturbo se hai già registrato la giornata."
                         : "Per attivarlo serve dare il consenso dalla scheda Macro.")
             }
@@ -41,10 +44,7 @@ struct PreferencesView: View {
         .onChange(of: reminderMinutes) { _, _ in Task { await environment.reminders.refresh() } }
         .task {
             let id = userID
-            let observation = ValueObservation.tracking { db in try NutritionStore.hasConsent(db, userID: id) }
-            do {
-                for try await value in observation.values(in: environment.database.writer) { consent = value }
-            } catch {}
+            readFailed = await !environment.database.watch({ db in try NutritionStore.hasConsent(db, userID: id) }) { consent = $0 }
         }
     }
 

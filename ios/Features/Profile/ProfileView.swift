@@ -14,6 +14,9 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             List {
+                if model.readFailed {
+                    Section { Text("Non riesco a leggere i dati sul telefono. Chiudi e riapri l'app.").foregroundStyle(.red) }
+                }
                 Section {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(model.snapshot.name ?? model.snapshot.email ?? "–").font(.title3.bold())
