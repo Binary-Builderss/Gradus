@@ -124,6 +124,10 @@ Data/Remote/    client Supabase
   `TourModel` (avanti, indietro, «Salta», «già vista»), `TourOverlay` (schermo oscurato con un'evidenziazione attorno
   all'elemento e il riquadro sopra o sotto, mai sopra l'elemento). Gli elementi si segnano con `.tourTarget("id")` e scrivono
   la loro posizione in un registro condiviso (funziona anche dentro le liste).
+- **La guida apre le schermate**: ogni passo ha una `TourScreen` (`root`, `session(n)`, `exercise(n)`). Nei passi sul programma
+  la home (`NavigationStack` con percorso) apre la seduta n e `SessionDetailView` apre il suo primo esercizio; negli altri
+  passi, e alla fine, tutto torna all'elenco. Il percorso si costruisce dal programma vero (`TourProgram`: una tappa per ogni
+  seduta, i passi sull'esercizio dentro la prima); senza esercizi da aprire restano solo testo.
 - **Regola come sul sito**: chi aggiunge una funzione aggiunge il suo passo. Un test (`TourTests`) controlla che ogni
   `tourTarget` abbia un passo, che ogni passo evidenzi un elemento che esiste e che ogni scheda sia nel percorso.
 - `UITests/TourWalkthroughUITests` percorre la guida nel simulatore e salva uno screenshot per passo: per controllare a occhio

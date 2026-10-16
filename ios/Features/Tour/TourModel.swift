@@ -59,8 +59,8 @@ final class TourModel {
     /// La guida è già stata vista (o saltata): non riparte da sola.
     var hasSeen: Bool { defaults.bool(forKey: Self.seenKey) }
 
-    func start(hasProgram: Bool) {
-        steps = TourPlan.steps(hasProgram: hasProgram)
+    func start(program: TourProgram?) {
+        steps = TourPlan.steps(program: program)
         index = 0
     }
 

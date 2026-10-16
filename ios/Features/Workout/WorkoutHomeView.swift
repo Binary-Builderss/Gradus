@@ -10,9 +10,11 @@ struct WorkoutHomeView: View {
     @State private var snapshot: HomeSnapshot?
     @State private var week: Int?
     @State private var states: [UUID: Completion] = [:]
+    /// Le sedute aperte (al massimo una). Lo muove anche la guida, che apre le sedute da sola.
+    @State private var path: [UUID] = []
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 if let snapshot, let mesocycle = snapshot.mesocycle {
                     program(snapshot, mesocycle)
@@ -28,6 +30,7 @@ struct WorkoutHomeView: View {
             .navigationTitle("Allenamento")
             .refreshable { await environment.sync.sync() }
         }
+        .onChange(of: environment.tour.current) { _, step in followTour(step) }
         .task {
             let id = userID
             let observation = ValueObservation.tracking { db in try ProgramQueries.home(db, athleteID: id) }
@@ -67,9 +70,7 @@ struct WorkoutHomeView: View {
             }
             Section("Sedute") {
                 ForEach(snapshot.sessions) { session in
-                    NavigationLink {
-                        SessionDetailView(environment: environment, sessionID: session.id, title: session.name, week: selected)
-                    } label: {
+                    NavigationLink(value: session.id) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(session.name).font(.headline)
                             HStack(spacing: 6) {
@@ -88,12 +89,27 @@ struct WorkoutHomeView: View {
                 }
             }
         }
+        .navigationDestination(for: UUID.self) { id in
+            if let session = snapshot.sessions.first(where: { $0.id == id }) {
+                SessionDetailView(environment: environment, sessionID: id, title: session.name, week: selected)
+            }
+        }
         .task(id: selected) {
             let (id, w) = (mesocycle.id, selected)
             let observation = ValueObservation.tracking { db in try ProgramQueries.sessionStates(db, mesocycleID: id, week: w) }
             do {
                 for try await value in observation.values(in: environment.database.writer) { states = value }
             } catch {}
+        }
+    }
+
+    /// La guida tiene aperta la seduta del suo passo; negli altri passi (e quando finisce) si torna all'elenco.
+    private func followTour(_ step: TourStep?) {
+        let sessions = snapshot?.sessions ?? []
+        if let step, step.tab == .workout, let index = step.screen.sessionIndex, sessions.indices.contains(index) {
+            if path != [sessions[index].id] { path = [sessions[index].id] }
+        } else if !path.isEmpty {
+            path = []
         }
     }
 

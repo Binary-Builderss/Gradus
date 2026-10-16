@@ -19,6 +19,10 @@ struct ExerciseView: View {
     var body: some View {
         Group {
             if let model, model.loaded {
+                // La guida evidenzia il primo «Avvia timer» che c'è (non sempre sulla prima serie).
+                let timerKey = slot.blocks.lazy.flatMap { block in
+                    (0..<(model.setCounts[block.id] ?? 0)).lazy.map { (block, SetKey(block: block.id, idx: $0)) }
+                }.first { model.showsTimerButton($0.1, block: $0.0) }?.1
                 ScrollViewReader { proxy in
                     List {
                         if let notes = slot.coachNotes, !notes.isEmpty {
@@ -26,7 +30,7 @@ struct ExerciseView: View {
                         }
                         ForEach(slot.blocks) { block in
                             BlockSection(
-                                model: model, block: block, focused: $focused,
+                                model: model, block: block, isTourFirst: block.id == slot.blocks.first?.id, tourTimerKey: timerKey, focused: $focused,
                                 startTimer: { key in startTimer(model, block: block, key: key, proxy: proxy) })
                         }
                     }
@@ -80,6 +84,9 @@ extension ExerciseView {
 private struct BlockSection: View {
     let model: ExerciseModel
     let block: BlockContent
+    /// Il primo blocco dell'esercizio: la guida ne evidenzia la prescrizione e la prima serie.
+    let isTourFirst: Bool
+    let tourTimerKey: SetKey?
     var focused: FocusState<Bool>.Binding
     let startTimer: (SetKey) -> Void
 
@@ -89,7 +96,9 @@ private struct BlockSection: View {
                 Label(target, systemImage: "scope").font(.subheadline.weight(.semibold))
             }
             ForEach(0..<(model.setCounts[block.id] ?? 0), id: \.self) { idx in
-                SetRow(model: model, block: block, key: SetKey(block: block.id, idx: idx), focused: focused, startTimer: startTimer)
+                SetRow(
+                    model: model, block: block, key: SetKey(block: block.id, idx: idx), isTourFirst: isTourFirst && idx == 0,
+                    isTourTimer: SetKey(block: block.id, idx: idx) == tourTimerKey, focused: focused, startTimer: startTimer)
                     .id(SetKey(block: block.id, idx: idx))
             }
         } header: {
@@ -101,6 +110,7 @@ private struct BlockSection: View {
                     Text("Recupero \(RestText.format(seconds: rest))").font(.footnote).textCase(nil)
                 }
             }
+            .tourTarget("exercise-block", if: isTourFirst)
         }
     }
 
@@ -113,6 +123,10 @@ private struct SetRow: View {
     let model: ExerciseModel
     let block: BlockContent
     let key: SetKey
+    /// La prima serie dell'esercizio: la guida ne evidenzia i campi e lo sforzo.
+    let isTourFirst: Bool
+    /// La serie con il primo «Avvia timer» dell'esercizio, per la guida.
+    let isTourTimer: Bool
     var focused: FocusState<Bool>.Binding
     let startTimer: (SetKey) -> Void
 
@@ -137,6 +151,7 @@ private struct SetRow: View {
                         unit: "rip.", keyboard: .numberPad,
                         label: "Ripetizioni, serie \(key.idx + 1)\(draft.segments.count > 1 ? ", segmento \(index + 1)" : "")")
                 }
+                .tourTarget("exercise-set", if: isTourFirst && index == 0)
             }
             if block.hasSegments {
                 Button {
@@ -147,6 +162,7 @@ private struct SetRow: View {
                 .buttonStyle(.borderless).font(.subheadline)
             }
             EffortRow(model: model, block: block, key: key)
+                .tourTarget("exercise-effort", if: isTourFirst)
             if model.showsTimerButton(key, block: block) {
                 Button {
                     startTimer(key)
@@ -154,6 +170,7 @@ private struct SetRow: View {
                     Label("Avvia timer", systemImage: "timer").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
+                .tourTarget("exercise-timer", if: isTourTimer)
                 .accessibilityHint("Recupero di \(RestText.format(seconds: model.restSeconds(for: block)))")
             }
         }

@@ -39,11 +39,14 @@ final class AppEnvironment {
             })
     }
 
-    /// Fa partire la guida: se non c'è ancora un programma, salta i passi che lo mostrano.
+    /// Fa partire la guida sul programma che c'è (le sue sedute); senza un mesociclo attivo salta i passi che lo mostrano.
     func startTour(userID: UUID) async {
-        let hasProgram =
-            (try? await database.writer.read { try ProgramQueries.home($0, athleteID: userID).mesocycle != nil }) ?? false
-        tour.start(hasProgram: hasProgram)
+        let program = try? await database.writer.read { db -> TourProgram? in
+            let home = try ProgramQueries.home(db, athleteID: userID)
+            guard home.mesocycle != nil else { return nil }
+            return TourProgram(sessionNames: home.sessions.map(\.name), firstHasExercises: (home.sessions.first?.exerciseCount ?? 0) > 0)
+        }
+        tour.start(program: program ?? nil)
     }
 
     /// Una risposta al promemoria dei macro, anche se l'app si è appena aperta dalla notifica.
