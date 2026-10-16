@@ -40,7 +40,7 @@ struct SyncEngineTests {
         _ = try await engine.sync()  // stesso contenuto: le righe uguali al cursore si rileggono (>=) ma restano le stesse
         #expect(try count(database, "sessions") == 2)
         #expect(try count(database, "block_weeks") == 3)
-        #expect(remote.pageRequests.allSatisfy { $0.table == .exerciseVideos || $0.table.isWrittenByAthlete || $0.since != nil })  // senza righe non c'è cursore
+        #expect(remote.pageRequests.allSatisfy { [.exerciseVideos, .nutritionPlans, .nutritionPlanDays].contains($0.table) || $0.table.isWrittenByAthlete || $0.since != nil })  // senza righe non c'è cursore
         #expect(remote.pageRequests.first { $0.table == .mesocycles }?.since == Sample.t(1))
     }
 

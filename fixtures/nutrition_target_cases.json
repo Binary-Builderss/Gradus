@@ -1,0 +1,195 @@
+{
+  "rule": "Obiettivo di macro in vigore un giorno = il piano non eliminato con `valid_from` più recente tra quelli già iniziati (valid_from <= giorno). Duplicazione ammessa della funzione SQL nutrition_target_on, perché la schermata dei macro serve offline sul telefono. Le date sono yyyy-MM-dd.",
+  "cases": [
+    {
+      "name": "un solo piano, il giorno dopo l'inizio",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          }
+        ],
+        "day": "2026-10-02"
+      },
+      "expected": {
+        "kcal": 2500
+      }
+    },
+    {
+      "name": "il giorno stesso dell'inizio il piano vale già",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          }
+        ],
+        "day": "2026-10-01"
+      },
+      "expected": {
+        "kcal": 2500
+      }
+    },
+    {
+      "name": "prima dell'inizio non c'è obiettivo",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          }
+        ],
+        "day": "2026-09-30"
+      },
+      "expected": {
+        "kcal": null
+      }
+    },
+    {
+      "name": "nessun piano: nessun obiettivo",
+      "input": {
+        "plans": [],
+        "day": "2026-10-01"
+      },
+      "expected": {
+        "kcal": null
+      }
+    },
+    {
+      "name": "più piani: vale il più recente già iniziato",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          },
+          {
+            "valid_from": "2026-10-11",
+            "kcal": 2200
+          }
+        ],
+        "day": "2026-10-20"
+      },
+      "expected": {
+        "kcal": 2200
+      }
+    },
+    {
+      "name": "più piani: il giorno prima del cambio vale il vecchio",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          },
+          {
+            "valid_from": "2026-10-11",
+            "kcal": 2200
+          }
+        ],
+        "day": "2026-10-10"
+      },
+      "expected": {
+        "kcal": 2500
+      }
+    },
+    {
+      "name": "un piano che inizia più avanti non vale ancora",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          },
+          {
+            "valid_from": "2026-11-01",
+            "kcal": 2000
+          }
+        ],
+        "day": "2026-10-20"
+      },
+      "expected": {
+        "kcal": 2500
+      }
+    },
+    {
+      "name": "un piano eliminato non vale: torna il precedente",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          },
+          {
+            "valid_from": "2026-10-11",
+            "kcal": 2200,
+            "deleted": true
+          }
+        ],
+        "day": "2026-10-20"
+      },
+      "expected": {
+        "kcal": 2500
+      }
+    },
+    {
+      "name": "l'unico piano è eliminato: nessun obiettivo",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500,
+            "deleted": true
+          }
+        ],
+        "day": "2026-10-20"
+      },
+      "expected": {
+        "kcal": null
+      }
+    },
+    {
+      "name": "l'ordine in cui arrivano i piani non conta",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-10-11",
+            "kcal": 2200
+          },
+          {
+            "valid_from": "2026-10-01",
+            "kcal": 2500
+          },
+          {
+            "valid_from": "2026-09-01",
+            "kcal": 3000
+          }
+        ],
+        "day": "2026-10-15"
+      },
+      "expected": {
+        "kcal": 2200
+      }
+    },
+    {
+      "name": "a cavallo dell'anno",
+      "input": {
+        "plans": [
+          {
+            "valid_from": "2026-12-20",
+            "kcal": 2400
+          },
+          {
+            "valid_from": "2027-01-05",
+            "kcal": 2300
+          }
+        ],
+        "day": "2027-01-02"
+      },
+      "expected": {
+        "kcal": 2400
+      }
+    }
+  ]
+}

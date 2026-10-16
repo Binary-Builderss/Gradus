@@ -65,6 +65,8 @@ private struct FailingDisableRemote: RemoteAPI {
     func fetchIDs(table: SyncTable) async throws -> Data { Data("[]".utf8) }
     func upsert(table: SyncTable, rows: Data) async throws {}
     func updateName(userID: UUID, name: String) async throws {}
+    func setNutritionConsent(userID: UUID, at date: Date?, version: String?) async throws {}
+    func withdrawNutritionConsent() async throws {}
     func setAccountDisabled(userID: UUID, disabled: Bool) async throws { throw URLError(.notConnectedToInternet) }
     func deleteAccount(confirm: String) async throws {}
 }

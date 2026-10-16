@@ -121,9 +121,16 @@ Data/Remote/    client Supabase
 
 - **Allenamento (home)**: mesociclo attivo, selettore settimana × sessione aperto sulla prossima seduta
   non completata, note del coach, lista gruppi con riepilogo compatto e stato; storico mesocicli.
-- **Macro** (fase 2, vedi «Nutrizione» alla radice): obiettivo del giorno scritto dal coach, notifica locale serale «Hai
-  rispettato i macro di oggi?» (Sì / No), inserimento a mano, giorni verdi / rossi / grigi, lettura da Apple Salute se
-  l'atleta la collega (solo totali giornalieri, sola lettura). Mai i singoli alimenti fuori dal telefono.
+- **Macro** (vedi «Nutrizione» alla radice). **Fatto**: scheda «Macro» con l'obiettivo di oggi (scritto dal coach, sola
+  lettura), gli ultimi 14 giorni (verde rispettati, rosso no, grigio non registrato) e la schermata del giorno («Rispettati» /
+  «Non rispettati» e, se vuoi, i numeri; campi vuoti, salvataggio automatico, «Togli questo giorno»); consenso esplicito
+  prima di registrare (schermata dedicata, ritirabile da Profilo → Privacy: cancella i giorni sul server e sul telefono).
+  Senza consenso il telefono non scrive e il server rifiuta. I giorni passano dalla stessa coda delle serie (id
+  `DeterministicID.nutritionDay`, upsert idempotente); si correggono entro 14 giorni (`Nutrition.editableDays`, decisione
+  aperta), mai il futuro. Il piano in vigore è una duplicazione ammessa con fixture (`Nutrition.planInForce`).
+  **Da fare**: notifica locale serale «Hai rispettato i macro di oggi?» con azioni Sì / No, lettura da Apple Salute (solo
+  totali giornalieri, sola lettura; e allora serve la regola «rispettato» entro la tolleranza, da portare nelle fixture).
+  Mai i singoli alimenti fuori dal telefono.
 - **Check** (fase 2): check giornaliero mattina/sera, feedback per muscolo a fine seduta, questionari.
 - **Progressi** (fase 3): misure, pliche, circonferenze, foto (Storage privato), grafico carichi.
 - **Coach che si segue da solo**: lo stesso account può essere coach e atleta (collegamento con sé stesso, vedi la

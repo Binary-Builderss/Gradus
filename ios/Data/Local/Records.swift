@@ -15,12 +15,17 @@ struct ProfileRecord: SyncedRecord {
     var email: String?
     var fullName: String?
     var disabledAt: String?
+    /// Quando l'atleta ha acconsentito a condividere i macro con il coach (senza, non può registrarli).
+    var nutritionConsentAt: String?
+    var nutritionConsentVersion: String?
     var updatedAt: String
 
     enum CodingKeys: String, CodingKey {
         case id, email
         case fullName = "full_name"
         case disabledAt = "disabled_at"
+        case nutritionConsentAt = "nutrition_consent_at"
+        case nutritionConsentVersion = "nutrition_consent_version"
         case updatedAt = "updated_at"
     }
 }
@@ -291,6 +296,84 @@ struct SetSegmentRecord: SyncedRecord {
         case setLogId = "set_log_id"
         case segIdx = "seg_idx"
         case loadKg = "load_kg"
+        case updatedAt = "updated_at"
+        case deletedAt = "deleted_at"
+    }
+}
+
+struct NutritionPlanRecord: SyncedRecord {
+    static let databaseTableName = "nutrition_plans"
+    var id: UUID
+    var athleteId: UUID
+    var authorId: UUID?
+    var kind: String
+    var validFrom: String
+    var tolerancePct: Int
+    var declaredAt: String
+    var declarationVersion: String
+    var updatedAt: String
+    var deletedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, kind
+        case athleteId = "athlete_id"
+        case authorId = "author_id"
+        case validFrom = "valid_from"
+        case tolerancePct = "tolerance_pct"
+        case declaredAt = "declared_at"
+        case declarationVersion = "declaration_version"
+        case updatedAt = "updated_at"
+        case deletedAt = "deleted_at"
+    }
+}
+
+struct NutritionPlanDayRecord: SyncedRecord {
+    static let databaseTableName = "nutrition_plan_days"
+    var id: UUID
+    var planId: UUID
+    var dayType: String
+    var kcal: Int
+    var proteinG: Int
+    var carbsG: Int
+    var fatG: Int
+    var fiberG: Int?
+    var updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, kcal
+        case planId = "plan_id"
+        case dayType = "day_type"
+        case proteinG = "protein_g"
+        case carbsG = "carbs_g"
+        case fatG = "fat_g"
+        case fiberG = "fiber_g"
+        case updatedAt = "updated_at"
+    }
+}
+
+/// Un giorno di macro registrato dall'atleta. Nessuna riga = giorno non registrato.
+struct NutritionDayRecord: SyncedRecord {
+    static let databaseTableName = "nutrition_days"
+    var id: UUID
+    var athleteId: UUID
+    var day: String
+    var status: String
+    var source: String
+    var kcal: Double?
+    var proteinG: Double?
+    var carbsG: Double?
+    var fatG: Double?
+    var fiberG: Double?
+    var updatedAt: String
+    var deletedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, day, status, source, kcal
+        case athleteId = "athlete_id"
+        case proteinG = "protein_g"
+        case carbsG = "carbs_g"
+        case fatG = "fat_g"
+        case fiberG = "fiber_g"
         case updatedAt = "updated_at"
         case deletedAt = "deleted_at"
     }

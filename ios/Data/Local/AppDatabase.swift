@@ -185,6 +185,51 @@ final class AppDatabase: Sendable {
                 t.primaryKey(["table_name", "row_id"])
             }
         }
+
+        // Macro: gli obiettivi li scrive il coach (sola lettura qui), i giorni l'atleta (con la coda `pending_push`).
+        migrator.registerMigration("v3-macro") { db in
+            try db.alter(table: "profiles") { t in
+                t.add(column: "nutrition_consent_at", .text)
+                t.add(column: "nutrition_consent_version", .text)
+            }
+            try db.create(table: "nutrition_plans") { t in
+                t.primaryKey("id", .blob)
+                t.column("athlete_id", .blob).notNull().indexed()
+                t.column("author_id", .blob)
+                t.column("kind", .text).notNull()
+                t.column("valid_from", .text).notNull()
+                t.column("tolerance_pct", .integer).notNull()
+                t.column("declared_at", .text).notNull()
+                t.column("declaration_version", .text).notNull()
+                t.column("updated_at", .text).notNull()
+                t.column("deleted_at", .text)
+            }
+            try db.create(table: "nutrition_plan_days") { t in
+                t.primaryKey("id", .blob)
+                t.column("plan_id", .blob).notNull().indexed()
+                t.column("day_type", .text).notNull()
+                t.column("kcal", .integer).notNull()
+                t.column("protein_g", .integer).notNull()
+                t.column("carbs_g", .integer).notNull()
+                t.column("fat_g", .integer).notNull()
+                t.column("fiber_g", .integer)
+                t.column("updated_at", .text).notNull()
+            }
+            try db.create(table: "nutrition_days") { t in
+                t.primaryKey("id", .blob)
+                t.column("athlete_id", .blob).notNull()
+                t.column("day", .text).notNull().indexed()
+                t.column("status", .text).notNull()
+                t.column("source", .text).notNull()
+                t.column("kcal", .double)
+                t.column("protein_g", .double)
+                t.column("carbs_g", .double)
+                t.column("fat_g", .double)
+                t.column("fiber_g", .double)
+                t.column("updated_at", .text).notNull()
+                t.column("deleted_at", .text)
+            }
+        }
         return migrator
     }
 

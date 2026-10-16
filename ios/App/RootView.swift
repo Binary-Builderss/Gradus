@@ -42,6 +42,8 @@ struct MainTabs: View {
             TabView {
                 WorkoutHomeView(environment: environment, userID: userID)
                     .tabItem { Label("Allenamento", systemImage: "figure.strengthtraining.traditional") }
+                MacroView(environment: environment, userID: userID)
+                    .tabItem { Label("Macro", systemImage: "fork.knife") }
                 ProfileView(environment: environment, userID: userID)
                     .tabItem { Label("Profilo", systemImage: "person.crop.circle") }
             }

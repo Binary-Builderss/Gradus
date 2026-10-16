@@ -71,9 +71,11 @@ Esecuzione: `workouts → set_logs → set_segments`.
 ## Logica condivisa
 
 - La logica usata da entrambi i client sta in Postgres (funzioni `security invoker` + viste), con test pgTAP.
-- **Due sole duplicazioni ammesse**, perché servono offline sul telefono:
+- **Tre sole duplicazioni ammesse**, perché servono offline sul telefono:
   1. riferimento alla settimana precedente → casi in `/fixtures/previous_week_cases.json`;
-  2. carico target del back-off → casi in `/fixtures/backoff_cases.json`.
+  2. carico target del back-off → casi in `/fixtures/backoff_cases.json`;
+  3. obiettivo di macro in vigore un giorno (il piano non eliminato con `valid_from` più recente già iniziato) → casi in
+     `/fixtures/nutrition_target_cases.json`; funzione SQL `nutrition_target_on`.
   Funzione SQL e implementazione Swift passano gli stessi casi. Chi cambia una regola aggiorna la
   fixture e entrambe le implementazioni nello stesso commit.
 - Regole del riferimento alla settimana precedente: solo dentro il mesociclo in corso; settimana 1 →
