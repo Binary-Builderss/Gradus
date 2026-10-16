@@ -40,6 +40,8 @@ Ogni dato ha un solo autore.
 | Piano del coach (`coach_plans`) | solo service_role / SQL | il coach, il proprio |
 | Sedute, serie, segmenti, feedback per muscolo | atleta (iOS) | coach |
 | Check giornalieri, questionari compilati, misure, foto, massimali | atleta (iOS) | coach |
+| Obiettivi nutrizionali (oggi i macro; domani la dieta) | coach, o professionista verificato per la dieta (web) | atleta, sola lettura |
+| Aderenza giornaliera ai macro e macro assunti | atleta (iOS) | coach |
 
 Il web non scrive mai dati di esecuzione; l'app iOS non scrive mai la programmazione.
 
@@ -113,8 +115,67 @@ Esecuzione: `workouts → set_logs → set_segments`.
   pagamento; null = piano assegnato a mano, senza addebiti). Li scrive solo il webhook del servizio di pagamento
   (service_role). `prepare_account_deletion` rifiuta (`subscription_active`) un account con `billing_ref` che si
   rinnova ancora: prima si disdice. Disdire non cancella nessun dato.
+- **Direzione decisa per i piani (non ancora in migrazione: oggi il database ha ancora `free/mid/pro/unlimited`)**.
+  Nomi in inglese: `free`, `basic`, `advanced`, `custom`. Tetto di atleti 20 / 50 / 100 / 500 (non più illimitato). Listino
+  indicativo, senza incassi nel codice: basic 19,90 €, advanced 29,90 €, custom 129,90 € + IVA al mese. Il piano free è
+  volutamente limitato, per spingere almeno al basic. Tetti per piano (valori del free proposti, da confermare):
+
+  | | free | basic | advanced | custom |
+  | --- | --- | --- | --- | --- |
+  | Template sessione | 5 | 35 | 70 | 140 |
+  | Template mesociclo | 1 | 5 | 10 | 20 |
+  | Progressioni salvate | 20 | 350 | 700 | 1400 |
+  | Schede dieta salvate | 0 | 7 | 15 | 30 |
+  | Snapshot dieta per atleta | 0 | 12 | 12 | 12 |
+
+  **Personalizzazione** (marchio, PDF, colori dell'app atleta) dal basic in su, con più libertà a ogni livello: basic =
+  logo, nome del marchio e un colore principale; advanced = tavolozza completa; custom = tavolozza completa e PDF senza
+  la dicitura Gradus. Sostituisce `private.is_pro` con un livello di personalizzazione (0 = nessuna, 1, 2, 3). Il passaggio
+  richiede una migrazione nuova (rinomina dei valori di `coach_plan`, tetti nei trigger, livello di personalizzazione) e il
+  cambio dei testi del sito; i tetti si fanno rispettare nel database, come `enforce_athlete_limit`.
 - Le funzioni a pagamento oggi: PDF con marchio, Personalizza e colori dell'app atleta. Il sito del coach resta
   Gradus, uguale per tutti.
+
+## Nutrizione: i macro oggi, la dieta domani
+
+Dentro il perimetro **i macro** (obiettivi e aderenza). La **dieta compilabile** (rubrica alimenti, schede) non è
+costruita, ma i dati sono già predisposti perché arrivi senza rifare niente.
+
+- **Chi scrive cosa**: gli obiettivi li scrive il coach (o il professionista verificato) dal web; l'aderenza e i macro
+  assunti li scrive l'atleta dall'app. Un solo autore per dato, come sempre.
+- **Modello (da realizzare con una migrazione, non ancora scritta)**:
+  - `nutrition_plans`: atleta, autore, `kind` (`macros` | `diet`), periodo di validità, tolleranza in %, dichiarazione
+    (vedi sotto); con le righe per tipo di giorno (`nutrition_plan_days`: kcal, proteine, carboidrati, grassi, fibre).
+    Per ora un solo obiettivo per giorno; giorni di allenamento e di riposo diversi sono una decisione aperta.
+  - `nutrition_days`: per atleta e data, stato (`respected` | `not_respected`), fonte (`confirm` | `healthkit` |
+    `manual`) e macro assunti (null se non inseriti). Chiave naturale `(athlete_id, date)`, upsert idempotente con id
+    derivato (stessa regola delle serie). Nessuna riga = «non registrato».
+  - Per la dieta futura: tabelle di alimenti, pasti e voci collegate a un `nutrition_plans` con `kind = 'diet'`.
+- **Verifica del professionista** (`professional_verifications`): professione (`physician` | `biologist_nutritionist`
+  sezione A | `dietitian`), numero e ordine di iscrizione, certificato (storage privato), stato `pending` → `verified` /
+  `rejected` / `revoked`, scadenza. Il coach scrive la richiesta; lo stato lo cambia **solo** service_role o SQL, a
+  mano, dopo aver controllato l'albo (come `coach_plans`). `private.is_verified_professional(coach)` è l'unico posto
+  che decide. L'atleta vede chi ha scritto la dieta e con quale iscrizione.
+- **Chi può cosa**: i **macro** li può impostare ogni coach, ma con una dichiarazione esplicita («questi obiettivi mi
+  sono stati forniti da un professionista abilitato», con data e versione del testo salvate sul piano). La **dieta**
+  compilabile solo a un professionista verificato **e** da un piano `basic` in su, con i tetti per fascia. Il trigger sul
+  database rifiuta `kind = 'diet'` a chi non è verificato (vale per ogni via di scrittura).
+- **Aderenza (app)**: notifica locale la sera (default 22:00, modificabile) «Hai rispettato i macro di oggi?» con
+  azioni Sì / No. Sì → giorno verde, senza numeri inventati. No → chiede se inserirli a mano; se sì si apre la
+  schermata dei macro, altrimenti il giorno è «non rispettato». Se Apple Salute (HealthKit, sola lettura) ha già dati di
+  alimentazione per quel giorno la notifica non parte: i totali arrivano come `healthkit` e si confrontano con
+  l'obiettivo entro la tolleranza scelta dal coach. L'atleta può sempre correggere a mano, anche i giorni passati (per
+  ora 14). Un giorno senza risposta resta «non registrato» e **non** conta come non rispettato.
+- **Privacy**: dall'app escono solo i totali giornalieri, mai i singoli alimenti. iOS non dice se il permesso di
+  lettura è stato negato: «nessun dato» e «negato» coincidono, quindi l'inserimento a mano c'è sempre. Servono il consenso
+  esplicito e separato a condividere i dati nutrizionali con il coach, il testo della privacy aggiornato (anche per
+  numero e certificato d'iscrizione dei professionisti) e le frasi di richiesta permessi. Apple vieta di usare questi
+  dati per pubblicità. Alla cancellazione dell'account le righe scritte dall'atleta vanno cancellate
+  (`prepare_account_deletion`).
+- **Decisioni aperte**: giorni di allenamento / riposo con obiettivi diversi; tolleranza di default; quanti giorni si
+  possono correggere; orario della notifica; collegare all'atleta un secondo professionista (nutrizionista) con il suo
+  account verificato. Quanto alla legge italiana: prescrivere diete è riservato a figure abilitate; il testo dei termini e
+  la dichiarazione sui macro vanno riletti da un legale prima del lancio.
 
 ## Sicurezza
 
@@ -128,8 +189,9 @@ Esecuzione: `workouts → set_logs → set_segments`.
 
 ## Fuori perimetro
 
-Nutrizione, gamification, directory pubblica dei professionisti, incassi e abbonamenti veri (esiste solo il
-piano `free` / `pro` in `coach_plans`, impostato a mano), chat (fase successiva).
+Dieta compilabile (rubrica alimenti e schede: predisposta nel modello, non costruita), gamification, directory
+pubblica dei professionisti, incassi e abbonamenti veri (esiste solo il piano in `coach_plans`, impostato a mano), chat
+(fase successiva). I macro, invece, sono dentro (vedi «Nutrizione»).
 
 ## Prima di dichiarare finito
 

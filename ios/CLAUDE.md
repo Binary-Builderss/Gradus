@@ -115,6 +115,9 @@ Data/Remote/    client Supabase
 
 - **Allenamento (home)**: mesociclo attivo, selettore settimana × sessione aperto sulla prossima seduta
   non completata, note del coach, lista gruppi con riepilogo compatto e stato; storico mesocicli.
+- **Macro** (fase 2, vedi «Nutrizione» alla radice): obiettivo del giorno scritto dal coach, notifica locale serale «Hai
+  rispettato i macro di oggi?» (Sì / No), inserimento a mano, giorni verdi / rossi / grigi, lettura da Apple Salute se
+  l'atleta la collega (solo totali giornalieri, sola lettura). Mai i singoli alimenti fuori dal telefono.
 - **Check** (fase 2): check giornaliero mattina/sera, feedback per muscolo a fine seduta, questionari.
 - **Progressi** (fase 3): misure, pliche, circonferenze, foto (Storage privato), grafico carichi.
 - **Coach che si segue da solo**: lo stesso account può essere coach e atleta (collegamento con sé stesso, vedi la
