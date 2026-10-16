@@ -5,9 +5,9 @@ esegue e registra dall'iPhone. Specifiche complete: doc "Specifiche – Gradus"
 (https://claude.ai/code/artifact/7a997fe7-a7fe-4b32-9aea-579273e33fde). Se il codice, questi file e
 il doc divergono, chiedi prima di procedere.
 
-Nomi del prodotto: **Gradus** è il sito del coach, **Gradus Atleta** è l'app iOS sull'App Store; sotto
-l'icona (`CFBundleDisplayName`) solo "Gradus", perché i nomi lunghi vengono troncati nella Home. Nel codice usa `Gradus` come prefisso o namespace solo dove serve,
-non nei nomi delle tabelle.
+Nomi del prodotto: **Gradus** è il sito del coach, **Gradus Atleta** è l'app iOS: lo stesso nome sull'App Store, sotto
+l'icona (`CFBundleDisplayName`) e nella schermata di accesso. Nel codice usa `Gradus` come prefisso o namespace solo dove
+serve, non nei nomi delle tabelle.
 
 Questo file vale per tutto il repo. Le regole specifiche stanno in `web/CLAUDE.md` (stack web) e
 `ios/CLAUDE.md` (stack iOS).

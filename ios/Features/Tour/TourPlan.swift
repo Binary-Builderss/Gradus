@@ -41,7 +41,7 @@ enum TourPlan {
     static func steps(program: TourProgram?) -> [TourStep] {
         var steps: [TourStep] = [
             TourStep(
-                id: "welcome", tab: .workout, target: nil, title: "Benvenuto in Gradus",
+                id: "welcome", tab: .workout, target: nil, title: "Benvenuto in Gradus Atleta",
                 body: "Qui trovi il programma che ha scritto il tuo coach e registri le serie mentre ti alleni. Ti faccio un giro veloce: puoi saltarlo e rivederlo quando vuoi dal Profilo."),
         ]
         guard let program else {
