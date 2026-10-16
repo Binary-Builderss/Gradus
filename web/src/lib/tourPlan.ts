@@ -57,7 +57,11 @@ export function buildTourPlan(args: {
   } else {
     const athlete: TourRoute = { to: '/atleti/$athleteId', params: { athleteId: args.athleteId } }
     if (args.hasActiveMesocycle) plan.push(step(athlete, t.overview, 'athlete-overview'))
-    plan.push(step(athlete, t.bestSets, 'best-sets'), step(athlete, t.newMesocycle, 'new-mesocycle'))
+    plan.push(
+      step(athlete, t.macros, 'macros'),
+      step(athlete, t.bestSets, 'best-sets'),
+      step(athlete, t.newMesocycle, 'new-mesocycle'),
+    )
     if (!args.mesocycleId) {
       plan.push(step(athlete, t.noMesocycle))
     } else {

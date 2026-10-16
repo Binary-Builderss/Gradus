@@ -415,6 +415,169 @@ export type Database = {
           },
         ]
       }
+      nutrition_days: {
+        Row: {
+          athlete_id: string
+          carbs_g: number | null
+          created_at: string
+          day: string
+          deleted_at: string | null
+          fat_g: number | null
+          fiber_g: number | null
+          id: string
+          kcal: number | null
+          protein_g: number | null
+          source: Database['public']['Enums']['nutrition_source']
+          status: Database['public']['Enums']['nutrition_day_status']
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          athlete_id: string
+          carbs_g?: number | null
+          created_at?: string
+          day: string
+          deleted_at?: string | null
+          fat_g?: number | null
+          fiber_g?: number | null
+          id?: string
+          kcal?: number | null
+          protein_g?: number | null
+          source: Database['public']['Enums']['nutrition_source']
+          status: Database['public']['Enums']['nutrition_day_status']
+          updated_at?: string
+        }
+        Update: {
+          athlete_id?: string
+          carbs_g?: number | null
+          created_at?: string
+          day?: string
+          deleted_at?: string | null
+          fat_g?: number | null
+          fiber_g?: number | null
+          id?: string
+          kcal?: number | null
+          protein_g?: number | null
+          source?: Database['public']['Enums']['nutrition_source']
+          status?: Database['public']['Enums']['nutrition_day_status']
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'nutrition_days_athlete_id_fkey'
+            columns: ['athlete_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      nutrition_plan_days: {
+        Row: {
+          carbs_g: number
+          created_at: string
+          day_type: Database['public']['Enums']['nutrition_day_type']
+          fat_g: number
+          fiber_g: number | null
+          id: string
+          kcal: number
+          plan_id: string
+          protein_g: number
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          carbs_g: number
+          created_at?: string
+          day_type?: Database['public']['Enums']['nutrition_day_type']
+          fat_g: number
+          fiber_g?: number | null
+          id?: string
+          kcal: number
+          plan_id: string
+          protein_g: number
+          updated_at?: string
+        }
+        Update: {
+          carbs_g?: number
+          created_at?: string
+          day_type?: Database['public']['Enums']['nutrition_day_type']
+          fat_g?: number
+          fiber_g?: number | null
+          id?: string
+          kcal?: number
+          plan_id?: string
+          protein_g?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'nutrition_plan_days_plan_id_fkey'
+            columns: ['plan_id']
+            isOneToOne: false
+            referencedRelation: 'nutrition_plans'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      nutrition_plans: {
+        Row: {
+          athlete_id: string
+          author_id: string | null
+          created_at: string
+          declaration_version: string
+          declared_at: string
+          deleted_at: string | null
+          id: string
+          kind: Database['public']['Enums']['nutrition_kind']
+          tolerance_pct: number
+          updated_at: string
+          valid_from: string
+        }
+        ComputedFields: never
+        Insert: {
+          athlete_id: string
+          author_id?: string | null
+          created_at?: string
+          declaration_version: string
+          declared_at: string
+          deleted_at?: string | null
+          id?: string
+          kind?: Database['public']['Enums']['nutrition_kind']
+          tolerance_pct?: number
+          updated_at?: string
+          valid_from: string
+        }
+        Update: {
+          athlete_id?: string
+          author_id?: string | null
+          created_at?: string
+          declaration_version?: string
+          declared_at?: string
+          deleted_at?: string | null
+          id?: string
+          kind?: Database['public']['Enums']['nutrition_kind']
+          tolerance_pct?: number
+          updated_at?: string
+          valid_from?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'nutrition_plans_athlete_id_fkey'
+            columns: ['athlete_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'nutrition_plans_author_id_fkey'
+            columns: ['author_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -422,6 +585,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          nutrition_consent_at: string | null
+          nutrition_consent_version: string | null
           updated_at: string
         }
         ComputedFields: never
@@ -431,6 +596,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          nutrition_consent_at?: string | null
+          nutrition_consent_version?: string | null
           updated_at?: string
         }
         Update: {
@@ -439,6 +606,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          nutrition_consent_at?: string | null
+          nutrition_consent_version?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -883,6 +1052,36 @@ export type Database = {
         Args: { p_athlete_id: string; p_name?: string; p_start_date: string; p_template_id: string }
         Returns: string
       }
+      nutrition_overview: {
+        Args: { p_athlete_id: string; p_from: string; p_to: string }
+        Returns: {
+          carbs_g: number
+          day: string
+          fat_g: number
+          fiber_g: number
+          kcal: number
+          protein_g: number
+          source: Database['public']['Enums']['nutrition_source']
+          status: Database['public']['Enums']['nutrition_day_status']
+          target_carbs_g: number
+          target_fat_g: number
+          target_kcal: number
+          target_protein_g: number
+          tolerance_pct: number
+        }[]
+      }
+      nutrition_target_on: {
+        Args: { p_athlete_id: string; p_day: string }
+        Returns: {
+          carbs_g: number
+          fat_g: number
+          fiber_g: number
+          kcal: number
+          plan_id: string
+          protein_g: number
+          tolerance_pct: number
+        }[]
+      }
       plan_limits: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -973,6 +1172,7 @@ export type Database = {
           week: number
         }[]
       }
+      withdraw_nutrition_consent: { Args: Record<PropertyKey, never>; Returns: undefined }
     }
     Enums: {
       block_role: 'warmup' | 'top' | 'backoff' | 'working'
@@ -1001,6 +1201,10 @@ export type Database = {
         | 'adductors'
         | 'abductors'
         | 'calves'
+      nutrition_day_status: 'respected' | 'not_respected'
+      nutrition_day_type: 'all' | 'training' | 'rest'
+      nutrition_kind: 'macros' | 'diet'
+      nutrition_source: 'confirm' | 'healthkit' | 'manual'
       technique: 'none' | 'drop' | 'rest_pause' | 'myo' | 'cluster'
     }
     CompositeTypes: {
@@ -1142,6 +1346,10 @@ export const Constants = {
         'abductors',
         'calves',
       ],
+      nutrition_day_status: ['respected', 'not_respected'],
+      nutrition_day_type: ['all', 'training', 'rest'],
+      nutrition_kind: ['macros', 'diet'],
+      nutrition_source: ['confirm', 'healthkit', 'manual'],
       technique: ['none', 'drop', 'rest_pause', 'myo', 'cluster'],
     },
   },

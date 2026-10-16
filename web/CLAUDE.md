@@ -179,6 +179,15 @@ Ogni funzione ha test pgTAP con i casi limite: settimana 1, seduta saltata, scar
   la tavolozza completa, Custom anche il PDF senza la dicitura Gradus; i colori non cambiati restano quelli standard
   (`STANDARD_COLORS` in `lib/brand.ts`, da tenere allineati ai token di `index.css`). Chi è sul Free vede la
   pagina bloccata. Il sito del coach non cambia colori: il marchio vale per PDF e app atleta.
+- **Macro** (pagina atleta, sezione sopra le serie migliori; `components/nutrition/MacroSection.tsx`, `lib/nutrition.ts`): il
+  coach imposta calorie, proteine, carboidrati, grassi, fibre (facoltative), tolleranza (default 10%) e data di inizio; un piano nuovo
+  sostituisce l'attuale da quella data (se ne esiste già uno che inizia quel giorno lo aggiorna). Serve la
+  **dichiarazione** («questi obiettivi mi sono stati forniti da un professionista abilitato»): data e `DECLARATION_VERSION`
+  si salvano sul piano, e la versione va cambiata se cambia il testo. Si avvisa, senza bloccare, se le calorie scritte
+  e quelle dei macro (4/4/9 kcal per grammo) differiscono di oltre il 10%. Sotto, «Come li sta seguendo»: ultimi 14 giorni
+  verdi (rispettato), rossi (non rispettato), grigi (non registrato, mai contato come non rispettato), con i numeri e lo
+  scarto dall'obiettivo quando l'atleta li ha registrati (`nutrition_overview`). Compare solo con il consenso
+  dell'atleta, che dà dall'app. La dieta compilabile non c'è ancora.
 - **Libreria esercizi**: catalogo globale + esercizi del coach, note, pesi per muscolo 0..1.
 - **Modelli di progressione** (`progression_presets`, nel modulo «Progressione automatica» di ogni gruppo di serie): il coach salva con un
   nome la progressione compilata («Sforzo che sale: BUF da 3 a 0, +1 serie») e la ritrova su ogni serie di ogni mesociclo:
