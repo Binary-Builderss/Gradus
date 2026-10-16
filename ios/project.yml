@@ -40,7 +40,7 @@ targets:
     info:
       path: App/Info.plist
       properties:
-        CFBundleDisplayName: Gradus
+        CFBundleDisplayName: Gradus Atleta
         CFBundleDevelopmentRegion: it
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]

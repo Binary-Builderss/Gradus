@@ -14,7 +14,7 @@ struct LoginView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Gradus").font(.largeTitle.bold())
+                    Text("Gradus Atleta").font(.largeTitle.bold())
                     Text("Accedi con l'account che ti ha dato il tuo coach.").foregroundStyle(.secondary)
                 }
                 .padding(.top, 48)
