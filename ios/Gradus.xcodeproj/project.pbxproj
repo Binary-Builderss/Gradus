@@ -55,6 +55,7 @@
 		B923049A0A1B0BBBBD4C3E9F /* TourWalkthroughUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FF6E467E2F3D178B747309 /* TourWalkthroughUITests.swift */; };
 		C0AAD140BEF495BB346355B2 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AA76D53109D82C5F8214E5 /* AppEnvironment.swift */; };
 		C3ADD4F8AB2C336192511D05 /* NutritionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E027A45BA721292636A1AD2A /* NutritionStoreTests.swift */; };
+		C5FAF4F76B2683EAA6BA45DF /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C05C689DEF345710CD34FF43 /* Theme.swift */; };
 		CAF631B63D1CCE868DA4315C /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944E09F300798DE226821A51 /* TourTests.swift */; };
 		CDABB546EEE4E96644418A48 /* WorkoutHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */; };
 		CE33A4F1FB866A1AB168248E /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0816976D81686B7AEC5CD8 /* PrivacyView.swift */; };
@@ -140,6 +141,7 @@
 		B764FF928E312383A6B7389D /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		B9459A93D2319C6B43017BF8 /* ExerciseModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseModelTests.swift; sourceTree = "<group>"; };
 		BA0816976D81686B7AEC5CD8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
+		C05C689DEF345710CD34FF43 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		C0E084A718B163B36EAFEF50 /* WorkoutHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutHomeView.swift; sourceTree = "<group>"; };
 		C0ED0E4EBFFF71A5BEF25D82 /* DangerZoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DangerZoneView.swift; sourceTree = "<group>"; };
 		C783DF64750C30EE522C77AC /* AccountStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStoreTests.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				FDF9394F3DA73C9A3568A42D /* Info.plist */,
 				196BA65F9D5DAA445C25C528 /* MissingConfigView.swift */,
 				B764FF928E312383A6B7389D /* RootView.swift */,
+				C05C689DEF345710CD34FF43 /* Theme.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -600,6 +603,7 @@
 				F3D9621874B2FA50B441B163 /* SyncEngine.swift in Sources */,
 				4CC9D8398696EBFBFF49698E /* SyncModel.swift in Sources */,
 				31E03A2BCCC6611AE8DCF082 /* SyncView.swift in Sources */,
+				C5FAF4F76B2683EAA6BA45DF /* Theme.swift in Sources */,
 				866D41644A28F915347679B4 /* TourModel.swift in Sources */,
 				D2784474FE4A054513E2CF92 /* TourOverlay.swift in Sources */,
 				B5239085F19F9B432D478646 /* TourPlan.swift in Sources */,

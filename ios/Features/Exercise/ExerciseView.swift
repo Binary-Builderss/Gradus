@@ -35,6 +35,8 @@ struct ExerciseView: View {
                         }
                     }
                     .scrollDismissesKeyboard(.interactively)
+                    .scrollContentBackground(.hidden)
+                    .background(Theme.background)
                     .onAppear {
                         if let startSetIdx, let first = slot.blocks.first {
                             proxy.scrollTo(SetKey(block: first.id, idx: startSetIdx), anchor: .center)
@@ -100,6 +102,7 @@ private struct BlockSection: View {
                     model: model, block: block, key: SetKey(block: block.id, idx: idx), isTourFirst: isTourFirst && idx == 0,
                     isTourTimer: SetKey(block: block.id, idx: idx) == tourTimerKey, focused: focused, startTimer: startTimer)
                     .id(SetKey(block: block.id, idx: idx))
+                    .listRowBackground(Theme.surface)
             }
         } header: {
             VStack(alignment: .leading, spacing: 2) {
@@ -134,9 +137,9 @@ private struct SetRow: View {
         let draft = model.drafts[key] ?? SetDraft()
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Serie \(key.idx + 1)").font(.subheadline.weight(.semibold))
+                Text("Serie \(key.idx + 1)").font(.headline)
                 if let reference = model.references[key] {
-                    Text(reference).font(.footnote).foregroundStyle(.secondary)
+                    Text(reference).font(.footnote.monospacedDigit()).foregroundStyle(.secondary)
                 }
             }
             ForEach(draft.segments.indices, id: \.self) { index in
@@ -169,7 +172,7 @@ private struct SetRow: View {
                 } label: {
                     Label("Avvia timer", systemImage: "timer").frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
+                .modifier(SecondaryActionStyle())
                 .tourTarget("exercise-timer", if: isTourTimer)
                 .accessibilityHint("Recupero di \(RestText.format(seconds: model.restSeconds(for: block)))")
             }
@@ -182,9 +185,9 @@ private struct SetRow: View {
             TextField("", text: text)  // vuoto: nessun valore (nemmeno grigio) finché l'atleta non scrive
                 .keyboardType(keyboard)
                 .multilineTextAlignment(.center)
-                .font(.title3.monospacedDigit())
-                .frame(minWidth: 64, maxWidth: 96, minHeight: 44)
-                .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                .font(.title.monospacedDigit().weight(.semibold))
+                .frame(minWidth: 64, maxWidth: 112, minHeight: 56)
+                .background(Theme.background, in: .rect(cornerRadius: Theme.Radius.s))
                 .focused(focused)
                 .accessibilityLabel(label)
             Text(unit).font(.footnote).foregroundStyle(.secondary)

@@ -14,6 +14,8 @@ struct LoginView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 6) {
+                    Image("Logo").resizable().scaledToFit().frame(width: 56, height: 56)
+                        .accessibilityHidden(true)
                     Text("Gradus Atleta").font(.largeTitle.bold())
                     Text("Accedi con l'account che ti ha dato il tuo coach.").foregroundStyle(.secondary)
                 }
@@ -54,7 +56,7 @@ struct LoginView: View {
                     }
                     .frame(maxWidth: .infinity, minHeight: 44)
                 }
-                .buttonStyle(.borderedProminent)
+                .modifier(ProminentActionStyle())
                 .disabled(auth.isWorking)
 
                 Button("Password dimenticata?") {
@@ -70,6 +72,7 @@ struct LoginView: View {
             .frame(maxWidth: 480)
         }
         .scrollDismissesKeyboard(.interactively)
+        .background(Theme.background)
     }
 
     private func submit() {
@@ -87,7 +90,8 @@ private struct LabeledField<Content: View>: View {
             Text(title).font(.subheadline).foregroundStyle(.secondary)
             content
                 .padding(12)
-                .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
+                .background(Theme.surface, in: .rect(cornerRadius: Theme.Radius.m))
+                .overlay { RoundedRectangle(cornerRadius: Theme.Radius.m).stroke(Theme.hairline) }
         }
     }
 }

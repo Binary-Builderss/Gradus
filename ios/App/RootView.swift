@@ -74,7 +74,7 @@ struct MainTabs: View {
             .onChange(of: coordinator.openDay) { _, day in if day != nil { selection = .macro } }
             .onChange(of: coordinator.askManualEntry) { _, day in if day != nil { selection = .macro } }
             // Un solo timer per tutta l'app: resta visibile mentre si passa da una schermata all'altra.
-            .safeAreaInset(edge: .bottom, spacing: 0) { RestTimerBar(timer: environment.restTimer) }
+            .modifier(TimerAccessory(timer: environment.restTimer))
         }
     }
 }
