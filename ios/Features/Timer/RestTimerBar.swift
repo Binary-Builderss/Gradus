@@ -34,32 +34,3 @@ struct RestTimerBar: View {
         }
     }
 }
-
-/// Il timer sopra la tab bar: da iOS 26.1 è il suo accessorio (come il lettore di Musica), prima una barra in vetro che
-/// galleggia sopra le schede.
-struct TimerAccessory: ViewModifier {
-    let timer: RestTimerModel
-
-    func body(content: Content) -> some View {
-        if #available(iOS 26.1, *) {
-            content.tabViewBottomAccessory(isEnabled: timer.state != nil) { RestTimerBar(timer: timer, inAccessory: true) }
-        } else {
-            content.safeAreaInset(edge: .bottom, spacing: 0) { RestTimerBar(timer: timer) }
-        }
-    }
-}
-
-private struct FloatingGlass: ViewModifier {
-    let enabled: Bool
-
-    func body(content: Content) -> some View {
-        if enabled {
-            content
-                .glass(.rect(cornerRadius: Theme.Radius.l + Theme.Space.s))
-                .padding(.horizontal, Theme.Space.m)
-                .padding(.bottom, Theme.Space.xs)
-        } else {
-            content
-        }
-    }
-}
