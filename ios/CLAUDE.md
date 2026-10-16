@@ -18,8 +18,11 @@ quando un task tocca anche `/supabase` o `/fixtures`.
 ## Progetto e comandi
 
 - `ios/project.yml` (XcodeGen) genera `ios/Gradus.xcodeproj`, che è nel repo: `cd ios && xcodegen generate` se cambia il
-  file. Bundle id `dev.binarybuilders.gradus` (da cambiare in `project.yml` se serve un altro); per provarla
-  sull'iPhone imposta il team in Signing & Capabilities (o `DEVELOPMENT_TEAM` in `project.yml`).
+  file. Bundle id `dev.binarybuilders.gradus` (da cambiare in `project.yml` se serve un altro).
+- **Firma e chiavi**: stanno in `Config/Secrets.xcconfig` (ignorato da git; modello in `Secrets.example.xcconfig`):
+  `SUPABASE_URL`, `SUPABASE_ANON_KEY` (publishable) e `DEVELOPMENT_TEAM`. Il team non va scritto nel `.xcodeproj` né in
+  `project.yml`: il progetto si rigenera con XcodeGen e il team andrebbe perso a ogni modifica. Non committare i
+  cambiamenti che Xcode fa da solo a `project.pbxproj` e `Localizable.xcstrings` se non vengono da `project.yml`.
 - `ios/Domain` è un pacchetto Swift locale con le regole pure: `cd ios/Domain && swift test` (senza simulatore, legge
   `/fixtures`). L'app lo importa con `import Domain`.
 - App e test: `xcodebuild test -project Gradus.xcodeproj -scheme Gradus -destination 'platform=iOS Simulator,id=<id>'`
@@ -123,6 +126,8 @@ Data/Remote/    client Supabase
 - **Coach che si segue da solo**: lo stesso account può essere coach e atleta (collegamento con sé stesso, vedi la
   radice): se l'utente ha programmi come atleta, l'app mostra la vista atleta come per chiunque; niente seconda
   email né secondo account.
+- **Nome**: se il profilo arrivato sul telefono non ha il nome, al primo accesso compare «Come ti chiami?» (si può
+  rimandare; senza rete non si dà per salvato). Dal Profilo si cambia in ogni momento.
 - **Profilo**: nome e cognome (modificabile: è il nome con cui il coach vede l'atleta; se l'invito non l'aveva, in elenco compare l'email, quindi chiederlo al primo accesso), coach collegato, impostazioni (scala sforzo, suoni timer), stato sincronizzazione, logout.
 
 ## Test obbligatori
@@ -136,7 +141,13 @@ Data/Remote/    client Supabase
 ## App Store
 
 - Gli account atleta li crea il coach: per la revisione serve un account demo con un mesociclo attivo
-  già assegnato, indicato nelle note per il revisore.
+  già assegnato, indicato nelle note per il revisore. Lo crea `Scripts/seed_review.py` (lo lanci tu contro il
+  progetto online con `SUPABASE_SERVICE_ROLE_KEY` e `REVIEW_PASSWORD` come variabili d'ambiente; non salva né stampa
+  chiave e password): coach e atleta `demo.*@binarybuilders.dev`, mesociclo di 8 settimane con la settimana 1 già
+  registrata (si vedono subito riferimento e back-off). Rilancialo poco prima di ogni invio in revisione: riporta il
+  mesociclo alla settimana 2. Scrivi la password nelle note per il revisore su App Store Connect.
+- Eliminazione dell'account: l'app non crea account (arrivano dagli inviti), ma se la revisione la chiede c'è la Edge
+  Function `delete-account` pronta da collegare al Profilo.
 - Nessun acquisto in-app nell'app atleta.
 
 ## Cosa non fare

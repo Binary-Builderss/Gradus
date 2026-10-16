@@ -17,6 +17,7 @@ struct ProfileView: View {
     @State private var confirmingSignOut = false
     @State private var unsentAtSignOut = 0
     @State private var checkingSignOut = false
+    @State private var editingName = false
     @AppStorage("effortScale") private var effortScale = EffortScale.buf.rawValue
     @AppStorage(RestTimerModel.soundKey) private var timerSound = true
     @AppStorage(RestTimerModel.hapticKey) private var timerHaptic = true
@@ -25,7 +26,17 @@ struct ProfileView: View {
         NavigationStack {
             List {
                 Section("Account") {
-                    LabeledContent("Nome", value: snapshot.name ?? "–")
+                    Button {
+                        editingName = true
+                    } label: {
+                        LabeledContent("Nome") {
+                            HStack(spacing: 6) {
+                                Text(snapshot.name ?? "Aggiungi").foregroundStyle(.secondary)
+                                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                            }
+                        }
+                    }
+                    .foregroundStyle(.primary)
                     LabeledContent("Email", value: snapshot.email ?? "–")
                     LabeledContent("Coach", value: snapshot.coach ?? "Nessuno")
                 }
@@ -55,6 +66,11 @@ struct ProfileView: View {
                 }
             }
             .navigationTitle("Profilo")
+            .sheet(isPresented: $editingName) {
+                NamePromptView(environment: environment, userID: userID, initial: snapshot.name ?? "", canSkip: false) {
+                    editingName = false
+                }
+            }
             .confirmationDialog(
                 unsentAtSignOut > 0
                     ? (unsentAtSignOut == 1 ? "Hai 1 serie non ancora inviata" : "Hai \(unsentAtSignOut) serie non ancora inviate")

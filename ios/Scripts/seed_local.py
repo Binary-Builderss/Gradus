@@ -6,7 +6,7 @@
 Stampa solo gli indirizzi email di prova; la password è fissa e vale solo sul database locale.
 Usa la service_role locale (letta da `supabase status`, mai salvata): serve a scrivere come farebbe un coach.
 """
-import json, subprocess, sys, urllib.request
+import subprocess, sys
 
 PASSWORD = "gradus-locale-1"
 COACH, ATHLETE, OTHER = "coach@prova.local", "atleta@prova.local", "altro@prova.local"
@@ -23,31 +23,14 @@ if "127.0.0.1" not in API and "localhost" not in API:
     sys.exit("Questo script scrive solo sul database locale.")
 
 
-def call(method, path, body=None, prefer=None):
-    req = urllib.request.Request(API + path, method=method, data=json.dumps(body).encode() if body is not None else None)
-    req.add_header("apikey", KEY)
-    req.add_header("Authorization", f"Bearer {KEY}")
-    req.add_header("Content-Type", "application/json")
-    if prefer:
-        req.add_header("Prefer", prefer)
-    try:
-        with urllib.request.urlopen(req) as r:
-            data = r.read()
-            return json.loads(data) if data else None
-    except urllib.error.HTTPError as e:
-        raise SystemExit(f"{method} {path}: {e.code} {e.read().decode()}")
+from seedlib import Api
+
+api = Api(API, KEY)
+call, insert = api.call, api.insert
 
 
 def user(email):
-    found = call("GET", f"/rest/v1/profiles?email=eq.{email}&select=id")
-    if found:
-        return found[0]["id"]
-    created = call("POST", "/auth/v1/admin/users", {"email": email, "password": PASSWORD, "email_confirm": True})
-    return created["id"]
-
-
-def insert(table, rows):
-    call("POST", f"/rest/v1/{table}?on_conflict=id", rows, prefer="resolution=merge-duplicates,return=minimal")
+    return api.user(email, PASSWORD)
 
 
 coach, athlete, other = user(COACH), user(ATHLETE), user(OTHER)
