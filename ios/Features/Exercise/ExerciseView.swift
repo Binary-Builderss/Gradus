@@ -13,7 +13,6 @@ struct ExerciseView: View {
     /// Passa all'esercizio successivo del gruppo, alla serie indicata.
     var goTo: (UUID, Int) -> Void = { _, _ in }
     @State private var model: ExerciseModel?
-    @AppStorage("effortScale") private var preferredScale = EffortScale.buf.rawValue
     @Environment(\.scenePhase) private var scenePhase
     @FocusState private var focused: Bool
 
@@ -53,7 +52,6 @@ struct ExerciseView: View {
         .task {
             let model = ExerciseModel(
                 session: session, slot: slot, week: week, store: ExecutionStore(database: environment.database),
-                preferredScale: EffortScale(rawValue: preferredScale) ?? .buf,
                 onSaved: { environment.sync.requestSync() })
             self.model = model
             await model.load()
@@ -93,11 +91,6 @@ private struct BlockSection: View {
             ForEach(0..<(model.setCounts[block.id] ?? 0), id: \.self) { idx in
                 SetRow(model: model, block: block, key: SetKey(block: block.id, idx: idx), focused: focused, startTimer: startTimer)
                     .id(SetKey(block: block.id, idx: idx))
-            }
-            Button {
-                model.addSet(to: block.id)
-            } label: {
-                Label("Aggiungi serie", systemImage: "plus")
             }
         } header: {
             VStack(alignment: .leading, spacing: 2) {
@@ -145,18 +138,15 @@ private struct SetRow: View {
                         label: "Ripetizioni, serie \(key.idx + 1)\(draft.segments.count > 1 ? ", segmento \(index + 1)" : "")")
                 }
             }
-            HStack {
-                if block.hasSegments {
-                    Button {
-                        model.addSegment(key)
-                    } label: {
-                        Label("Segmento", systemImage: "plus.circle")
-                    }
-                    .buttonStyle(.borderless).font(.subheadline)
+            if block.hasSegments {
+                Button {
+                    model.addSegment(key)
+                } label: {
+                    Label("Segmento", systemImage: "plus.circle")
                 }
-                Spacer()
-                EffortMenu(model: model, block: block, key: key)
+                .buttonStyle(.borderless).font(.subheadline)
             }
+            EffortRow(model: model, block: block, key: key)
             if model.showsTimerButton(key, block: block) {
                 Button {
                     startTimer(key)
@@ -185,29 +175,53 @@ private struct SetRow: View {
     }
 }
 
-private struct EffortMenu: View {
+/// Lo sforzo percepito (facoltativo, una volta per serie): una riga di tasti interi sulla scala del coach. Un tocco
+/// sceglie, un secondo tocco toglie; il mezzo punto (2,5) si sceglie con il tocco lungo sul tasto.
+private struct EffortRow: View {
     let model: ExerciseModel
     let block: BlockContent
     let key: SetKey
 
     var body: some View {
         let scale = model.scale(for: block)
-        let current = model.drafts[key]?.effort
-        Menu {
-            Button("Nessuno") { model.setEffort(key, nil) }
-            ForEach(EffortOptions.values(for: scale), id: \.self) { value in
-                Button(Self.text(Effort(value: value, scale: scale))) { model.setEffort(key, Effort(value: value, scale: scale)) }
+        let current = model.drafts[key]?.effort.flatMap { $0.scale == scale ? $0.value : nil }
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Text(EffortOptions.title(for: scale)).font(.footnote).foregroundStyle(.secondary)
+                if let current { Text(NumberInput.text(current)).font(.footnote.weight(.semibold)) }
             }
-        } label: {
-            Text(current.map(Self.text) ?? "Sforzo \(scale.rawValue)")
-                .font(.subheadline)
-                .padding(.horizontal, 12).padding(.vertical, 8)
-                .background(Color.secondary.opacity(0.12), in: Capsule())
+            HStack(spacing: 8) {
+                ForEach(EffortOptions.wholeValues(for: scale), id: \.self) { whole in
+                    chip(whole: whole, scale: scale, current: current)
+                }
+            }
         }
-        .accessibilityLabel("Sforzo percepito, serie \(key.idx + 1)")
+        .accessibilityElement(children: .contain)
     }
 
-    private static func text(_ effort: Effort) -> String { "\(effort.scale.rawValue) \(NumberInput.text(effort.value))" }
+    private func chip(whole: Double, scale: EffortScale, current: Double?) -> some View {
+        let half = EffortOptions.halfStep(above: whole, scale: scale)
+        let shown = (half != nil && current == half) ? half! : whole  // il tasto mostra il mezzo punto se è quello scelto
+        let selected = current == shown
+        return Button {
+            model.setEffort(key, selected ? nil : Effort(value: shown, scale: scale))
+        } label: {
+            Text(NumberInput.text(shown))
+                .font(.body.monospacedDigit().weight(selected ? .bold : .regular))
+                .frame(maxWidth: .infinity, minHeight: 40)
+                .foregroundStyle(selected ? Color.white : Color.primary)
+                .background(selected ? Color.accentColor : Color.secondary.opacity(0.12), in: Capsule())
+        }
+        .buttonStyle(.borderless)
+        .contextMenu {
+            Button(NumberInput.text(whole)) { model.setEffort(key, Effort(value: whole, scale: scale)) }
+            if let half { Button(NumberInput.text(half)) { model.setEffort(key, Effort(value: half, scale: scale)) } }
+            if current != nil { Button("Togli lo sforzo", role: .destructive) { model.setEffort(key, nil) } }
+        }
+        .accessibilityLabel("Sforzo \(NumberInput.text(shown))")
+        .accessibilityHint("Tocco lungo per il mezzo punto")
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
 }
 
 extension Array {

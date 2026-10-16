@@ -66,7 +66,7 @@ struct DisabledAccountView: View {
                     working = true
                     failed = false
                     do {
-                        try await environment.remote.reactivateAccount(userID: userID)
+                        try await AccountStore(database: environment.database, remote: environment.remote).reactivate(userID: userID)
                         await environment.sync.sync()
                     } catch { failed = true }
                     working = false

@@ -25,6 +25,14 @@ enum SyncTable: String, CaseIterable, Sendable {
     var isWrittenByAthlete: Bool { self == .workouts || self == .setLogs || self == .setSegments }
 }
 
+/// Perché la cancellazione dell'account non è andata a buon fine (stessi codici della Edge Function).
+enum AccountDeletionError: Error, Equatable {
+    case confirmMismatch
+    /// Un abbonamento che si rinnova ancora: prima si disdice dal sito.
+    case subscriptionActive
+    case failed
+}
+
 /// Cosa serve dal server. La rete sta dietro a questo confine: le View non la chiamano mai, e i test usano un finto.
 protocol RemoteAPI: Sendable {
     /// Una pagina di righe (JSON) con `updated_at >= since`, ordinate per `updated_at` e `id`.
@@ -36,6 +44,8 @@ protocol RemoteAPI: Sendable {
     func upsert(table: SyncTable, rows: Data) async throws
     /// Il proprio nome (`profiles.full_name`): è il nome con cui il coach vede l'atleta.
     func updateName(userID: UUID, name: String) async throws
-    /// Riattiva il proprio account (`profiles.disabled_at = null`).
-    func reactivateAccount(userID: UUID) async throws
+    /// Disattiva (`profiles.disabled_at = now`) o riattiva (`null`) il proprio account: i dati restano.
+    func setAccountDisabled(userID: UUID, disabled: Bool) async throws
+    /// Cancellazione definitiva (Edge Function `delete-account`): `confirm` è l'email scritta a mano dalla persona.
+    func deleteAccount(confirm: String) async throws
 }

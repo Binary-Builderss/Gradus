@@ -37,14 +37,26 @@ struct ExecutionRulesTests {
         #expect(Completion.combined([]) == .empty)
     }
 
-    @Test("scale dello sforzo: BUF 0–5, RPE 6–10, a mezzi punti")
+    @Test("scale dello sforzo: quella del coach (RPE), altrimenti ripetizioni in riserva; tasti interi e mezzo punto")
     func effort() {
-        #expect(EffortOptions.values(for: .buf).first == 0 && EffortOptions.values(for: .buf).last == 5)
-        #expect(EffortOptions.values(for: .buf).count == 11)
-        #expect(EffortOptions.values(for: .rpe).first == 6 && EffortOptions.values(for: .rpe).last == 10)
-        #expect(EffortOptions.scale(prescribed: .rpe, preferred: .buf) == .rpe)
-        #expect(EffortOptions.scale(prescribed: .load, preferred: .rpe) == .rpe)
-        #expect(EffortOptions.scale(prescribed: nil, preferred: .buf) == .buf)
+        #expect(EffortOptions.scale(prescribed: .rpe) == .rpe)
+        #expect(EffortOptions.scale(prescribed: .buf) == .buf)
+        #expect(EffortOptions.scale(prescribed: .load) == .buf)
+        #expect(EffortOptions.scale(prescribed: nil) == .buf)
+        #expect(EffortOptions.wholeValues(for: .buf) == [0, 1, 2, 3, 4, 5])
+        #expect(EffortOptions.wholeValues(for: .rpe) == [6, 7, 8, 9, 10])
+        #expect(EffortOptions.halfStep(above: 2, scale: .buf) == 2.5)
+        #expect(EffortOptions.halfStep(above: 4, scale: .buf) == 4.5)
+        #expect(EffortOptions.halfStep(above: 5, scale: .buf) == nil)  // 5,5 non esiste
+        #expect(EffortOptions.halfStep(above: 9, scale: .rpe) == 9.5)
+        #expect(EffortOptions.halfStep(above: 10, scale: .rpe) == nil)
+    }
+
+    @Test("conferma di eliminazione: l'email scritta a mano, senza badare a maiuscole e spazi")
+    func deleteConfirmation() {
+        #expect(DeleteConfirmation.matches("  Marco@Example.com ", email: "marco@example.com"))
+        #expect(!DeleteConfirmation.matches("marco@example.co", email: "marco@example.com"))
+        #expect(!DeleteConfirmation.matches("", email: ""))  // senza email nota non si conferma mai
     }
 
     @Test("numeri: virgola o punto, vuoto e testo non validi")

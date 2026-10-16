@@ -17,21 +17,37 @@ public enum Completion: Equatable, Sendable {
     }
 }
 
-/// I valori che l'atleta può scegliere per lo sforzo percepito, sulla scala della prescrizione.
+/// Lo sforzo percepito, sulla scala della prescrizione: BUF (ripetizioni in riserva) 0–5 oppure RPE 6–10, a passi di
+/// 0,5 (stesso vincolo del database). Si sceglie con una riga di tasti interi; il mezzo punto con il tocco lungo.
 public enum EffortOptions {
-    /// BUF da 0 a 5, RPE da 6 a 10, a passi di 0,5 (stesso vincolo del database).
-    public static func values(for scale: EffortScale) -> [Double] {
-        let range: ClosedRange<Double> = scale == .buf ? 0...5 : 6...10
-        return stride(from: range.lowerBound, through: range.upperBound, by: 0.5).map { $0 }
+    /// La scala della prescrizione se è RPE; altrimenti ripetizioni in riserva (BUF), che è anche quella dei blocchi
+    /// senza sforzo prescritto. Non c'è una scelta dell'atleta: la scala la decide il coach.
+    public static func scale(prescribed: IntensityMethod?) -> EffortScale {
+        prescribed == .rpe ? .rpe : .buf
     }
 
-    /// La scala in cui chiedere lo sforzo: quella della prescrizione se è BUF o RPE, altrimenti la preferita.
-    public static func scale(prescribed: IntensityMethod?, preferred: EffortScale) -> EffortScale {
-        switch prescribed {
-        case .buf: .buf
-        case .rpe: .rpe
-        default: preferred
-        }
+    /// I tasti: BUF 0, 1, 2, 3, 4, 5 · RPE 6, 7, 8, 9, 10.
+    public static func wholeValues(for scale: EffortScale) -> [Double] {
+        let range: ClosedRange<Double> = scale == .buf ? 0...5 : 6...10
+        return stride(from: range.lowerBound, through: range.upperBound, by: 1).map { $0 }
+    }
+
+    /// Il mezzo punto sopra un valore intero (2 → 2,5), se la scala lo ammette (non oltre il massimo).
+    public static func halfStep(above whole: Double, scale: EffortScale) -> Double? {
+        let candidate = whole + 0.5
+        return wholeValues(for: scale).last.map { candidate <= $0 } == true ? candidate : nil
+    }
+
+    public static func title(for scale: EffortScale) -> String {
+        scale == .buf ? "Ripetizioni in riserva" : "Sforzo (RPE)"
+    }
+}
+
+/// Eliminare l'account: serve l'email scritta a mano, come sul sito (stessa regola della Edge Function).
+public enum DeleteConfirmation {
+    public static func matches(_ typed: String, email: String) -> Bool {
+        let normalize = { (text: String) in text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+        return !normalize(email).isEmpty && normalize(typed) == normalize(email)
     }
 }
 

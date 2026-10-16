@@ -72,6 +72,8 @@ Data/Remote/    client Supabase
 
 ## Schermata esercizio — regole (non negoziabili)
 
+0. **Le righe sono le serie prescritte** dal coach per quella settimana: l'atleta non ne aggiunge (se un blocco non ha
+   prescrizione c'è una riga sola; le serie già registrate oltre il prescritto restano visibili).
 1. **Nessun precompilato.** Kg, reps e sforzo sono vuoti finché l'atleta non scrive. Niente valori
    grigi dentro i campi.
 2. **Salvataggio automatico** a ogni modifica, nel DB locale (debounce massimo 300 ms durante la
@@ -80,9 +82,10 @@ Data/Remote/    client Supabase
    `done_at` = orario dell'ultima modifica.
 4. **Righe raggruppate per blocco** (es. "Top 1×5", "Back-off 2×7"). Con una tecnica a segmenti
    (drop, rest-pause, myo, cluster) ogni serie ha una riga kg × reps per segmento.
-5. **Sforzo percepito**: facoltativo, una volta per serie (sull'ultimo segmento). Selettore sulla scala
-   della prescrizione (BUF 0–5 o RPE 6–10, passo 0,5) o su quella preferita in Impostazioni.
-   BUF = RIR (RPE = 10 − BUF); lo sforzo si salva nella scala in cui è stato inserito.
+5. **Sforzo percepito**: facoltativo, una volta per serie. Una riga di tasti interi sotto i campi (BUF 0–5 o RPE 6–10);
+   un tocco sceglie, un secondo tocco toglie, il mezzo punto (2,5) con il tocco lungo. La scala è quella della
+   prescrizione del coach (RPE se la scrive RPE; altrimenti BUF, ripetizioni in riserva): non c'è una scelta
+   dell'atleta. BUF = RIR (RPE = 10 − BUF); lo sforzo si salva nella scala in cui è stato inserito.
 6. **Riferimento alla settimana precedente** nell'intestazione di ogni serie, come testo
    ("Sett. 3: 100 × 5 · BUF 1"; drop: "100 × 8 + 75 × 6"):
    - settimana 1 → nessun riferimento;
@@ -125,7 +128,12 @@ Data/Remote/    client Supabase
   email né secondo account.
 - **Nome**: se il profilo arrivato sul telefono non ha il nome, al primo accesso compare «Come ti chiami?» (si può
   rimandare; senza rete non si dà per salvato). Dal Profilo si cambia in ogni momento.
-- **Profilo**: nome e cognome (modificabile: è il nome con cui il coach vede l'atleta; se l'invito non l'aveva, in elenco compare l'email, quindi chiederlo al primo accesso), coach collegato, impostazioni (scala sforzo, suoni timer), stato sincronizzazione, logout.
+- **Profilo**: elenco di sezioni, ognuna in una schermata sua: **Account** (nome modificabile, email, coach, cambio
+  password via email con link al sito), **Preferenze** (suono e vibrazione del timer), **Sincronizzazione** (stato, serie
+  da inviare), **Assistenza e informazioni** (contatto, termini, privacy, versione). In fondo: **Disattiva o elimina
+  l'account** (disattivare è reversibile, eliminare è definitivo e chiede l'email scritta a mano: Edge Function
+  `delete-account`, come sul sito) ed **Esci** (prima invia le serie in coda). Il nome si chiede al primo
+  accesso se manca.
 
 ## Test obbligatori
 
