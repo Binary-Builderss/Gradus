@@ -28,8 +28,10 @@ final class AppDatabase: Sendable {
 
     static var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
-        // I dati sono una copia del server: se lo schema locale cambia basta ricostruirli.
+        // Solo in sviluppo: in produzione sul telefono ci sono serie non ancora inviate, che non si buttano mai.
+        #if DEBUG
         migrator.eraseDatabaseOnSchemaChange = true
+        #endif
 
         migrator.registerMigration("v1-programma") { db in
             try db.create(table: "sync_cursors") { t in
@@ -139,13 +141,57 @@ final class AppDatabase: Sendable {
                 t.column("updated_at", .text).notNull()
             }
         }
+
+        // Esecuzione: scrive l'atleta. Gli id sono derivati dalla chiave naturale (Domain/DeterministicID), quindi non ci
+        // sono vincoli di unicità qui: la chiave primaria basta. `pending_push` è la coda: righe da inviare al server.
+        migrator.registerMigration("v2-esecuzione") { db in
+            try db.create(table: "workouts") { t in
+                t.primaryKey("id", .blob)
+                t.column("athlete_id", .blob).notNull()
+                t.column("mesocycle_id", .blob).notNull().indexed()
+                t.column("session_id", .blob).notNull().indexed()
+                t.column("week", .integer).notNull()
+                t.column("athlete_notes", .text)
+                t.column("updated_at", .text).notNull()
+                t.column("deleted_at", .text)
+            }
+            try db.create(table: "set_logs") { t in
+                t.primaryKey("id", .blob)
+                t.column("athlete_id", .blob).notNull()
+                t.column("mesocycle_id", .blob).notNull().indexed()
+                t.column("workout_id", .blob).notNull().indexed()
+                t.column("block_id", .blob).notNull()
+                t.column("set_idx", .integer).notNull()
+                t.column("effort_value", .double)
+                t.column("effort_scale", .text)
+                t.column("done_at", .text).notNull()
+                t.column("updated_at", .text).notNull()
+                t.column("deleted_at", .text)
+            }
+            try db.create(table: "set_segments") { t in
+                t.primaryKey("id", .blob)
+                t.column("athlete_id", .blob).notNull()
+                t.column("set_log_id", .blob).notNull().indexed()
+                t.column("seg_idx", .integer).notNull()
+                t.column("load_kg", .double)
+                t.column("reps", .integer)
+                t.column("updated_at", .text).notNull()
+                t.column("deleted_at", .text)
+            }
+            try db.create(table: "pending_push") { t in
+                t.column("table_name", .text).notNull()
+                t.column("row_id", .blob).notNull()
+                t.column("version", .integer).notNull()
+                t.primaryKey(["table_name", "row_id"])
+            }
+        }
         return migrator
     }
 
     /// Svuota tutto (uscita dall'account): i dati sono di chi era collegato.
     func erase() throws {
         try writer.write { db in
-            for table in SyncTable.allCases.map(\.rawValue) + ["sync_cursors"] { try db.execute(sql: "DELETE FROM \(table)") }
+            for table in SyncTable.allCases.map(\.rawValue) + ["sync_cursors", "pending_push"] { try db.execute(sql: "DELETE FROM \(table)") }
         }
     }
 }

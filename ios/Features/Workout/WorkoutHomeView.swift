@@ -9,6 +9,7 @@ struct WorkoutHomeView: View {
     let userID: UUID
     @State private var snapshot: HomeSnapshot?
     @State private var week: Int?
+    @State private var states: [UUID: Completion] = [:]
 
     var body: some View {
         NavigationStack {
@@ -69,13 +70,27 @@ struct WorkoutHomeView: View {
                     } label: {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(session.name).font(.headline)
-                            Text(session.exerciseCount == 1 ? "1 esercizio" : "\(session.exerciseCount) esercizi")
-                                .font(.subheadline).foregroundStyle(.secondary)
+                            HStack(spacing: 6) {
+                                Text(session.exerciseCount == 1 ? "1 esercizio" : "\(session.exerciseCount) esercizi")
+                                    .font(.subheadline).foregroundStyle(.secondary)
+                                switch states[session.id] ?? .empty {
+                                case .complete: Label("Completa", systemImage: "checkmark.circle.fill").font(.subheadline).foregroundStyle(.green)
+                                case .partial: Text("Iniziata").font(.subheadline).foregroundStyle(.orange)
+                                case .empty: EmptyView()
+                                }
+                            }
                         }
                         .padding(.vertical, 2)
                     }
                 }
             }
+        }
+        .task(id: selected) {
+            let (id, w) = (mesocycle.id, selected)
+            let observation = ValueObservation.tracking { db in try ProgramQueries.sessionStates(db, mesocycleID: id, week: w) }
+            do {
+                for try await value in observation.values(in: environment.database.writer) { states = value }
+            } catch {}
         }
     }
 

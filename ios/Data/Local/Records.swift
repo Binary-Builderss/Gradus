@@ -223,6 +223,79 @@ struct ExerciseVideoRecord: SyncedRecord {
     }
 }
 
+struct WorkoutRecord: SyncedRecord {
+    static let databaseTableName = "workouts"
+    var id: UUID
+    var athleteId: UUID
+    var mesocycleId: UUID
+    var sessionId: UUID
+    var week: Int
+    var athleteNotes: String?
+    var updatedAt: String
+    var deletedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, week
+        case athleteId = "athlete_id"
+        case mesocycleId = "mesocycle_id"
+        case sessionId = "session_id"
+        case athleteNotes = "athlete_notes"
+        case updatedAt = "updated_at"
+        case deletedAt = "deleted_at"
+    }
+}
+
+struct SetLogRecord: SyncedRecord {
+    static let databaseTableName = "set_logs"
+    var id: UUID
+    var athleteId: UUID
+    var mesocycleId: UUID
+    var workoutId: UUID
+    var blockId: UUID
+    var setIdx: Int
+    var effortValue: Double?
+    var effortScale: String?
+    var doneAt: String
+    var updatedAt: String
+    var deletedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case athleteId = "athlete_id"
+        case mesocycleId = "mesocycle_id"
+        case workoutId = "workout_id"
+        case blockId = "block_id"
+        case setIdx = "set_idx"
+        case effortValue = "effort_value"
+        case effortScale = "effort_scale"
+        case doneAt = "done_at"
+        case updatedAt = "updated_at"
+        case deletedAt = "deleted_at"
+    }
+}
+
+struct SetSegmentRecord: SyncedRecord {
+    static let databaseTableName = "set_segments"
+    var id: UUID
+    var athleteId: UUID
+    var setLogId: UUID
+    var segIdx: Int
+    var loadKg: Double?
+    var reps: Int?
+    var updatedAt: String
+    var deletedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, reps
+        case athleteId = "athlete_id"
+        case setLogId = "set_log_id"
+        case segIdx = "seg_idx"
+        case loadKg = "load_kg"
+        case updatedAt = "updated_at"
+        case deletedAt = "deleted_at"
+    }
+}
+
 /// Fin dove si è letto ogni tabella: il massimo `updated_at` visto.
 struct SyncCursorRecord: Codable, FetchableRecord, PersistableRecord, Sendable {
     static let databaseTableName = "sync_cursors"

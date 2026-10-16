@@ -57,6 +57,12 @@ Data/Remote/    client Supabase
 - **Push**: ogni scrittura locale accoda un'operazione; la coda invia upsert sulle chiavi naturali
   (`workout_id, block_id, set_idx` per `set_logs`; `set_log_id, seg_idx` per `set_segments`;
   `athlete_id, date, slot` per `daily_checks`). Reinviare non deve creare duplicati.
+- **Id derivati**: `workouts`, `set_logs` e `set_segments` hanno l'id calcolato dalla chiave naturale (UUID v5,
+  `Domain/DeterministicID`): stesso dato = stesso id su ogni telefono e a ogni reinstallazione, quindi l'upsert è sulla
+  chiave primaria e non nascono righe doppie. Non cambiare il namespace né le stringhe da cui si calcola.
+- **Coda**: tabella locale `pending_push (tabella, id, versione)`; l'invio avviene in ordine di chiavi esterne (seduta →
+  serie → segmenti) e una riga esce dalla coda solo se la versione non è cambiata mentre si inviava. Ogni sincronizzazione
+  prima legge, poi invia; il pull non sovrascrive le righe ancora in coda. Lo svuotamento di una serie è un soft delete.
 - **Conflitti**: un solo autore per riga → vince l'`updated_at` più recente (iPhone + iPad).
 - **Cancellazioni**: soft delete con `deleted_at`.
 - L'app funziona interamente offline; lo stato di sincronizzazione è visibile nel Profilo.

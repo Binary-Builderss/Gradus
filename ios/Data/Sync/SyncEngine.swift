@@ -4,6 +4,8 @@ import GRDB
 struct SyncSummary: Equatable, Sendable {
     /// Righe lette dal server (nuove o cambiate).
     var rows: Int
+    /// Righe inviate al server (serie registrate dall'atleta).
+    var sent: Int = 0
 }
 
 /// Pull incrementale dal server al database locale: per tabella, le righe con `updated_at >= ultimo cursore`.
@@ -26,7 +28,36 @@ actor SyncEngine {
             rows += try await pull(table)
             if table.removesRows { try await reconcile(table) }
         }
-        return SyncSummary(rows: rows)
+        // Prima si legge, poi si invia: un errore dell'invio non impedisce di ricevere il programma.
+        let sent = try await push()
+        return SyncSummary(rows: rows, sent: sent)
+    }
+
+    /// Solo la lettura dal server (per i test dell'ordine pull → push).
+    func pullOnlyForTests() async throws -> Int {
+        var rows = 0
+        for table in SyncTable.allCases { rows += try await pull(table) }
+        return rows
+    }
+
+    /// Invia le serie registrate sul telefono. Upsert sulla chiave primaria (derivata dalla chiave naturale): reinviare
+    /// la stessa riga non crea duplicati. Una riga esce dalla coda solo se non è cambiata mentre si inviava.
+    func push(batchSize: Int = 100) async throws -> Int {
+        var sent = 0
+        for table in SyncTable.allCases where table.isWrittenByAthlete {
+            while true {
+                try Task.checkCancellation()
+                let batch = try await database.writer.read { try ExecutionStore.pending($0, table: table, limit: batchSize) }
+                if batch.isEmpty { break }
+                let payload = try await database.writer.read {
+                    try ExecutionStore.payload($0, table: table, ids: batch.map(\.id))
+                }
+                try await remote.upsert(table: table, rows: payload)
+                try await database.writer.write { try ExecutionStore.clearPending($0, table: table, batch) }
+                sent += batch.count
+            }
+        }
+        return sent
     }
 
     private func pull(_ table: SyncTable) async throws -> Int {
@@ -60,7 +91,10 @@ actor SyncEngine {
             let gone = localIDs.filter { !remoteIDs.contains($0) }
             for id in gone {
                 if table == .mesocycles {
-                    for child in ["sessions", "slot_groups", "slots", "set_blocks", "block_weeks"] {
+                    try db.execute(
+                        sql: "DELETE FROM set_segments WHERE set_log_id IN (SELECT id FROM set_logs WHERE mesocycle_id = ?)",
+                        arguments: [id])
+                    for child in ["sessions", "slot_groups", "slots", "set_blocks", "block_weeks", "workouts", "set_logs"] {
                         try db.execute(sql: "DELETE FROM \(child) WHERE mesocycle_id = ?", arguments: [id])
                     }
                 }
@@ -86,12 +120,20 @@ actor SyncEngine {
         case .setBlocks: try save(SetBlockRecord.self, data, db)
         case .blockWeeks: try save(BlockWeekRecord.self, data, db)
         case .exerciseVideos: try save(ExerciseVideoRecord.self, data, db)
+        case .workouts: try save(WorkoutRecord.self, data, table: table, db)
+        case .setLogs: try save(SetLogRecord.self, data, table: table, db)
+        case .setSegments: try save(SetSegmentRecord.self, data, table: table, db)
         }
     }
 
-    private static func save<R: SyncedRecord>(_: R.Type, _ data: Data, _ db: Database) throws -> Page {
+    private static func save<R: SyncedRecord>(
+        _: R.Type, _ data: Data, table: SyncTable? = nil, _ db: Database
+    ) throws -> Page {
         let rows = try JSONDecoder().decode([R].self, from: data)
-        for row in rows { try row.upsert(db) }
+        // Le righe scritte dall'atleta e ancora da inviare valgono più di quelle del server (un solo autore).
+        let pending: Set<UUID> =
+            table.map { Set((try? UUID.fetchAll(db, sql: "SELECT row_id FROM pending_push WHERE table_name = ?", arguments: [$0.rawValue])) ?? []) } ?? []
+        for row in rows where !pending.contains(row.id) { try row.upsert(db) }
         return Page(count: rows.count, lastUpdatedAt: rows.last?.updatedAt)
     }
 }

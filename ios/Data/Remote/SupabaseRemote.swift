@@ -20,6 +20,11 @@ struct SupabaseRemote: RemoteAPI {
         try await client.from(table.rawValue).select("id").limit(10_000).execute().data
     }
 
+    func upsert(table: SyncTable, rows: Data) async throws {
+        let values = try JSONDecoder().decode([AnyJSON].self, from: rows)
+        try await client.from(table.rawValue).upsert(values, onConflict: "id", returning: .minimal).execute()
+    }
+
     func reactivateAccount(userID: UUID) async throws {
         try await client.from("profiles")
             .update(["disabled_at": AnyJSON.null])

@@ -41,6 +41,36 @@ final class FakeRemote: RemoteAPI, @unchecked Sendable {
         lock.withLock { reactivated.append(userID) }
     }
 
+    /// Come PostgREST: upsert sull'id (le chiavi devono essere uguali in ogni riga), `updated_at` lo assegna il server.
+    private(set) var upsertCalls: [(table: SyncTable, count: Int)] = []
+    var failOnUpsert: Error?
+    private var serverClock = 100
+
+    func upsert(table: SyncTable, rows: Data) async throws {
+        try lock.withLock {
+            if let failOnUpsert { throw failOnUpsert }
+            let incoming = try JSONSerialization.jsonObject(with: rows) as! [Row]
+            if let first = incoming.first {
+                precondition(incoming.allSatisfy { Set($0.keys) == Set(first.keys) }, "All object keys must match")
+                precondition(!first.keys.contains("updated_at"), "updated_at lo scrive il server")
+            }
+            upsertCalls.append((table, incoming.count))
+            var stored = tables[table] ?? []
+            for var row in incoming {
+                serverClock += 1
+                row["updated_at"] = Sample.t(1).replacingOccurrences(of: "T10:00:00", with: "T11:\(String(format: "%02d", serverClock % 60)):00")
+                if let index = stored.firstIndex(where: { ($0["id"] as! String).lowercased() == (row["id"] as! String).lowercased() }) {
+                    stored[index] = row
+                } else {
+                    stored.append(row)
+                }
+            }
+            tables[table] = stored
+        }
+    }
+
+    func rows(_ table: SyncTable) -> [Row] { lock.withLock { tables[table] ?? [] } }
+
     var requestCount: Int { lock.withLock { pageRequests.count } }
     func resetRequests() { lock.withLock { pageRequests = []; pageCount = 0 } }
 }
