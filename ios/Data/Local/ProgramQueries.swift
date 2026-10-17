@@ -39,6 +39,8 @@ struct SlotContent: Equatable, Identifiable, Sendable {
     var exerciseName: String
     var coachNotes: String?
     var blocks: [BlockContent]
+    /// Il video dell'esercizio, se il coach ne ha collegato uno.
+    var videoURL: URL? = nil
 }
 
 struct GroupContent: Equatable, Identifiable, Sendable {
@@ -128,6 +130,8 @@ enum ProgramQueries {
             .order(Column("position")).fetchAll(db)
         let exercises = try ExerciseRecord.fetchAll(db, keys: Array(Set(slots.map(\.exerciseId))))
         let names = Dictionary(uniqueKeysWithValues: exercises.map { ($0.id, $0.name) })
+        let videos = try ExerciseVideoRecord.filter(exercises.map(\.id).contains(Column("exercise_id"))).fetchAll(db)
+        let videoURLs = Dictionary(videos.compactMap { video in URL(string: video.url).map { (video.exerciseId, $0) } }, uniquingKeysWith: { first, _ in first })
         let blocks = try SetBlockRecord
             .filter(slots.map(\.id).contains(Column("slot_id")) && Column("deleted_at") == nil)
             .order(Column("position")).fetchAll(db)
@@ -153,7 +157,7 @@ enum ProgramQueries {
                     slots: slots.filter { $0.groupId == group.id }.map { slot in
                         SlotContent(
                             id: slot.id, exerciseName: names[slot.exerciseId] ?? "Esercizio", coachNotes: slot.coachNotes,
-                            blocks: blocks.filter { $0.slotId == slot.id }.map(content))
+                            blocks: blocks.filter { $0.slotId == slot.id }.map(content), videoURL: videoURLs[slot.exerciseId])
                     })
             },
             loggedCounts: try ExecutionStore.loggedCounts(db, sessionID: id, week: week))

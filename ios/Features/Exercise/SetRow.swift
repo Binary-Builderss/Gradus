@@ -16,7 +16,22 @@ struct SetRow: View {
     var body: some View {
         let draft = model.drafts[key] ?? SetDraft()
         VStack(alignment: .leading, spacing: 8) {
-            Text("Serie \(key.idx + 1)").font(.headline)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text("Serie \(key.idx + 1)").font(.headline)
+                if draft.hasData {
+                    // Si salva da sola: il segno dice che la serie è registrata.
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.accent)
+                        .accessibilityLabel("registrata")
+                        .transition(.scale.combined(with: .opacity))
+                }
+                Spacer()
+                if let reps = block.prescription?.repsText {
+                    Text("\(reps.replacingOccurrences(of: "-", with: "–")) rip.").font(.subheadline.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel("Obiettivo \(reps) ripetizioni")
+                }
+            }
+            .animation(.snappy, value: draft.hasData)
             if let reference = model.references[key] {
                 Text(reference).font(.title3.weight(.bold).monospacedDigit()).foregroundStyle(palette.accent)
             }

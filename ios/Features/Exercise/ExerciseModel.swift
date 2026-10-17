@@ -10,6 +10,11 @@ struct SegmentDraft: Equatable {
 struct SetDraft: Equatable {
     var segments = [SegmentDraft()]
     var effort: Effort?
+
+    /// La serie ha qualcosa di scritto, quindi è registrata (si salva da sola).
+    var hasData: Bool {
+        effort != nil || segments.contains { !$0.load.trimmingCharacters(in: .whitespaces).isEmpty || !$0.reps.trimmingCharacters(in: .whitespaces).isEmpty }
+    }
 }
 
 struct SetKey: Hashable, Sendable {

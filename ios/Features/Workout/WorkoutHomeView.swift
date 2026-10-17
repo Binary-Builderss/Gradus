@@ -92,7 +92,10 @@ struct WorkoutHomeView: View {
             .padding(Theme.Space.m)
         }
         .safeAreaInset(edge: .top, spacing: 0) {
-            StepsWeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: selected, onSelect: { week = $0 })
+            StepsWeekPicker(
+                weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: selected,
+                current: MesocycleCalendar.currentWeek(startDate: mesocycle.startDate, weeks: mesocycle.weeks, today: .now),
+                onSelect: { week = $0 })
             .tourTarget("home-weeks")
                 .padding(.horizontal, Theme.Space.m)
                 .padding(.bottom, Theme.Space.s)

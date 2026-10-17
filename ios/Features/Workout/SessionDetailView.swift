@@ -48,12 +48,9 @@ struct SessionDetailView: View {
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $open) { target in
-            if let content, let slot = content.groups.flatMap(\.slots).first(where: { $0.id == target.slotID }) {
-                ExerciseView(
-                    environment: environment, session: content, slot: slot, week: week, startSetIdx: target.setIdx,
-                    goTo: { id, idx in open = OpenSlot(slotID: id, setIdx: idx) }
-                )
-                .id(target)
+            if let content, content.groups.contains(where: { $0.slots.contains { $0.id == target.slotID } }) {
+                ExercisePager(environment: environment, session: content, week: week, start: target)
+                    .id(target)
             }
         }
         .safeAreaInset(edge: .top, spacing: 0) {

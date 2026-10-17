@@ -92,6 +92,22 @@ final class TourWalkthroughUITests: XCTestCase {
                 exercise.tap()
                 Thread.sleep(forTimeInterval: 1)
                 save(app, "\(out)/04-esercizio.png")
+                // Una serie scritta (si salva da sola e prende il segno), poi lo scorrimento all'esercizio dopo e ritorno.
+                let load = app.textFields.firstMatch
+                if load.waitForExistence(timeout: 5), (load.value as? String ?? "").isEmpty {
+                    load.tap()
+                    load.typeText("92,5")
+                    app.textFields.element(boundBy: 1).tap()
+                    app.textFields.element(boundBy: 1).typeText("5")
+                    app.buttons["Chiudi tastiera"].firstMatch.tap()
+                }
+                Thread.sleep(forTimeInterval: 1)
+                save(app, "\(out)/04c-serie.png")
+                app.swipeLeft()
+                Thread.sleep(forTimeInterval: 1)
+                save(app, "\(out)/04d-scorri.png")
+                app.swipeRight()
+                Thread.sleep(forTimeInterval: 1)
                 // Nel superset il recupero è sull'ultimo esercizio del giro: si apre il secondo.
                 app.navigationBars.buttons.firstMatch.tap()
                 Thread.sleep(forTimeInterval: 1)

@@ -14,6 +14,7 @@
 		0E795136A468018F80F518C3 /* DisabledAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E149C643484CFBB72069F225 /* DisabledAccountView.swift */; };
 		1968D0EB3B60BD9BD9E05FE2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC631A430AF67AA936C5AC /* ProfileView.swift */; };
 		199F2D1DCE9EB796A8F1A9EB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BBF8A086C5DD356333B48 /* LoginView.swift */; };
+		19C7EF8266969334431C0029 /* ExercisePager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0F2C4F30073D0291F888FB /* ExercisePager.swift */; };
 		1B5FC7311BF5658F01DCCF1A /* ReadFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BD5DD8712B2A5A941361B /* ReadFailedView.swift */; };
 		1E1FBDEAC376A6DD1157254D /* SyncStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D76591240538270655D9DD /* SyncStatusRow.swift */; };
 		1F0BCB2581FC581DB4BEA060 /* MacroReminderCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864D13AD14695AE32A48C001 /* MacroReminderCenterTests.swift */; };
@@ -204,6 +205,7 @@
 		C34790444A72262E70AEF009 /* GradusMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradusMark.swift; sourceTree = "<group>"; };
 		C783DF64750C30EE522C77AC /* AccountStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStoreTests.swift; sourceTree = "<group>"; };
 		C7CC631A430AF67AA936C5AC /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		CA0F2C4F30073D0291F888FB /* ExercisePager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePager.swift; sourceTree = "<group>"; };
 		CDBE0081A81C4ED6FA5E5BA3 /* MacroDayTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroDayTitle.swift; sourceTree = "<group>"; };
 		CFB965B4333AAC7DE036C70A /* GroupCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCard.swift; sourceTree = "<group>"; };
 		D09FDDCB571D91A3A4A9D7A3 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 				57E588E45473E4D2D8A11A68 /* BlockSection.swift */,
 				5FA1F0D3C88BEAFC5AA3D02B /* EffortRow.swift */,
 				98E3A8A3B1E815CE6F3A3252 /* ExerciseModel.swift */,
+				CA0F2C4F30073D0291F888FB /* ExercisePager.swift */,
 				B2C3BF3DD05A9637123C9EFC /* ExerciseView.swift */,
 				0B0DA3D5D79BAA33165B634C /* SetRow.swift */,
 			);
@@ -699,6 +702,7 @@
 				B42F17CD59CB898C04169521 /* EffortRow.swift in Sources */,
 				0BBB1B03A757457DD23D663A /* ExecutionStore.swift in Sources */,
 				651344D19402CF06912B094A /* ExerciseModel.swift in Sources */,
+				19C7EF8266969334431C0029 /* ExercisePager.swift in Sources */,
 				A6E69002EE103EA1B22445F8 /* ExerciseView.swift in Sources */,
 				DB6002108D5F3CDC0AD0E4DF /* FloatingGlass.swift in Sources */,
 				B5D941D3932E73DCA2A70AE4 /* GlassContainer.swift in Sources */,

@@ -22,10 +22,17 @@ struct SlotRow: View {
             }
             ForEach(slot.blocks) { block in
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(blockTitle(block)).font(.subheadline.weight(.semibold))
-                    Text(block.prescription?.text ?? "Nessuna prescrizione per questa settimana")
-                        .font(.subheadline)
-                        .foregroundStyle(block.prescription == nil ? .secondary : .primary)
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(blockTitle(block)).font(.subheadline).foregroundStyle(.secondary)
+                        Spacer()
+                        if let prescription = block.prescription {
+                            // In notazione da palestra («3×8–10 · BUF 2»); VoiceOver legge la versione a parole.
+                            Text(prescription.shortText).font(.body.weight(.semibold).monospacedDigit())
+                                .accessibilityLabel(prescription.text)
+                        } else {
+                            Text("Nessuna prescrizione").font(.subheadline).foregroundStyle(.secondary)
+                        }
+                    }
                     if let rest = block.restS, rest > 0 {
                         Text("Recupero \(RestText.format(seconds: rest))").font(.footnote).foregroundStyle(.secondary)
                     }

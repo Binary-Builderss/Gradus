@@ -84,4 +84,14 @@ struct RestTextTests {
         #expect(RestText.format(seconds: 120) == "2 min")
         #expect(RestText.format(seconds: 90) == "1 min 30 s")
     }
+
+    @Test("notazione da palestra: «3×8–10 · BUF 2»")
+    func short() {
+        #expect(Prescription(sets: 3, repsMin: 8, repsMax: 10, method: .buf, value: 2).shortText == "3×8–10 · BUF 2")
+        #expect(Prescription(sets: 1, repsMin: 5, repsMax: 5, method: .buf, value: 0).shortText == "1×5 · cedimento")
+        #expect(Prescription(sets: 2, repsMin: 8, repsMax: 10, refPct: 85).shortText == "2×8–10 · 85% top set")
+        #expect(Prescription(sets: 3, repsMin: 6, repsMax: 8, method: .rpe, value: 8.5).shortText == "3×6–8 · RPE 8,5")
+        #expect(Prescription(sets: 3, method: .load, value: 62.5).shortText == "3 serie · 62,5 kg")
+        #expect(Prescription(sets: 4).shortText == "4 serie")
+    }
 }

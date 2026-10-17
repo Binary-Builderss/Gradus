@@ -15,6 +15,7 @@ struct BlockSection: View {
         Section {
             if let target = model.backoffTarget(for: block) {
                 Label(target, systemImage: "scope").font(.subheadline.weight(.semibold))
+                    .listRowBackground(palette.surface)
             }
             ForEach(0..<(model.setCounts[block.id] ?? 0), id: \.self) { idx in
                 SetRow(
@@ -25,13 +26,21 @@ struct BlockSection: View {
             }
         } header: {
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
-                Text(block.prescription?.text ?? "Nessuna prescrizione per questa settimana")
-                    .font(.footnote).textCase(nil)
-                if let rest = block.restS, rest > 0 {
-                    Text("Recupero \(RestText.format(seconds: rest))").font(.footnote).textCase(nil)
+                Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
+                if let prescription = block.prescription {
+                    // La prescrizione in grande, in notazione da palestra; VoiceOver legge la versione a parole.
+                    Text(prescription.shortText).font(.title2.bold().monospacedDigit()).foregroundStyle(palette.ink)
+                        .accessibilityLabel(prescription.text)
+                } else {
+                    Text("Nessuna prescrizione per questa settimana").font(.subheadline)
                 }
+                // Recupero e scala dello sforzo una volta per blocco, non su ogni serie.
+                Text([block.restS.flatMap { $0 > 0 ? "Recupero \(RestText.format(seconds: $0))" : nil },
+                      model.scale(for: block) == .buf ? "Sforzo: ripetizioni in riserva" : "Sforzo: RPE"]
+                    .compactMap { $0 }.joined(separator: " · "))
+                    .font(.footnote)
             }
+            .textCase(nil)
             .tourTarget("exercise-block", if: isTourFirst)
         }
     }

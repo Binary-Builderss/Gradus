@@ -40,6 +40,27 @@ public struct Prescription: Equatable, Sendable {
         return parts.joined(separator: ", ")
     }
 
+    /// La prescrizione in notazione da palestra, per leggerla al volo: «3×8–10 · BUF 2», «2×8–10 · 85% top set».
+    /// `text` resta la versione a parole (VoiceOver).
+    public var shortText: String {
+        var parts = [repsText.map { "\(sets)×\($0.replacingOccurrences(of: "-", with: "–"))" } ?? "\(sets) serie"]
+        if let effort = effortShort { parts.append(effort) }
+        return parts.joined(separator: " · ")
+    }
+
+    private var effortShort: String? {
+        if let refPct, method == nil { return "\(Format.number(refPct))% top set" }
+        guard let method, let value else { return nil }
+        let v = Format.number(value)
+        switch method {
+        case .buf: return value == 0 ? "cedimento" : "BUF \(v)"
+        case .rpe: return "RPE \(v)"
+        case .load: return "\(v) kg"
+        case .pct1RM: return "\(v)% 1RM"
+        case .rm: return "\(v)RM"
+        }
+    }
+
     /// «8-10», oppure «8» se è un numero solo.
     public var repsText: String? {
         guard let min = repsMin ?? repsMax else { return nil }
