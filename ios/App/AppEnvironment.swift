@@ -13,6 +13,7 @@ final class AppEnvironment {
     let restTimer: RestTimerModel
     let reminders: MacroReminderCenter
     let tour = TourModel()
+    let branding = BrandingModel()
 
     init(config: AppConfig, database: AppDatabase) {
         self.config = config

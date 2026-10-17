@@ -3,6 +3,7 @@ import SwiftUI
 /// Accesso con email e password. Gli account atleta li crea il coach: l'invito arriva per email e da lì si sceglie la
 /// password; qui si entra con quella.
 struct LoginView: View {
+    @Environment(\.palette) private var palette
     @Bindable var auth: AuthModel
     @State private var email = ""
     @State private var password = ""
@@ -72,7 +73,7 @@ struct LoginView: View {
             .frame(maxWidth: 480)
         }
         .scrollDismissesKeyboard(.interactively)
-        .background(Theme.background)
+        .background(palette.background)
     }
 
     private func submit() {

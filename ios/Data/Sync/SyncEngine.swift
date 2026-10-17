@@ -32,6 +32,7 @@ actor SyncEngine {
                 rows += try await pull(table)
                 if table.removesRows { try await reconcile(table) }
             }
+            try await pullBranding()
         } catch is CancellationError {
             throw CancellationError()
         } catch {
@@ -95,6 +96,13 @@ actor SyncEngine {
             offset += pageSize
         }
         return total
+    }
+
+    /// Il marchio del coach: poche righe, si riscarica intero a ogni sincronizzazione (se il coach perde la
+    /// personalizzazione il server non lo mostra più e sparisce anche dal telefono).
+    private func pullBranding() async throws {
+        let rows = try JSONDecoder().decode([CoachBrandingRecord].self, from: try await remote.fetchBranding())
+        try await database.writer.write { db in try BrandingStore.replace(db, with: rows) }
     }
 
     /// Le tabelle senza `deleted_at`: toglie dal telefono le righe che il server non mostra più all'atleta.

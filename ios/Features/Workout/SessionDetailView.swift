@@ -5,6 +5,7 @@ import SwiftUI
 /// Una seduta in una settimana: gruppi, esercizi e prescrizione di ogni blocco, come li ha scritti il coach.
 /// Il tempo di esecuzione (TUT) non si mostra ancora: l'ordine dei quattro valori è una decisione aperta.
 struct SessionDetailView: View {
+    @Environment(\.palette) private var palette
     let environment: AppEnvironment
     let sessionID: UUID
     let title: String
@@ -43,7 +44,7 @@ struct SessionDetailView: View {
                 ProgressView().frame(maxWidth: .infinity).padding(.top, Theme.Space.xl)
             }
         }
-        .background(Theme.background)
+        .background(palette.background)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $open) { target in
@@ -57,7 +58,7 @@ struct SessionDetailView: View {
         }
         .safeAreaInset(edge: .top, spacing: 0) {
             Text("Settimana \(week)")
-                .font(.footnote.weight(.semibold)).foregroundStyle(Theme.ink)
+                .font(.footnote.weight(.semibold)).foregroundStyle(palette.ink)
                 .padding(.horizontal, Theme.Space.m).frame(minHeight: 32)
                 .glass(.capsule)
                 .frame(maxWidth: .infinity, alignment: .leading)

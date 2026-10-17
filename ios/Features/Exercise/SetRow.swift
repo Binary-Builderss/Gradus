@@ -2,6 +2,7 @@ import Domain
 import SwiftUI
 
 struct SetRow: View {
+    @Environment(\.palette) private var palette
     @Bindable var model: ExerciseModel
     let block: BlockContent
     let key: SetKey
@@ -66,7 +67,7 @@ struct SetRow: View {
                 .multilineTextAlignment(.center)
                 .font(.title.monospacedDigit().weight(.semibold))
                 .frame(minWidth: 64, maxWidth: 112, minHeight: 56)
-                .background(Theme.background, in: .rect(cornerRadius: Theme.Radius.s))
+                .background(palette.background, in: .rect(cornerRadius: Theme.Radius.s))
                 .focused(focused)
                 .accessibilityLabel(label)
             Text(unit).font(.footnote).foregroundStyle(.secondary)

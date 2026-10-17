@@ -2,6 +2,7 @@ import Domain
 import SwiftUI
 
 struct BlockSection: View {
+    @Environment(\.palette) private var palette
     let model: ExerciseModel
     let block: BlockContent
     /// Il primo blocco dell'esercizio: la guida ne evidenzia la prescrizione e la prima serie.
@@ -20,7 +21,7 @@ struct BlockSection: View {
                     model: model, block: block, key: SetKey(block: block.id, idx: idx), isTourFirst: isTourFirst && idx == 0,
                     isTourTimer: SetKey(block: block.id, idx: idx) == tourTimerKey, focused: focused, startTimer: startTimer)
                     .id(SetKey(block: block.id, idx: idx))
-                    .listRowBackground(Theme.surface)
+                    .listRowBackground(palette.surface)
             }
         } header: {
             VStack(alignment: .leading, spacing: 2) {

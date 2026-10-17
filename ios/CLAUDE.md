@@ -42,6 +42,15 @@ quando un task tocca anche `/supabase` o `/fixtures`.
   della settimana, timer, tab bar e barra di navigazione di sistema), mai sulle schede dei contenuti. Si usano i
   helper `glass(_:)`, `GlassContainer`, `ProminentActionStyle`, `SecondaryActionStyle`, che sotto iOS 26 ripiegano su un
   materiale sfocato o su `bordered`: il target resta iOS 17. Il timer è `tabViewBottomAccessory` da iOS 26.1.
+- **Personalizzazione del coach**: l'app scarica `coach_branding` (la policy del server la mostra all'atleta solo finché il
+  coach ha il livello 1 o più, e `prune_branding` toglie le chiavi che il piano non permette: l'app non ricalcola il piano)
+  e la tiene nella tabella locale `coach_branding` (una riga, riscaricata intera a ogni sincronizzazione; se il server non la
+  mostra più sparisce anche dal telefono; si svuota all'uscita). `Domain/BrandPalette` legge i colori `#RRGGBB`; `App/Palette`
+  li mette sopra quelli standard e `brandStyle(_:)` li porta nell'ambiente (`\.palette`) e nella tinta. Nelle View si usano
+  `palette.background/surface/ink/hairline/onPrimary/accent`, mai colori a mano. Il coach sceglie colori chiari: **in tema scuro
+  si applica solo `primary`** (e `on_primary`, o bianco/nero in base al contrasto se manca). Logo e nome del marchio stanno in
+  cima alla home (`CoachBadge`); il nome sostituisce quello del coach nel sottotitolo. `muted_foreground` e `hide_gradus_credit`
+  non sono ancora usati nell'app.
 - Aree di tocco ≥ 44 pt; testi non sotto `.footnote`.
 - Ogni cambio di UI si controlla a occhio con `UITests/TourWalkthroughUITests` (`testScreenshots` per le schermate
   pulite, `testGuideWalkthrough` per la guida) su un simulatore iOS 26 **e** su uno iOS 18, in chiaro e in scuro

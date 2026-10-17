@@ -4,6 +4,7 @@ import SwiftUI
 
 /// Le settimane del mesociclo, una per chip; quelle di scarico hanno un segno. Galleggia in vetro sopra le schede.
 struct WeekPicker: View {
+    @Environment(\.palette) private var palette
     let weeks: Int
     let deload: Set<Int>
     let selected: Int
@@ -35,10 +36,10 @@ struct WeekPicker: View {
         } label: {
             Text(deload.contains(w) ? "S\(w) ↓" : "S\(w)")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(isSelected ? Color.white : Theme.ink)
+                .foregroundStyle(isSelected ? palette.onPrimary : palette.ink)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 44)
-                .background(isSelected ? Color.accentColor : .clear, in: .capsule)
+                .background(isSelected ? palette.accent : .clear, in: .capsule)
                 .contentShape(.capsule)
         }
         .buttonStyle(.plain)

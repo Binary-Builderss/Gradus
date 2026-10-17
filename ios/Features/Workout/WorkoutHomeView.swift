@@ -5,6 +5,7 @@ import SwiftUI
 /// Allenamento (home): il mesociclo attivo, la settimana e le sedute. Sola lettura: l'atleta esegue, la programmazione
 /// la scrive il coach. Legge solo dal database locale; tirando giù l'elenco si sincronizza.
 struct WorkoutHomeView: View {
+    @Environment(\.palette) private var palette
     let environment: AppEnvironment
     let userID: UUID
     @State private var snapshot: HomeSnapshot?
@@ -50,7 +51,7 @@ struct WorkoutHomeView: View {
         let selected = min(max(week ?? 1, 1), mesocycle.weeks)
         let next = snapshot.sessions.first { (states[$0.id] ?? .empty) != .complete }?.id
         return programCards(snapshot, mesocycle, selected: selected, next: next)
-        .background(Theme.background)
+        .background(palette.background)
         .navigationDestination(for: UUID.self) { id in
             if let session = snapshot.sessions.first(where: { $0.id == id }) {
                 SessionDetailView(environment: environment, sessionID: id, title: session.name, week: selected)
@@ -68,7 +69,9 @@ struct WorkoutHomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Space.m) {
                 VStack(alignment: .leading, spacing: Theme.Space.m) {
-                    MesocycleHeader(mesocycle: mesocycle, coach: snapshot.coachName, selected: selected)
+                    MesocycleHeader(
+                        mesocycle: mesocycle, coach: environment.branding.branding.name ?? snapshot.coachName, selected: selected,
+                        branding: environment.branding.branding)
                         .tourTarget("home-program")
                     if let notes = mesocycle.coachNotes, !notes.isEmpty {
                         Text(notes).font(.callout).foregroundStyle(.secondary)
@@ -80,7 +83,7 @@ struct WorkoutHomeView: View {
                     let isNext = session.id == next
                     NavigationLink(value: session.id) {
                         SessionRowContent(session: session, state: states[session.id] ?? .empty, isNext: isNext, filled: isNext)
-                            .card(fill: isNext ? Color.accentColor : Theme.surface)
+                            .card(fill: isNext ? palette.accent : palette.surface)
                             .tourTarget("home-sessions", if: session.id == snapshot.sessions.first?.id)
                     }
                     .buttonStyle(.plain)

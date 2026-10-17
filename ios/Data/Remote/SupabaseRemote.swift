@@ -16,6 +16,10 @@ struct SupabaseRemote: RemoteAPI {
             .data
     }
 
+    func fetchBranding() async throws -> Data {
+        try await client.from("coach_branding").select().execute().data
+    }
+
     func fetchIDs(table: SyncTable) async throws -> Data {
         try await client.from(table.rawValue).select("id").limit(10_000).execute().data
     }

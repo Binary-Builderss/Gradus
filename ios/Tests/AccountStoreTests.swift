@@ -63,6 +63,7 @@ struct AccountStoreTests {
 private struct FailingDisableRemote: RemoteAPI {
     func fetchPage(table: SyncTable, since: String?, offset: Int, limit: Int) async throws -> Data { Data("[]".utf8) }
     func fetchIDs(table: SyncTable) async throws -> Data { Data("[]".utf8) }
+    func fetchBranding() async throws -> Data { Data("[]".utf8) }
     func upsert(table: SyncTable, rows: Data) async throws {}
     func updateName(userID: UUID, name: String) async throws {}
     func setNutritionConsent(userID: UUID, at date: Date?, version: String?) async throws {}

@@ -4,6 +4,7 @@ import SwiftUI
 /// L'esercizio di una seduta: una riga per serie, raggruppate per blocco. Regole (ios/CLAUDE.md): campi vuoti, salvataggio
 /// automatico, nessun «Fatto», riferimento alla settimana precedente e carico del back-off come testo.
 struct ExerciseView: View {
+    @Environment(\.palette) private var palette
     let environment: AppEnvironment
     let session: SessionContent
     let slot: SlotContent
@@ -36,7 +37,7 @@ struct ExerciseView: View {
                     }
                     .scrollDismissesKeyboard(.interactively)
                     .scrollContentBackground(.hidden)
-                    .background(Theme.background)
+                    .background(palette.background)
                     .onAppear {
                         if let startSetIdx, let first = slot.blocks.first {
                             proxy.scrollTo(SetKey(block: first.id, idx: startSetIdx), anchor: .center)

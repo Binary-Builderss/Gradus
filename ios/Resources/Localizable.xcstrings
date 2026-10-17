@@ -90,6 +90,9 @@
     "I dati salvati sul telefono vengono tolti. Li ritrovi accedendo di nuovo." : {
 
     },
+    "I dati sul telefono non si aprono. Chiudi e riapri l'app." : {
+
+    },
     "I giorni di macro che hai registrato vengono cancellati e il coach non li vede più. Gli obiettivi restano." : {
 
     },
@@ -121,6 +124,9 @@
 
     },
     "Non ancora sincronizzato" : {
+
+    },
+    "Non riesco a leggere i dati sul telefono. Chiudi e riapri l'app." : {
 
     },
     "Non riesco a sincronizzare. Riprovo appena c'è rete." : {

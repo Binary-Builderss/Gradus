@@ -6,9 +6,11 @@ struct MesocycleHeader: View {
     let mesocycle: MesocycleRecord
     let coach: String?
     let selected: Int
+    let branding: Branding
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            CoachBadge(branding: branding).padding(.bottom, Theme.Space.xs)
             Text(mesocycle.name).font(.title2.bold())
             Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
             if !MesocycleCalendar.hasStarted(startDate: mesocycle.startDate, today: .now) {

@@ -33,6 +33,20 @@ final class FakeRemote: RemoteAPI, @unchecked Sendable {
         }
     }
 
+    private var brandingRows: [Row] = []
+    var failOnBranding: Error?
+
+    func setBranding(_ rows: [Row]) {
+        lock.withLock { brandingRows = rows }
+    }
+
+    func fetchBranding() async throws -> Data {
+        try lock.withLock {
+            if let failOnBranding { throw failOnBranding }
+            return try JSONSerialization.data(withJSONObject: brandingRows)
+        }
+    }
+
     func fetchIDs(table: SyncTable) async throws -> Data {
         try lock.withLock {
             try JSONSerialization.data(withJSONObject: (tables[table] ?? []).map { ["id": $0["id"] as! String] })

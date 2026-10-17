@@ -36,6 +36,9 @@ struct MainTabs: View {
             .onChange(of: coordinator.askManualEntry) { _, day in if day != nil { selection = .macro } }
             // Un solo timer per tutta l'app: resta visibile mentre si passa da una schermata all'altra.
             .modifier(TimerAccessory(timer: environment.restTimer))
+            // Il marchio del coach (colori, logo, nome) arriva dal database locale e cambia l'aspetto di tutta l'app.
+            .brandStyle(environment.branding.branding)
+            .task { await environment.branding.watch(database: environment.database) }
         }
     }
 }
