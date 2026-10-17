@@ -1,3 +1,4 @@
+import AVFoundation
 import AudioToolbox
 import Domain
 import Foundation
@@ -8,7 +9,7 @@ import UserNotifications
 /// Le notifiche locali del timer, dietro un confine: i test usano un finto.
 protocol RestNotifier: Sendable {
     func requestAuthorizationIfNeeded() async
-    func schedule(at date: Date, title: String, body: String) async
+    func schedule(at date: Date, title: String, body: String, sound: Bool) async
     func cancel() async
 }
 
@@ -19,7 +20,9 @@ protocol RestFeedback {
 }
 
 struct SystemRestNotifier: RestNotifier {
-    private static let id = "rest-timer"
+    static let id = "rest-timer"
+    /// Il suono di fine recupero (tre note che salgono), lo stesso con l'app aperta e nella notifica.
+    static let soundFile = "RestEnd.caf"
 
     func requestAuthorizationIfNeeded() async {
         let center = UNUserNotificationCenter.current()
@@ -27,11 +30,12 @@ struct SystemRestNotifier: RestNotifier {
         _ = try? await center.requestAuthorization(options: [.alert, .sound])
     }
 
-    func schedule(at date: Date, title: String, body: String) async {
+    func schedule(at date: Date, title: String, body: String, sound: Bool) async {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
-        content.sound = .default
+        // Il suono della notifica fa anche vibrare (secondo le impostazioni di iOS); senza suono arriva in silenzio.
+        content.sound = sound ? UNNotificationSound(named: UNNotificationSoundName(Self.soundFile)) : nil
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(date.timeIntervalSinceNow, 1), repeats: false)
         // Stesso identificatore: una nuova richiesta sostituisce la precedente (un solo timer alla volta).
         try? await UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: Self.id, content: content, trigger: trigger))
@@ -42,10 +46,35 @@ struct SystemRestNotifier: RestNotifier {
     }
 }
 
-struct SystemRestFeedback: RestFeedback {
+/// Con l'app aperta: il suono di fine recupero sopra la musica (che si abbassa un momento, senza fermarsi) e una
+/// vibrazione vera, non solo un tocco leggero. Il suono si sente anche con l'iPhone in silenzioso: l'ha chiesto
+/// l'atleta nelle Preferenze, e in palestra il telefono è spesso in silenzioso.
+@MainActor
+final class SystemRestFeedback: RestFeedback {
+    private var player: AVAudioPlayer?
+
     func finished(sound: Bool, haptic: Bool) {
-        if haptic { UINotificationFeedbackGenerator().notificationOccurred(.success) }
-        if sound { AudioServicesPlaySystemSound(1007) }
+        if haptic {
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        }
+        if sound { play() }
+    }
+
+    private func play() {
+        guard let url = Bundle.main.url(forResource: SystemRestNotifier.soundFile, withExtension: nil) else { return }
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.playback, options: [.mixWithOthers, .duckOthers])
+        try? session.setActive(true)
+        player = try? AVAudioPlayer(contentsOf: url)
+        player?.play()
+        let duration = player?.duration ?? 0
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(duration + 0.2))
+            self?.player = nil
+            // La musica torna al suo volume.
+            try? session.setActive(false, options: .notifyOthersOnDeactivation)
+        }
     }
 }
 
@@ -118,6 +147,11 @@ final class RestTimerModel {
         finish(withFeedback: false)
     }
 
+    /// «Prova» nelle Preferenze: suono e vibrazione come a fine recupero.
+    func preview(sound: Bool, haptic: Bool) {
+        feedback.finished(sound: sound, haptic: haptic)
+    }
+
     /// Fine naturale con l'app aperta: vibrazione e suono, se attivi nelle impostazioni.
     func completeIfDue() {
         guard let current = state, current.isFinished(at: now()) else { return }
@@ -132,7 +166,8 @@ final class RestTimerModel {
         state = next
         defaults.set(try? JSONEncoder().encode(next), forKey: Self.stateKey)
         armFinish()
-        Task { await notifier.schedule(at: next.endDate, title: "Recupero finito", body: next.title) }
+        let sound = defaults.object(forKey: Self.soundKey) as? Bool ?? true
+        Task { await notifier.schedule(at: next.endDate, title: "Recupero finito", body: next.title, sound: sound) }
     }
 
     private func finish(withFeedback: Bool) {

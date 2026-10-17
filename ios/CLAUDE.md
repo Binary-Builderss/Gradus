@@ -142,8 +142,10 @@ Data/Remote/    client Supabase
   `rest_after_round_s`. Se la durata è 0 il pulsante non compare. Nessun pulsante sull'ultima serie
   della seduta.
 - Dopo l'avvio: scorri alla serie successiva o all'esercizio successivo del gruppo.
-- Barra fissa in basso: tempo residuo, +15 s, −15 s, Salta. Alla fine: vibrazione + suono
-  (configurabili).
+- Barra fissa in basso: tempo residuo, per cosa si recupera, −15 s, +15 s (icone), Salta, e una linea blu che si svuota
+  (`RestTimerState.remainingFraction`). Alla fine: vibrazione vera (`kSystemSoundID_Vibrate`) + il suono di Gradus
+  (`Resources/RestEnd.caf`, tre note che salgono), sopra la musica e anche in silenzioso; configurabili e da provare in
+  Profilo → Preferenze. La notifica di fine usa lo stesso suono e si vede anche con l'app aperta.
 - **Persisti l'orario di fine**, non un contatore: il timer deve sopravvivere a background, blocco
   schermo, chiusura e riavvio dell'app.
 - Programma una notifica locale all'orario di fine; annullala o riprogrammala su Salta / ±15 s / nuovo avvio.

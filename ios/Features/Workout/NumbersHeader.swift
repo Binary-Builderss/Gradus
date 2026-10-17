@@ -9,6 +9,8 @@ struct NumbersHeader: View {
     let coach: String?
     let selected: Int
     let branding: Branding
+    /// La settimana in cifre grandi segue la dimensione del testo di iOS (con un tetto, o non sta nella fascia).
+    @ScaledMetric(relativeTo: .largeTitle) private var digits = 72.0
 
     private static let navy = Color(red: 0.118, green: 0.149, blue: 0.188)
 
@@ -18,7 +20,7 @@ struct NumbersHeader: View {
             CoachBadge(branding: branding).foregroundStyle(text.opacity(0.85))
             Text(mesocycle.name).font(.title2.bold())
             HStack(alignment: .firstTextBaseline, spacing: Theme.Space.s) {
-                Text("\(selected)").font(.system(size: 72, weight: .heavy).monospacedDigit())
+                Text("\(selected)").font(.system(size: min(digits, 112), weight: .heavy).monospacedDigit())
                 VStack(alignment: .leading, spacing: 2) {
                     Text("settimana di \(mesocycle.weeks)").font(.headline)
                     if let coach { Text("con \(coach)").font(.subheadline).opacity(0.75) }

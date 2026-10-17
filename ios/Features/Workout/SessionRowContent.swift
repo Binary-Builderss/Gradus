@@ -11,10 +11,11 @@ struct SessionRowContent: View {
     let filled: Bool
     /// Il numero della seduta, in cifre grandi.
     let number: Int
+    @ScaledMetric(relativeTo: .largeTitle) private var digits = 40.0
 
     var body: some View {
         HStack(spacing: Theme.Space.m) {
-            Text("\(number)").font(.system(size: 40, weight: .heavy).monospacedDigit())
+            Text("\(number)").font(.system(size: min(digits, 64), weight: .heavy).monospacedDigit())
                 .foregroundStyle(filled ? palette.onPrimary : palette.accent).frame(minWidth: 28)
             VStack(alignment: .leading, spacing: 2) {
                 if isNext {

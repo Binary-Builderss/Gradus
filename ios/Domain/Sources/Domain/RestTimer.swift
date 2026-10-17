@@ -27,14 +27,23 @@ public struct RestTimerState: Codable, Equatable, Sendable {
     public var endDate: Date
     /// Per cosa si recupera, per la notifica («Panca piana · serie 2»).
     public var title: String
+    /// Quando è partito, per la barra che si svuota. Facoltativo: i timer salvati prima non ce l'hanno.
+    public var startDate: Date?
 
-    public init(endDate: Date, title: String) {
+    public init(endDate: Date, title: String, startDate: Date? = nil) {
         self.endDate = endDate
         self.title = title
+        self.startDate = startDate
     }
 
     public init(startingAt now: Date, seconds: Int, title: String) {
-        self.init(endDate: now.addingTimeInterval(TimeInterval(seconds)), title: title)
+        self.init(endDate: now.addingTimeInterval(TimeInterval(seconds)), title: title, startDate: now)
+    }
+
+    /// Quanto manca, da 1 (appena partito) a 0 (finito). Con +15 s la durata totale cresce, quindi resta tra 0 e 1.
+    public func remainingFraction(at now: Date) -> Double {
+        guard let startDate, endDate > startDate else { return isFinished(at: now) ? 0 : 1 }
+        return min(max(endDate.timeIntervalSince(now) / endDate.timeIntervalSince(startDate), 0), 1)
     }
 
     /// Secondi rimasti, arrotondati per eccesso (a 0,2 s dalla fine si legge ancora «0:01»), mai negativi.
@@ -46,7 +55,7 @@ public struct RestTimerState: Codable, Equatable, Sendable {
 
     /// +15 s / −15 s: sposta la fine. Sotto zero il timer è finito.
     public func adjusted(bySeconds seconds: Int) -> RestTimerState {
-        RestTimerState(endDate: endDate.addingTimeInterval(TimeInterval(seconds)), title: title)
+        RestTimerState(endDate: endDate.addingTimeInterval(TimeInterval(seconds)), title: title, startDate: startDate)
     }
 
     /// «1:30», «0:05».

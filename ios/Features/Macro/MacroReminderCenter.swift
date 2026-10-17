@@ -180,11 +180,14 @@ final class NotificationRouter: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationRouter()
     var environment: AppEnvironment?
 
-    /// Il promemoria dei macro si mostra anche con l'app aperta; quello del timer no (parla con vibrazione e suono).
+    /// Con l'app aperta si vedono sia il promemoria dei macro sia la fine del recupero; il suono del timer lo suona
+    /// l'app (`SystemRestFeedback`, secondo le Preferenze), quindi qui solo il banner.
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter, willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        notification.request.identifier.hasPrefix(SystemReminderNotifier.prefix) ? [.banner, .sound] : []
+        let id = notification.request.identifier
+        if id.hasPrefix(SystemReminderNotifier.prefix) { return [.banner, .sound] }
+        return id == SystemRestNotifier.id ? [.banner, .list] : []
     }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {

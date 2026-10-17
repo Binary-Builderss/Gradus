@@ -8,6 +8,8 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @FocusState private var focus: Field?
+    /// «Password dimenticata?» senza email: si spiega cosa serve invece di tenere il pulsante spento.
+    @State private var resetNeedsEmail = false
 
     private enum Field { case email, password }
 
@@ -45,6 +47,10 @@ struct LoginView: View {
                 if let error = auth.error {
                     Text(error.message).font(.callout).foregroundStyle(.red).accessibilityIdentifier("login-error")
                 }
+                if resetNeedsEmail {
+                    Text("Scrivi qui sopra l'email del tuo account, poi tocca di nuovo «Password dimenticata?».")
+                        .font(.callout).foregroundStyle(.secondary)
+                }
                 if auth.resetSent {
                     Text("Se l'indirizzo è registrato, tra poco ricevi un'email con il link per scegliere una nuova password.")
                         .font(.callout).foregroundStyle(.secondary)
@@ -61,10 +67,16 @@ struct LoginView: View {
                 .disabled(auth.isWorking)
 
                 Button("Password dimenticata?") {
-                    Task { await auth.sendPasswordReset(email: email) }
+                    if email.trimmingCharacters(in: .whitespaces).isEmpty {
+                        resetNeedsEmail = true
+                        focus = .email
+                    } else {
+                        resetNeedsEmail = false
+                        Task { await auth.sendPasswordReset(email: email) }
+                    }
                 }
                 .font(.callout)
-                .disabled(auth.isWorking || email.trimmingCharacters(in: .whitespaces).isEmpty)
+                .disabled(auth.isWorking)
 
                 Text("Hai ricevuto un invito dal tuo coach? Apri il link nell'email, scegli la password e poi accedi qui.")
                     .font(.footnote).foregroundStyle(.secondary)

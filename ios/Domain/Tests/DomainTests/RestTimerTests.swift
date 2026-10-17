@@ -59,4 +59,17 @@ struct RestTimerTests {
         #expect(RestTimerState.clock(5) == "0:05")
         #expect(RestTimerState.clock(0) == "0:00")
     }
+
+    @Test("la barra: da 1 a 0, anche con +15 s; un timer salvato senza inizio si legge ancora")
+    func fraction() throws {
+        let t0 = Date(timeIntervalSince1970: 1_000_000)
+        let timer = RestTimerState(startingAt: t0, seconds: 100, title: "Panca")
+        #expect(timer.remainingFraction(at: t0) == 1)
+        #expect(timer.remainingFraction(at: t0.addingTimeInterval(25)) == 0.75)
+        #expect(timer.remainingFraction(at: t0.addingTimeInterval(200)) == 0)
+        #expect(timer.adjusted(bySeconds: 100).remainingFraction(at: t0.addingTimeInterval(100)) == 0.5)
+        let old = #"{"endDate":1000090,"title":"Panca"}"#.data(using: .utf8)!
+        let decoded = try JSONDecoder().decode(RestTimerState.self, from: old)
+        #expect(decoded.startDate == nil && decoded.remainingFraction(at: t0) == 1)
+    }
 }
