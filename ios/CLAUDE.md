@@ -38,6 +38,11 @@ quando un task tocca anche `/supabase` o `/fixtures`.
   `Hairline`, testo `Ink`, un solo colore forte (`AccentColor`, #0D54F3) per azioni e selezione. SF Pro; numeri
   tabulari (`monospacedDigit`) per carichi, ripetizioni, timer e kcal. Colori, griglia da 8 pt e raggi stanno in
   `App/Theme.swift` e nel catalogo (con variante scura): non scrivere colori o misure a mano nelle View.
+- **Identità** (senza marchio del coach): la **G a scalini** (`GradusMark`, asset `Mark`) e il blu notte in cima alla home, con la
+  settimana in **cifre grandi** (`NumbersHeader`; con la personalizzazione la fascia prende il colore principale del coach); le
+  sedute numerate in grande; le settimane come una **scala che sale** (`StepsWeekPicker`: scelta piena, passate grigie, future
+  vuote); nell'esercizio il riferimento della settimana scorsa a caratteri grandi in blu e le caselle kg e ripetizioni alte
+  (68 pt) con cifre da 44 pt. I numeri sono i protagonisti: carichi, ripetizioni, timer, kcal, sempre `monospacedDigit`.
 - **Liquid Glass (iOS 26+) solo sui controlli che galleggiano** sopra i contenuti (selettore delle settimane, etichetta
   della settimana, timer, tab bar e barra di navigazione di sistema), mai sulle schede dei contenuti. Si usano i
   helper `glass(_:)`, `GlassContainer`, `ProminentActionStyle`, `SecondaryActionStyle`, che sotto iOS 26 ripiegano su un

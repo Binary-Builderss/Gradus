@@ -9,9 +9,13 @@ struct SessionRowContent: View {
     let state: Completion
     let isNext: Bool
     let filled: Bool
+    /// Il numero della seduta, in cifre grandi.
+    let number: Int
 
     var body: some View {
         HStack(spacing: Theme.Space.m) {
+            Text("\(number)").font(.system(size: 40, weight: .heavy).monospacedDigit())
+                .foregroundStyle(filled ? palette.onPrimary : palette.accent).frame(minWidth: 28)
             VStack(alignment: .leading, spacing: 2) {
                 if isNext {
                     Text("Prossima").font(.footnote.weight(.semibold)).foregroundStyle(filled ? palette.onPrimary.opacity(0.85) : palette.accent)

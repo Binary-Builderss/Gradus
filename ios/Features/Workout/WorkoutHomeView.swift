@@ -68,22 +68,22 @@ struct WorkoutHomeView: View {
     private func programCards(_ snapshot: HomeSnapshot, _ mesocycle: MesocycleRecord, selected: Int, next: UUID?) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Space.m) {
-                VStack(alignment: .leading, spacing: Theme.Space.m) {
-                    MesocycleHeader(
-                        mesocycle: mesocycle, coach: environment.branding.branding.name ?? snapshot.coachName, selected: selected,
-                        branding: environment.branding.branding)
-                        .tourTarget("home-program")
-                    if let notes = mesocycle.coachNotes, !notes.isEmpty {
-                        Text(notes).font(.callout).foregroundStyle(.secondary)
-                    }
+                NumbersHeader(
+                    mesocycle: mesocycle, coach: environment.branding.branding.name ?? snapshot.coachName, selected: selected,
+                    branding: environment.branding.branding)
+                    .tourTarget("home-program")
+                if let notes = mesocycle.coachNotes, !notes.isEmpty {
+                    Text(notes).font(.callout).foregroundStyle(.secondary).padding(.horizontal, Theme.Space.xs)
                 }
-                .card()
                 Text("Sedute").font(.headline).padding(.top, Theme.Space.s)
-                ForEach(snapshot.sessions) { session in
+                ForEach(Array(snapshot.sessions.enumerated()), id: \.element.id) { index, session in
                     let isNext = session.id == next
                     NavigationLink(value: session.id) {
-                        SessionRowContent(session: session, state: states[session.id] ?? .empty, isNext: isNext, filled: isNext)
-                            .card(fill: isNext ? palette.accent : palette.surface)
+                        SessionRowContent(
+                            session: session, state: states[session.id] ?? .empty, isNext: isNext, filled: isNext,
+                            number: index + 1
+                        )
+                        .card(fill: isNext ? palette.accent : palette.surface)
                             .tourTarget("home-sessions", if: session.id == snapshot.sessions.first?.id)
                     }
                     .buttonStyle(.plain)
@@ -92,8 +92,8 @@ struct WorkoutHomeView: View {
             .padding(Theme.Space.m)
         }
         .safeAreaInset(edge: .top, spacing: 0) {
-            WeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: selected, onSelect: { week = $0 })
-                .tourTarget("home-weeks")
+            StepsWeekPicker(weeks: mesocycle.weeks, deload: Set(mesocycle.deloadWeeks), selected: selected, onSelect: { week = $0 })
+            .tourTarget("home-weeks")
                 .padding(.horizontal, Theme.Space.m)
                 .padding(.bottom, Theme.Space.s)
         }

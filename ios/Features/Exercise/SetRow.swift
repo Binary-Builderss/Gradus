@@ -16,11 +16,9 @@ struct SetRow: View {
     var body: some View {
         let draft = model.drafts[key] ?? SetDraft()
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Serie \(key.idx + 1)").font(.headline)
-                if let reference = model.references[key] {
-                    Text(reference).font(.footnote.monospacedDigit()).foregroundStyle(.secondary)
-                }
+            Text("Serie \(key.idx + 1)").font(.headline)
+            if let reference = model.references[key] {
+                Text(reference).font(.title3.weight(.bold).monospacedDigit()).foregroundStyle(palette.accent)
             }
             ForEach(draft.segments.indices, id: \.self) { index in
                 HStack(spacing: 10) {
@@ -65,8 +63,8 @@ struct SetRow: View {
             TextField("", text: text)  // vuoto: nessun valore (nemmeno grigio) finché l'atleta non scrive
                 .keyboardType(keyboard)
                 .multilineTextAlignment(.center)
-                .font(.title.monospacedDigit().weight(.semibold))
-                .frame(minWidth: 64, maxWidth: 112, minHeight: 56)
+                .font(.system(size: 44, weight: .heavy).monospacedDigit())
+                .frame(minWidth: 64, maxWidth: 124, minHeight: 68)
                 .background(palette.background, in: .rect(cornerRadius: Theme.Radius.s))
                 .focused(focused)
                 .accessibilityLabel(label)
