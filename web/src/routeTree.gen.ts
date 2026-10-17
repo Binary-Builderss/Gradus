@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as AssistenzaRouteImport } from './routes/assistenza'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NuovaPasswordRouteImport } from './routes/nuova-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -27,6 +28,11 @@ import { Route as AppMesocicliMesocycleIdRouteImport } from './routes/_app/mesoc
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssistenzaRoute = AssistenzaRouteImport.update({
+  id: '/assistenza',
+  path: '/assistenza',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -102,6 +108,7 @@ const AppMesocicliMesocycleIdRoute = AppMesocicliMesocycleIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/assistenza': typeof AssistenzaRoute
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/privacy': typeof PrivacyRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/mesocicli/$mesocycleId': typeof AppMesocicliMesocycleIdRoute
 }
 export interface FileRoutesByTo {
+  '/assistenza': typeof AssistenzaRoute
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/privacy': typeof PrivacyRoute
@@ -135,6 +143,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/assistenza': typeof AssistenzaRoute
   '/login': typeof LoginRoute
   '/nuova-password': typeof NuovaPasswordRoute
   '/privacy': typeof PrivacyRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/assistenza'
     | '/login'
     | '/nuova-password'
     | '/privacy'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/mesocicli/$mesocycleId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/assistenza'
     | '/login'
     | '/nuova-password'
     | '/privacy'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/assistenza'
     | '/login'
     | '/nuova-password'
     | '/privacy'
@@ -204,6 +216,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  AssistenzaRoute: typeof AssistenzaRoute
   LoginRoute: typeof LoginRoute
   NuovaPasswordRoute: typeof NuovaPasswordRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -219,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assistenza': {
+      id: '/assistenza'
+      path: '/assistenza'
+      fullPath: '/assistenza'
+      preLoaderRoute: typeof AssistenzaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -348,6 +368,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  AssistenzaRoute: AssistenzaRoute,
   LoginRoute: LoginRoute,
   NuovaPasswordRoute: NuovaPasswordRoute,
   PrivacyRoute: PrivacyRoute,

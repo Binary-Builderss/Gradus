@@ -14,7 +14,7 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     # Il team di firma NON sta qui né nel .xcodeproj (si perderebbe a ogni `xcodegen generate`): è in
     # Config/Secrets.xcconfig, che non si rigenera mai (vedi Secrets.example.xcconfig).
@@ -42,10 +42,14 @@ targets:
       properties:
         CFBundleDisplayName: Gradus Atleta
         CFBundleDevelopmentRegion: it
+        # Versione e build si cambiano solo qui sopra (MARKETING_VERSION, CURRENT_PROJECT_VERSION): la build sale a ogni
+        # caricamento su App Store Connect.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        # Solo HTTPS: niente crittografia da dichiarare all'esportazione.
+        ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
-        UISupportedInterfaceOrientations~ipad:
-          [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         SupabaseURL: $(SUPABASE_URL)
         SupabaseAnonKey: $(SUPABASE_ANON_KEY)
         SiteURL: $(SITE_URL)
@@ -60,7 +64,8 @@ targets:
         PRODUCT_NAME: Gradus
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        TARGETED_DEVICE_FAMILY: "1,2"
+        # Solo iPhone: l'app si usa in palestra con il telefono (iPad = altri screenshot e revisione anche su iPad).
+        TARGETED_DEVICE_FAMILY: "1"
   GradusTests:
     type: bundle.unit-test
     platform: iOS

@@ -166,7 +166,19 @@ insert("workouts", workouts)
 insert("set_logs", logs)
 insert("set_segments", segments)
 
+# --- macro (li scrive il coach, con la dichiarazione) ------------------------------------------------------------
+# Il consenso dell'atleta non si dà qui: il revisore vede la schermata del consenso prima di registrare un giorno.
+P = demo_id("nutrition-plan")
+insert("nutrition_plans", [{
+    "id": P, "athlete_id": athlete, "author_id": coach, "kind": "macros", "valid_from": start.isoformat(), "tolerance_pct": 10,
+    "declared_at": datetime.now(timezone.utc).isoformat(), "declaration_version": "2026-10-16", "deleted_at": None,
+}])
+insert("nutrition_plan_days", [{
+    "id": demo_id("nutrition-plan/all"), "plan_id": P, "day_type": "all", "kcal": 2800, "protein_g": 180, "carbs_g": 330,
+    "fat_g": 80, "fiber_g": 30,
+}])
+
 print(f"Demo pronta su {url}")
 print(f"  coach : {COACH_EMAIL}")
-print(f"  atleta: {ATHLETE_EMAIL}  (mesociclo «Ipertrofia · blocco 1», oggi settimana 2, settimana 1 registrata)")
+print(f"  atleta: {ATHLETE_EMAIL}  (mesociclo «Ipertrofia · blocco 1», oggi settimana 2, settimana 1 registrata, macro 2800 kcal)")
 print("La password è quella che hai passato in REVIEW_PASSWORD: scrivila nelle note per il revisore su App Store Connect.")

@@ -73,11 +73,12 @@ export const messages = {
     },
   },
   legal: {
-    updated: 'Versione del 16 ottobre 2026',
-    footer: { terms: 'Termini', privacy: 'Privacy' },
+    updated: 'Versione del 17 ottobre 2026',
+    footer: { terms: 'Termini', privacy: 'Privacy', support: 'Assistenza' },
     back: 'Indietro',
     termsTitle: 'Termini di servizio',
     privacyTitle: 'Informativa sulla privacy',
+    supportTitle: 'Assistenza',
     terms: [
       {
         title: 'Cos’è Gradus',
@@ -140,6 +141,8 @@ export const messages = {
           'Account: nome, email e password (conservata in forma cifrata, non la vediamo).',
           'Allenamento: programmi, sedute, serie, carichi e ripetizioni, sforzo percepito, note e feedback per muscolo.',
           'Salute e forma fisica: controlli giornalieri, questionari, misure corporee, foto e massimali, se l’atleta decide di inserirli. Sono dati relativi alla salute: li trattiamo solo con il tuo consenso esplicito, che puoi ritirare.',
+          'Alimentazione: gli obiettivi di calorie e macronutrienti impostati dal coach e, se l’atleta decide di registrarli, se li ha rispettati giorno per giorno e quanto ha assunto. Arrivano solo i totali del giorno, mai i singoli alimenti. Sono dati relativi alla salute: l’atleta li registra e li condivide con il coach solo con un consenso esplicito e separato, che può ritirare dall’app; ritirandolo, i giorni registrati vengono cancellati.',
+          'App Gradus Atleta: tiene sul telefono una copia dei dati per funzionare anche senza rete, e la cancella quando esci dall’account. I promemoria e il timer di recupero sono notifiche create sul telefono, senza passare dai nostri server.',
         ],
       },
       {
@@ -153,8 +156,8 @@ export const messages = {
       {
         title: 'Chi può vederli',
         paragraphs: [
-          'Un coach vede i dati di esecuzione degli atleti collegati a lui, e un atleta vede i programmi scritti dal suo coach. Nessun altro utente li vede.',
-          'Ci appoggiamo a fornitori che trattano i dati per nostro conto: Supabase (database e accesso) e Cloudflare (hosting del sito). Non condividiamo i dati con altri.',
+          'Un coach vede i dati di esecuzione degli atleti collegati a lui, e un atleta vede i programmi scritti dal suo coach. I dati sull’alimentazione il coach li vede solo finché l’atleta ha dato il consenso. Nessun altro utente li vede.',
+          'Ci appoggiamo a fornitori che trattano i dati per nostro conto: Supabase (database e accesso), Cloudflare (hosting del sito) e Resend (invio delle email, come inviti e recupero della password). Non condividiamo i dati con altri.',
         ],
       },
       {
@@ -173,6 +176,38 @@ export const messages = {
         title: 'I tuoi diritti',
         paragraphs: [
           'Puoi chiedere accesso, correzione, cancellazione, limitazione, portabilità dei tuoi dati e opporti al trattamento; puoi ritirare il consenso quando vuoi. Scrivi a {contact}. Hai anche il diritto di reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).',
+        ],
+      },
+    ],
+    support: [
+      {
+        title: 'Contatti',
+        paragraphs: [
+          'Per un problema con il sito o con l’app Gradus Atleta, o per una richiesta sui tuoi dati, scrivi a {contact}. Indica l’email con cui accedi e, se puoi, cosa stavi facendo.',
+        ],
+      },
+      {
+        title: 'Sono un atleta: come entro nell’app?',
+        paragraphs: [
+          'L’account te lo crea il tuo coach: ricevi un’email di invito, apri il link, scegli la password e accedi a Gradus Atleta con la stessa email.',
+        ],
+      },
+      {
+        title: 'Ho dimenticato la password',
+        paragraphs: [
+          'Nella schermata di accesso, sul sito o nell’app, scrivi la tua email e scegli «Password dimenticata?»: ricevi un link per sceglierne una nuova.',
+        ],
+      },
+      {
+        title: 'Le serie non arrivano al coach',
+        paragraphs: [
+          'L’app salva tutto sul telefono e lo invia appena c’è rete. In Profilo → Sincronizzazione vedi se ci sono serie che aspettano di partire.',
+        ],
+      },
+      {
+        title: 'Eliminare l’account',
+        paragraphs: [
+          'Dal Profilo, sul sito o nell’app, scegli «Disattiva o elimina l’account». Disattivare si può annullare; l’eliminazione è definitiva.',
         ],
       },
     ],

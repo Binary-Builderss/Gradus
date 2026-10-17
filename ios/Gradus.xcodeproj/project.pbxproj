@@ -38,6 +38,7 @@
 		5631ADAF40351ABEAC3306A5 /* AccountStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4AEEC78C8ABC0ED8EF0C2C /* AccountStatus.swift */; };
 		5B2085F8F45116D6FF58D907 /* AppConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7980B8E54F28C9DA4056B1D5 /* AppConfigTests.swift */; };
 		5C2C3ACB92764B46216F348E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E7A8D6B9044BC154DC33761 /* AboutView.swift */; };
+		60A6132B9F4125014EE3E535 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 117D9E2A7321F21BC08540CB /* PrivacyInfo.xcprivacy */; };
 		63C020E1E8CE507F7DD98EAC /* CardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F57C6D46D7694AAE01E101 /* CardStyle.swift */; };
 		651344D19402CF06912B094A /* ExerciseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E3A8A3B1E815CE6F3A3252 /* ExerciseModel.swift */; };
 		6A875CBA973C5CBA1518177C /* NamePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CAE578D9EE6486B866F88 /* NamePromptView.swift */; };
@@ -135,6 +136,7 @@
 		089F6C7DAEAE01C8272B45B7 /* AccountGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountGate.swift; sourceTree = "<group>"; };
 		0B0DA3D5D79BAA33165B634C /* SetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRow.swift; sourceTree = "<group>"; };
 		105C5F191F9B902EFAB2EAD9 /* TourModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourModel.swift; sourceTree = "<group>"; };
+		117D9E2A7321F21BC08540CB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		11910D85DD364B28A48B646E /* SignOutEraseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignOutEraseTests.swift; sourceTree = "<group>"; };
 		122A91D31856795C6331649B /* AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTests.swift; sourceTree = "<group>"; };
 		12CF6EDC87E939780D327EB1 /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				8FE95910432F7DBA6C1E9E29 /* Localizable.xcstrings */,
+				117D9E2A7321F21BC08540CB /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -633,6 +636,7 @@
 			files = (
 				3B0EC4D9193A08AD049ABDF5 /* Assets.xcassets in Resources */,
 				E5AD3DD145207E1D5526A437 /* Localizable.xcstrings in Resources */,
+				60A6132B9F4125014EE3E535 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,7 +840,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.binarybuilders.gradus;
 				PRODUCT_NAME = Gradus;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -895,7 +899,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -957,7 +961,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -983,7 +987,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.binarybuilders.gradus;
 				PRODUCT_NAME = Gradus;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
