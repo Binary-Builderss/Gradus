@@ -30,6 +30,9 @@
         }
       }
     },
+    "%@ rip." : {
+
+    },
     "×" : {
 
     },
@@ -121,6 +124,12 @@
 
     },
     "Macro" : {
+
+    },
+    "Nessuna prescrizione" : {
+
+    },
+    "Nessuna prescrizione per questa settimana" : {
 
     },
     "Non ancora sincronizzato" : {

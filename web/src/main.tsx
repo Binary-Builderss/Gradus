@@ -10,11 +10,22 @@ import { routeTree } from './routeTree.gen'
 
 const router = createRouter({ routeTree, context: {}, defaultNotFoundComponent: NotFound })
 
+// Pagine aperte a tutti: una sessione scaduta (SIGNED_OUT all'avvio) non deve portare via da qui.
+const publicPaths = new Set([
+  '/login',
+  '/registrati',
+  '/recupero-password',
+  '/nuova-password',
+  '/termini',
+  '/privacy',
+  '/assistenza',
+])
+
 // setTimeout: dentro il callback non si chiamano metodi di supabase.auth (rischio di stallo).
 supabase.auth.onAuthStateChange((event) => {
   if (event === 'SIGNED_OUT') {
     queryClient.clear()
-    setTimeout(() => void router.navigate({ to: '/login' }))
+    if (!publicPaths.has(window.location.pathname)) setTimeout(() => void router.navigate({ to: '/login' }))
   }
   if (event === 'PASSWORD_RECOVERY') setTimeout(() => void router.navigate({ to: '/nuova-password' }))
 })
