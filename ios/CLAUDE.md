@@ -215,6 +215,11 @@ Data/Remote/    client Supabase
 - Eliminazione dell'account: l'app non crea account (arrivano dagli inviti), ma se la revisione la chiede c'è la Edge
   Function `delete-account` pronta da collegare al Profilo.
 - Nessun acquisto in-app nell'app atleta.
+- **Invio**: solo iPhone (`TARGETED_DEVICE_FAMILY "1"`). Versione e build si cambiano solo in `project.yml`
+  (`MARKETING_VERSION`, `CURRENT_PROJECT_VERSION`; la build sale a ogni caricamento). `Resources/PrivacyInfo.xcprivacy`
+  dichiara i dati raccolti e il motivo d'uso di `UserDefaults` (`CA92.1`): chi aggiunge dati raccolti o API con motivo
+  (es. Apple Salute, foto) lo aggiorna insieme alle etichette privacy di App Store Connect e all'informativa del sito.
+  L'URL di assistenza della scheda è la pagina `/assistenza` del sito; il demo ha anche un obiettivo di macro.
 
 ## Cosa non fare
 

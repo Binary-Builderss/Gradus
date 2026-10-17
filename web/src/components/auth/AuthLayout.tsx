@@ -16,6 +16,9 @@ export function AuthLayout({ children }: { children: ReactNode }) {
           <a href="/privacy" className="underline-offset-4 hover:text-foreground hover:underline">
             {messages.legal.footer.privacy}
           </a>
+          <a href="/assistenza" className="underline-offset-4 hover:text-foreground hover:underline">
+            {messages.legal.footer.support}
+          </a>
         </nav>
       </div>
     </main>

@@ -3,7 +3,7 @@ export const legal = {
   controller: 'Binary Builders',
   contactEmail: 'contactus@binarybuilders.dev',
   /** Versione dei testi: va cambiata quando cambiano, e finisce nei metadati di chi accetta. */
-  version: '2026-10-16',
+  version: '2026-10-17',
 }
 
 export type LegalSection = { title: string; paragraphs: readonly string[] }
