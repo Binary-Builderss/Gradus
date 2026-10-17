@@ -173,7 +173,8 @@ Data/Remote/    client Supabase
 - **Allenamento (home)**: mesociclo attivo, selettore settimana × sessione aperto sulla prossima seduta
   non completata, note del coach, lista gruppi con riepilogo compatto e stato; storico mesocicli.
 - **Macro** (vedi «Nutrizione» alla radice). **Fatto**: scheda «Macro» con l'obiettivo di oggi (scritto dal coach, sola
-  lettura), gli ultimi 14 giorni (verde rispettati, rosso no, grigio non registrato) e la schermata del giorno («Rispettati» /
+  lettura; kcal in cifre grandi), gli ultimi 14 giorni come griglia di quadratini, una settimana per riga
+  (`MacroDaysStrip`: verde rispettati, rosso no, vuoto non registrato, oggi con il contorno blu) e la schermata del giorno («Rispettati» /
   «Non rispettati» e, se vuoi, i numeri; campi vuoti, salvataggio automatico, «Togli questo giorno»); consenso esplicito
   prima di registrare (schermata dedicata, ritirabile da Profilo → Privacy: cancella i giorni sul server e sul telefono).
   Senza consenso il telefono non scrive e il server rifiuta. I giorni passano dalla stessa coda delle serie (id

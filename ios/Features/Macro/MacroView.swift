@@ -10,21 +10,25 @@ struct MacroView: View {
     @State private var editing: DayEntry?
     @State private var askingNumbers: DayEntry?
     @State private var consenting = false
+    /// Le calorie in cifre grandi seguono la dimensione del testo di iOS, con un tetto.
+    @ScaledMetric(relativeTo: .largeTitle) private var digits = 64.0
 
     var body: some View {
         NavigationStack {
-            List {
-                if let snapshot = model.snapshot {
-                    targetSection(snapshot)
-                    if !snapshot.consent { consentSection }
-                    daysSection(snapshot)
-                } else if model.readFailed {
-                    ReadFailedView()
-                } else {
-                    ProgressView()
+            ScrollView {
+                VStack(alignment: .leading, spacing: Theme.Space.m) {
+                    if let snapshot = model.snapshot {
+                        targetCard(snapshot)
+                        if !snapshot.consent { consentCard }
+                        daysCard(snapshot)
+                    } else if model.readFailed {
+                        ReadFailedView()
+                    } else {
+                        ProgressView().frame(maxWidth: .infinity).padding(.top, Theme.Space.xl)
+                    }
                 }
+                .padding(Theme.Space.m)
             }
-            .scrollContentBackground(.hidden)
             .background(palette.background)
             .navigationTitle("Macro")
             .refreshable { await environment.sync.sync() }
@@ -61,64 +65,67 @@ struct MacroView: View {
         }
     }
 
-    private func targetSection(_ snapshot: NutritionSnapshot) -> some View {
-        Section {
+    /// L'obiettivo di oggi (lo scrive il coach): le calorie in cifre grandi, sotto i grammi di ogni macro.
+    private func targetCard(_ snapshot: NutritionSnapshot) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Space.s) {
+            Text("Obiettivo di oggi").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
             if let plan = snapshot.today {
                 let t = plan.targets
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("\(t.kcal) kcal").font(.largeTitle.monospacedDigit().bold())
-                    HStack(spacing: 16) {
-                        stat("Proteine", t.proteinG)
-                        stat("Carboidrati", t.carbsG)
-                        stat("Grassi", t.fatG)
-                        if let fiber = t.fiberG { stat("Fibre", fiber) }
-                    }
-                    Text("Tolleranza ±\(plan.tolerancePct)%").font(.footnote).foregroundStyle(.secondary)
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xs) {
+                    Text("\(t.kcal)").font(.system(size: min(digits, 96), weight: .heavy).monospacedDigit())
+                        .minimumScaleFactor(0.6).lineLimit(1)
+                    Text("kcal").font(.title3.weight(.semibold)).foregroundStyle(.secondary)
                 }
-                .padding(.vertical, 4)
-                .tourTarget("macro-target")
+                .accessibilityElement(children: .combine)
+                HStack(alignment: .top, spacing: Theme.Space.l) {
+                    stat("Proteine", t.proteinG)
+                    stat("Carboidrati", t.carbsG)
+                    stat("Grassi", t.fatG)
+                    if let fiber = t.fiberG { stat("Fibre", fiber) }
+                }
+                Text("Tolleranza ±\(plan.tolerancePct)%, decisa dal tuo coach").font(.footnote).foregroundStyle(.secondary)
+                    .padding(.top, Theme.Space.xs)
             } else {
                 Text("Il tuo coach non ha ancora impostato i macro.").foregroundStyle(.secondary)
-                    .tourTarget("macro-target")
             }
-        } header: {
-            Text("Obiettivo di oggi")
         }
-        .listRowBackground(palette.surface)
+        .foregroundStyle(palette.ink)
+        .card()
+        .tourTarget("macro-target")
     }
 
     private func stat(_ name: String, _ grams: Int) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("\(grams) g").font(.headline.monospacedDigit())
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text("\(grams)").font(.title3.bold().monospacedDigit())
+                Text("g").font(.footnote).foregroundStyle(.secondary)
+            }
             Text(name).font(.footnote).foregroundStyle(.secondary)
         }
+        .accessibilityElement(children: .combine)
     }
 
-    private var consentSection: some View {
-        Section {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Condividi i tuoi macro con il coach").font(.headline)
-                Text("Per registrare come vanno i tuoi macro serve il tuo consenso: sono dati sulla tua salute e li vede anche il tuo coach.")
-                    .font(.subheadline).foregroundStyle(.secondary)
-                Button("Continua") { consenting = true }.modifier(ProminentActionStyle())
-            }
-            .padding(.vertical, 4)
+    private var consentCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Condividi i tuoi macro con il coach").font(.headline)
+            Text("Per registrare come vanno i tuoi macro serve il tuo consenso: sono dati sulla tua salute e li vede anche il tuo coach.")
+                .font(.subheadline).foregroundStyle(.secondary)
+            Button("Continua") { consenting = true }.modifier(ProminentActionStyle())
         }
-        .listRowBackground(palette.surface)
+        .card()
     }
 
-    private func daysSection(_ snapshot: NutritionSnapshot) -> some View {
-        Section("Ultimi giorni") {
-            ForEach(snapshot.days) { entry in
-                Button {
-                    if snapshot.consent { editing = entry } else { consenting = true }
-                } label: {
-                    DayRow(entry: entry)
-                        .tourTarget("macro-days", if: entry.day == snapshot.days.first?.day)
-                }
-                .buttonStyle(.plain)
+    /// Gli ultimi 14 giorni in una griglia: un tocco apre il giorno (o il consenso, se manca).
+    private func daysCard(_ snapshot: NutritionSnapshot) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Space.s) {
+            Text("Ultimi \(snapshot.days.count) giorni").font(.headline)
+            MacroDaysStrip(days: snapshot.days) { entry in
+                if snapshot.consent { editing = entry } else { consenting = true }
             }
+            Text("Tocca un giorno per segnarlo o correggerlo, anche con calorie e macro.")
+                .font(.footnote).foregroundStyle(.secondary)
         }
-        .listRowBackground(palette.surface)
+        .card()
+        .tourTarget("macro-days")
     }
 }
