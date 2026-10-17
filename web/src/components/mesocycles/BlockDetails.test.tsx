@@ -63,6 +63,15 @@ describe('BlockDetails', () => {
     expect(screen.getByText('Recupero 1 min 30 s.')).toBeInTheDocument()
   })
 
+  it('dice che le opzioni si salvano da sole e che il recupero è salvato, senza toccare la progressione', async () => {
+    setup()
+    expect(screen.getByText(/si salvano da soli/)).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('radio', { name: '2 min' }))
+    expect(updateBlock).toHaveBeenCalledWith('m1', 'b1', { rest_s: 120 })
+    expect(await screen.findByText('Salvato.')).toBeInTheDocument()
+    expect(screen.queryByText(/Indica le serie della prima settimana\./)).not.toBeInTheDocument()
+  })
+
   it('il tipo di lavoro si sceglie e ogni scelta ha la sua descrizione', async () => {
     setup()
     expect(screen.getByRole('radio', { name: 'Lavoro' })).toBeChecked()

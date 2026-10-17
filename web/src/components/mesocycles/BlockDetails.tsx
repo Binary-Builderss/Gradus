@@ -45,6 +45,9 @@ export function BlockDetails({
 
   return (
     <div className="grid gap-6 p-4">
+      <p role="status" className="text-xs text-muted-foreground">
+        {patch.isPending ? m.saving : patch.isSuccess ? m.saved : m.autosave}
+      </p>
       <Section title={m.work.title} hint={m.work.hint}>
         <div role="radiogroup" aria-label={m.role} className="flex flex-wrap gap-2">
           {ROLES.map((r) => (
