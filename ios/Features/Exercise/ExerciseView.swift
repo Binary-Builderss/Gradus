@@ -13,6 +13,8 @@ struct ExerciseView: View {
     var startSetIdx: Int?
     /// Passa all'esercizio successivo del gruppo, alla serie indicata.
     var goTo: (UUID, Int) -> Void = { _, _ in }
+    /// La pagina che si vede (le vicine sono già caricate dallo scorrimento): solo lei ha la guida e la tastiera.
+    var isCurrent = true
     @State private var model: ExerciseModel?
     @Environment(\.scenePhase) private var scenePhase
     @FocusState private var focused: Bool
@@ -23,7 +25,7 @@ struct ExerciseView: View {
                 // La guida evidenzia il primo «Avvia timer» che c'è (non sempre sulla prima serie).
                 let timerKey = slot.blocks.lazy.flatMap { block in
                     (0..<(model.setCounts[block.id] ?? 0)).lazy.map { (block, SetKey(block: block.id, idx: $0)) }
-                }.first { model.showsTimerButton($0.1, block: $0.0) }?.1
+                }.first { isCurrent && model.showsTimerButton($0.1, block: $0.0) }?.1
                 ScrollViewReader { proxy in
                     List {
                         if let notes = slot.coachNotes, !notes.isEmpty {
@@ -31,7 +33,8 @@ struct ExerciseView: View {
                         }
                         ForEach(slot.blocks) { block in
                             BlockSection(
-                                model: model, block: block, isTourFirst: block.id == slot.blocks.first?.id, tourTimerKey: timerKey, focused: $focused,
+                                model: model, block: block, isTourFirst: isCurrent && block.id == slot.blocks.first?.id, tourTimerKey: timerKey,
+                                focused: $focused,
                                 startTimer: { key in startTimer(model, block: block, key: key, proxy: proxy) })
                         }
                     }
@@ -48,12 +51,12 @@ struct ExerciseView: View {
                 ProgressView()
             }
         }
-        .navigationTitle(slot.exerciseName)
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Chiudi tastiera") { focused = false }
+            if isCurrent {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Chiudi tastiera") { focused = false }
+                }
             }
         }
         .task {

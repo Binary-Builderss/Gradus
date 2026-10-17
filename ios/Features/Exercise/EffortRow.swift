@@ -12,18 +12,14 @@ struct EffortRow: View {
     var body: some View {
         let scale = model.scale(for: block)
         let current = model.drafts[key]?.effort.flatMap { $0.scale == scale ? $0.value : nil }
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Text(EffortOptions.title(for: scale)).font(.footnote).foregroundStyle(.secondary)
-                if let current { Text(NumberInput.text(current)).font(.footnote.weight(.semibold)) }
-            }
-            HStack(spacing: 8) {
-                ForEach(EffortOptions.wholeValues(for: scale), id: \.self) { whole in
-                    chip(whole: whole, scale: scale, current: current)
-                }
+        // La scala è scritta una volta nell'intestazione del blocco: qui solo i tasti.
+        HStack(spacing: 8) {
+            ForEach(EffortOptions.wholeValues(for: scale), id: \.self) { whole in
+                chip(whole: whole, scale: scale, current: current)
             }
         }
         .accessibilityElement(children: .contain)
+        .accessibilityLabel(EffortOptions.title(for: scale))
     }
 
     private func chip(whole: Double, scale: EffortScale, current: Double?) -> some View {
@@ -35,7 +31,7 @@ struct EffortRow: View {
         } label: {
             Text(NumberInput.text(shown))
                 .font(.body.monospacedDigit().weight(selected ? .bold : .regular))
-                .frame(maxWidth: .infinity, minHeight: 40)
+                .frame(maxWidth: .infinity, minHeight: 44)
                 .foregroundStyle(selected ? palette.onPrimary : Color.primary)
                 .background(selected ? palette.accent : Color.secondary.opacity(0.12), in: Capsule())
         }
@@ -45,7 +41,7 @@ struct EffortRow: View {
             if let half { Button(NumberInput.text(half)) { model.setEffort(key, Effort(value: half, scale: scale)) } }
             if current != nil { Button("Togli lo sforzo", role: .destructive) { model.setEffort(key, nil) } }
         }
-        .accessibilityLabel("Sforzo \(NumberInput.text(shown))")
+        .accessibilityLabel("\(EffortOptions.title(for: scale)) \(NumberInput.text(shown))")
         .accessibilityHint("Tocco lungo per il mezzo punto")
         .accessibilityAddTraits(selected ? .isSelected : [])
     }

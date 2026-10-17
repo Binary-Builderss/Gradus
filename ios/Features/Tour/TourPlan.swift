@@ -98,6 +98,9 @@ enum TourPlan {
             TourStep(
                 id: "timer", tab: .workout, screen: screen, target: at("exercise-timer"), title: "Il recupero",
                 body: "«Avvia timer» fa partire il recupero: lo ritrovi in basso in tutta l'app e ti avvisa anche a schermo bloccato."),
+            TourStep(
+                id: "next-exercise", tab: .workout, screen: screen, target: nil, title: "Esercizio dopo esercizio",
+                body: "Scorri di lato per passare all'esercizio successivo senza tornare all'elenco. Se il coach ha collegato un video, lo apri dal tasto in alto a destra."),
         ]
     }
 

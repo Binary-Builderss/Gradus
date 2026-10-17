@@ -40,9 +40,11 @@ quando un task tocca anche `/supabase` o `/fixtures`.
   `App/Theme.swift` e nel catalogo (con variante scura): non scrivere colori o misure a mano nelle View.
 - **Identità** (senza marchio del coach): la **G a scalini** (`GradusMark`, asset `Mark`) e il blu notte in cima alla home, con la
   settimana in **cifre grandi** (`NumbersHeader`; con la personalizzazione la fascia prende il colore principale del coach); le
-  sedute numerate in grande; le settimane come una **scala che sale** (`StepsWeekPicker`: scelta piena, passate grigie, future
-  vuote); nell'esercizio il riferimento della settimana scorsa a caratteri grandi in blu e le caselle kg e ripetizioni alte
+  sedute numerate in grande; le settimane come una **scala che sale** (`StepsWeekPicker`: scelta piena, passate rispetto a oggi grigie, quella in
+  corso con il contorno blu, future vuote; oltre 8-9 settimane scorre di lato); nell'esercizio il riferimento della settimana scorsa a caratteri grandi in blu e le caselle kg e ripetizioni alte
   (68 pt) con cifre da 44 pt. I numeri sono i protagonisti: carichi, ripetizioni, timer, kcal, sempre `monospacedDigit`.
+  Le prescrizioni si mostrano in **notazione da palestra** (`Prescription.shortText`: «3×8–10 · BUF 2»), con la versione a
+  parole (`text`) come etichetta di VoiceOver.
 - **Liquid Glass (iOS 26+) solo sui controlli che galleggiano** sopra i contenuti (selettore delle settimane, etichetta
   della settimana, timer, tab bar e barra di navigazione di sistema), mai sulle schede dei contenuti. Si usano i
   helper `glass(_:)`, `GlassContainer`, `ProminentActionStyle`, `SecondaryActionStyle`, che sotto iOS 26 ripiegano su un
@@ -126,7 +128,10 @@ Data/Remote/    client Supabase
 7. **Back-off legato**: mostra il carico target ("≈ 90 kg") nel riquadro prescrizione appena il blocco
    di riferimento ha dati. Formula e arrotondamento da `/fixtures/backoff_cases.json`. È un'indicazione,
    mai un valore inserito nei campi.
-8. **Stati derivati**: esercizio vuoto / parziale / completo confrontando serie registrate e prescritte;
+8. **Esercizi a pagine** (`ExercisePager`): dentro una seduta si passa all'esercizio dopo scorrendo di lato; in alto nome,
+   «2 di 5» e, se il coach l'ha collegato (`exercise_videos`), il tasto del video. La scala dello sforzo e il recupero si
+   scrivono una volta nell'intestazione del blocco; sulla serie l'obiettivo di ripetizioni e il segno di serie registrata.
+9. **Stati derivati**: esercizio vuoto / parziale / completo confrontando serie registrate e prescritte;
    seduta iniziata alla prima serie, finita all'ultima. Nessun "termina allenamento".
 
 ## Timer di recupero
