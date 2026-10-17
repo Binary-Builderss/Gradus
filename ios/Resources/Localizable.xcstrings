@@ -51,6 +51,9 @@
     "Come ti chiami?" : {
 
     },
+    "con %@" : {
+
+    },
     "Condividi i tuoi macro con il coach" : {
 
     },
@@ -109,9 +112,6 @@
 
     },
     "In corso" : {
-
-    },
-    "Inizia il %@" : {
 
     },
     "Iniziata" : {
@@ -202,6 +202,9 @@
 
     },
     "Settimana %@" : {
+
+    },
+    "settimana di %@" : {
 
     },
     "Sincronizzo…" : {
