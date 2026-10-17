@@ -4,6 +4,7 @@ import SwiftUI
 /// Profilo: chi sei e le sezioni, ognuna in una schermata sua. In fondo le cose delicate (disattivare o eliminare
 /// l'account) e l'uscita.
 struct ProfileView: View {
+    @Environment(\.palette) private var palette
     let environment: AppEnvironment
     let userID: UUID
     @State private var model = ProfileModel()
@@ -79,8 +80,8 @@ struct ProfileView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(Theme.background)
-            .listRowBackground(Theme.surface)
+            .background(palette.background)
+            .listRowBackground(palette.surface)
             .navigationTitle("Profilo")
             .confirmationDialog(
                 unsentAtSignOut > 0

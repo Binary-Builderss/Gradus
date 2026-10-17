@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct LabeledField<Content: View>: View {
+    @Environment(\.palette) private var palette
     let title: String
     @ViewBuilder var content: Content
 
@@ -9,8 +10,8 @@ struct LabeledField<Content: View>: View {
             Text(title).font(.subheadline).foregroundStyle(.secondary)
             content
                 .padding(12)
-                .background(Theme.surface, in: .rect(cornerRadius: Theme.Radius.m))
-                .overlay { RoundedRectangle(cornerRadius: Theme.Radius.m).stroke(Theme.hairline) }
+                .background(palette.surface, in: .rect(cornerRadius: Theme.Radius.m))
+                .overlay { RoundedRectangle(cornerRadius: Theme.Radius.m).stroke(palette.hairline) }
         }
     }
 }

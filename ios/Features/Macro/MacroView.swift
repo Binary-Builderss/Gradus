@@ -3,6 +3,7 @@ import SwiftUI
 
 /// Macro: l'obiettivo di oggi (lo scrive il coach) e gli ultimi giorni (li registra l'atleta, con il suo consenso).
 struct MacroView: View {
+    @Environment(\.palette) private var palette
     let environment: AppEnvironment
     let userID: UUID
     @State private var model = MacroModel()
@@ -24,7 +25,7 @@ struct MacroView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(Theme.background)
+            .background(palette.background)
             .navigationTitle("Macro")
             .refreshable { await environment.sync.sync() }
             .sheet(item: $editing) { entry in
@@ -83,7 +84,7 @@ struct MacroView: View {
         } header: {
             Text("Obiettivo di oggi")
         }
-        .listRowBackground(Theme.surface)
+        .listRowBackground(palette.surface)
     }
 
     private func stat(_ name: String, _ grams: Int) -> some View {
@@ -103,7 +104,7 @@ struct MacroView: View {
             }
             .padding(.vertical, 4)
         }
-        .listRowBackground(Theme.surface)
+        .listRowBackground(palette.surface)
     }
 
     private func daysSection(_ snapshot: NutritionSnapshot) -> some View {
@@ -118,6 +119,6 @@ struct MacroView: View {
                 .buttonStyle(.plain)
             }
         }
-        .listRowBackground(Theme.surface)
+        .listRowBackground(palette.surface)
     }
 }

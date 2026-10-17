@@ -47,6 +47,9 @@ protocol RemoteAPI: Sendable {
     func fetchPage(table: SyncTable, since: String?, offset: Int, limit: Int) async throws -> Data
     /// Gli id (JSON: `[{"id": "…"}]`) di tutte le righe che l'atleta vede oggi.
     func fetchIDs(table: SyncTable) async throws -> Data
+    /// Il marchio del coach che l'atleta può vedere (JSON: array di righe `coach_branding`, vuoto se il coach non ha la
+    /// personalizzazione): la policy sul server decide, l'app non ricalcola il piano.
+    func fetchBranding() async throws -> Data
     /// Upsert idempotente sulla chiave primaria: `rows` è un array JSON di righe con tutte le colonne tranne
     /// `updated_at` (lo scrive il server). Reinviare le stesse righe non crea duplicati.
     func upsert(table: SyncTable, rows: Data) async throws

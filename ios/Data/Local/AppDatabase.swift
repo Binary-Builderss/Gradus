@@ -230,13 +230,25 @@ final class AppDatabase: Sendable {
                 t.column("deleted_at", .text)
             }
         }
+
+        // Il marchio del coach (sola lettura): una riga, quella del coach collegato. Sostituita a ogni sincronizzazione.
+        migrator.registerMigration("v4-marchio") { db in
+            try db.create(table: "coach_branding") { t in
+                t.primaryKey("coach_id", .blob)
+                t.column("brand_name", .text)
+                t.column("logo_png", .text)
+                t.column("colors", .text).notNull()
+                t.column("hide_gradus_credit", .boolean).notNull().defaults(to: false)
+                t.column("updated_at", .text).notNull()
+            }
+        }
         return migrator
     }
 
     /// Svuota tutto (uscita dall'account): i dati sono di chi era collegato.
     func erase() throws {
         try writer.write { db in
-            for table in SyncTable.allCases.map(\.rawValue) + ["sync_cursors", "pending_push"] { try db.execute(sql: "DELETE FROM \(table)") }
+            for table in SyncTable.allCases.map(\.rawValue) + ["sync_cursors", "pending_push", "coach_branding"] { try db.execute(sql: "DELETE FROM \(table)") }
         }
     }
 }

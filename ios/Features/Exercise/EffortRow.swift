@@ -4,6 +4,7 @@ import SwiftUI
 /// Lo sforzo percepito (facoltativo, una volta per serie): una riga di tasti interi sulla scala del coach. Un tocco
 /// sceglie, un secondo tocco toglie; il mezzo punto (2,5) si sceglie con il tocco lungo sul tasto.
 struct EffortRow: View {
+    @Environment(\.palette) private var palette
     let model: ExerciseModel
     let block: BlockContent
     let key: SetKey
@@ -35,8 +36,8 @@ struct EffortRow: View {
             Text(NumberInput.text(shown))
                 .font(.body.monospacedDigit().weight(selected ? .bold : .regular))
                 .frame(maxWidth: .infinity, minHeight: 40)
-                .foregroundStyle(selected ? Color.white : Color.primary)
-                .background(selected ? Color.accentColor : Color.secondary.opacity(0.12), in: Capsule())
+                .foregroundStyle(selected ? palette.onPrimary : Color.primary)
+                .background(selected ? palette.accent : Color.secondary.opacity(0.12), in: Capsule())
         }
         .buttonStyle(.borderless)
         .contextMenu {

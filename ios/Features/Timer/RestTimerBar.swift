@@ -4,6 +4,7 @@ import SwiftUI
 /// Barra in basso, in vetro: tempo residuo, −15 s, +15 s, Salta. Galleggia sopra la schermata e si vede in tutta
 /// l'app finché c'è un timer.
 struct RestTimerBar: View {
+    @Environment(\.palette) private var palette
     let timer: RestTimerModel
     /// Dentro l'accessorio della tab bar (iOS 26.1+) il vetro e i margini li mette il sistema.
     var inAccessory = false
@@ -25,7 +26,7 @@ struct RestTimerBar: View {
             }
             .frame(minHeight: 44)
             .buttonStyle(.plain)
-            .foregroundStyle(Color.accentColor)
+            .foregroundStyle(palette.accent)
             .padding(.horizontal, Theme.Space.l)
             .padding(.vertical, Theme.Space.s)
             .modifier(FloatingGlass(enabled: !inAccessory))
