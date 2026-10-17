@@ -32,10 +32,14 @@ struct PreferencesView: View {
             Section {
                 Toggle("Suono a fine recupero", isOn: $timerSound)
                 Toggle("Vibrazione a fine recupero", isOn: $timerHaptic)
+                Button("Prova suono e vibrazione") {
+                    environment.restTimer.preview(sound: timerSound, haptic: timerHaptic)
+                }
+                .disabled(!timerSound && !timerHaptic)
             } header: {
                 Text("Timer di recupero")
             } footer: {
-                Text("Se l'app è in background il recupero te lo dice una notifica.")
+                Text("A fine recupero arriva anche una notifica, pure a schermo bloccato o con l'app chiusa (se le notifiche di Gradus Atleta sono attive nelle Impostazioni di iOS). Il suono si sente sopra la musica, anche con l'iPhone in silenzioso.")
             }
         }
         .navigationTitle("Preferenze")

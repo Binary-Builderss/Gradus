@@ -12,6 +12,10 @@ struct SetRow: View {
     let isTourTimer: Bool
     var focused: FocusState<Bool>.Binding
     let startTimer: (SetKey) -> Void
+    /// Cifre e caselle di kg e ripetizioni seguono la dimensione del testo di iOS, con un tetto: due caselle devono
+    /// stare sulla stessa riga.
+    @ScaledMetric(relativeTo: .largeTitle) private var digits = 44.0
+    @ScaledMetric(relativeTo: .largeTitle) private var boxHeight = 68.0
 
     var body: some View {
         let draft = model.drafts[key] ?? SetDraft()
@@ -78,8 +82,9 @@ struct SetRow: View {
             TextField("", text: text)  // vuoto: nessun valore (nemmeno grigio) finché l'atleta non scrive
                 .keyboardType(keyboard)
                 .multilineTextAlignment(.center)
-                .font(.system(size: 44, weight: .heavy).monospacedDigit())
-                .frame(minWidth: 64, maxWidth: 124, minHeight: 68)
+                .font(.system(size: min(digits, 60), weight: .heavy).monospacedDigit())
+                .minimumScaleFactor(0.5)
+                .frame(minWidth: 64, maxWidth: 140, minHeight: min(boxHeight, 88))
                 .background(palette.background, in: .rect(cornerRadius: Theme.Radius.s))
                 .focused(focused)
                 .accessibilityLabel(label)

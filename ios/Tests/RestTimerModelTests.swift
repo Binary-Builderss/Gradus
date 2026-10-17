@@ -17,7 +17,7 @@ actor FakeNotifier: RestNotifier {
     private(set) var cancels = 0
     private(set) var authorizations = 0
     func requestAuthorizationIfNeeded() { authorizations += 1 }
-    func schedule(at date: Date, title: String, body: String) { scheduled.append((date, body)) }
+    func schedule(at date: Date, title: String, body: String, sound: Bool) { scheduled.append((date, body)) }
     func cancel() { cancels += 1 }
 }
 
