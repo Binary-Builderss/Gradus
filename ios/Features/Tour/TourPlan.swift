@@ -110,7 +110,7 @@ enum TourPlan {
             body: "Calorie e macro che il tuo coach ha impostato per te. Compaiono qui appena li scrive."),
         TourStep(
             id: "macro-days", tab: .macro, target: "macro-days", title: "Come vanno i giorni",
-            body: "Tocca un giorno per segnare se hai rispettato i macro e, se vuoi, aggiungere quanto hai assunto. Verde rispettati, rosso no, grigio non registrato."),
+            body: "Tocca un giorno per segnare se hai rispettato i macro e, se vuoi, aggiungere quanto hai assunto. Verde rispettati, rosso no, vuoto non registrato; oggi ha il contorno blu."),
         TourStep(
             id: "macro-reminder", tab: .macro, target: nil, title: "Il promemoria della sera",
             body: "Ogni sera ti chiedo «Hai rispettato i macro di oggi?» e rispondi con un tocco, anche dalla notifica. Lo accendi, lo spegni e scegli l'orario da Profilo → Preferenze. Per registrare i macro serve il tuo consenso a condividerli con il coach."),
