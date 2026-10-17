@@ -1059,6 +1059,9 @@ export const messages = {
           none: 'Nessun recupero indicato.',
           sentence: (rest: string) => `Recupero ${rest}.`,
         },
+        autosave: 'Tipo di serie, tecnica, tempi e recuperi si salvano da soli.',
+        saving: 'Salvataggio in corso.',
+        saved: 'Salvato.',
         remove: 'Elimina queste serie',
       },
       progression: {
@@ -1091,8 +1094,9 @@ export const messages = {
           moreSets: 'Una serie in più a settimana',
           closerToFailure: 'Sempre più vicino al cedimento',
         },
-        apply: 'Applica',
-        applyTo: (n: number) => (n === 1 ? 'Applica a 1 settimana' : `Applica a ${n} settimane`),
+        apply: 'Applica progressione',
+        applyTo: (n: number) =>
+          n === 1 ? 'Applica progressione a 1 settimana' : `Applica progressione a ${n} settimane`,
         applying: 'Applicazione in corso',
         done: (n: number) => (n === 1 ? 'Scritta 1 settimana.' : `Scritte ${n} settimane.`),
         setsGroup: 'Serie',

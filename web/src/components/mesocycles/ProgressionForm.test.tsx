@@ -53,7 +53,7 @@ describe('ProgressionForm', () => {
   it('senza le serie della prima settimana non applica e non calcola l’anteprima', async () => {
     setup()
     expect(screen.getByText(/Indica le serie della prima settimana per vedere/)).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'Applica' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Applica progressione' }))
     expect(await screen.findByText('Indica le serie della prima settimana.')).toBeInTheDocument()
     expect(applyProgression).not.toHaveBeenCalled()
     expect(previewProgression).not.toHaveBeenCalled()
@@ -66,7 +66,7 @@ describe('ProgressionForm', () => {
     await userEvent.selectOptions(screen.getByLabelText('Misura'), 'BUF')
     await userEvent.type(group('Sforzo').getByLabelText('Parti da'), '3')
     await userEvent.type(group('Sforzo').getByLabelText('Cambia di'), '-1')
-    await userEvent.click(screen.getByRole('button', { name: /^Applica/ }))
+    await userEvent.click(screen.getByRole('button', { name: /^Applica progressione/ }))
     await waitFor(() => expect(applyProgression).toHaveBeenCalledTimes(1))
     expect(applyProgression).toHaveBeenCalledWith('b1', {
       sets: { start: 3, step: 1 },
@@ -87,7 +87,7 @@ describe('ProgressionForm', () => {
     expect(await screen.findByText('Già eseguita: resta com’è')).toBeInTheDocument()
     expect(screen.getByText('4 serie da 8-10 ripetizioni, 2 ripetizioni in riserva')).toBeInTheDocument()
     expect(screen.getByText('Scarico: non viene toccata')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Applica a 1 settimana' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Applica progressione a 1 settimana' })).toBeInTheDocument()
     expect(previewProgression).toHaveBeenLastCalledWith('b1', { sets: { start: 3 } })
   })
 
@@ -106,7 +106,7 @@ describe('ProgressionForm', () => {
     setup()
     await userEvent.type(group('Serie').getByLabelText('Parti da'), '3')
     await userEvent.selectOptions(screen.getByLabelText('Misura'), 'RPE')
-    await userEvent.click(screen.getByRole('button', { name: 'Applica' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Applica progressione' }))
     expect(await screen.findByText('Misura e valore di partenza vanno insieme.')).toBeInTheDocument()
     expect(applyProgression).not.toHaveBeenCalled()
   })
@@ -115,7 +115,7 @@ describe('ProgressionForm', () => {
     applyProgression.mockRejectedValueOnce(new Error('22023'))
     setup()
     await userEvent.type(group('Serie').getByLabelText('Parti da'), '3')
-    await userEvent.click(screen.getByRole('button', { name: /^Applica/ }))
+    await userEvent.click(screen.getByRole('button', { name: /^Applica progressione/ }))
     expect(await screen.findByText(/Non sono riuscito ad applicare/)).toBeInTheDocument()
   })
 
@@ -124,7 +124,7 @@ describe('ProgressionForm', () => {
     setup()
     await userEvent.type(group('Serie').getByLabelText('Parti da'), '3')
     expect(await screen.findByText(/Non riesco a calcolare l’anteprima/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Applica' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Applica progressione' })).toBeEnabled()
   })
 
   describe('modelli salvati', () => {
